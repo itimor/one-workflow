@@ -1,0 +1,15 @@
+[Unit]
+Description=start celery worker
+
+[Service]
+ExecStart=/bin/bash -c 'cd /opt/projects/one-oms/backend; /root/.pyenv/versions/envoms/bin/celery -A core worker -B --loglevel=info -f /data/logs/celery.log'
+#非正常dead，自动重启
+Restart=on-failure
+#3秒后启动
+RestartSec=3s
+KillSignal=SIGQUIT
+Type=simple
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

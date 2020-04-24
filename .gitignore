@@ -1,0 +1,11 @@
+*.pyc
+.idea/
+.DS_Store
+.python-version
+upload/
+*.log
+node_modules/
+package-lock.json
+.vscode/
+venv/
+*.db

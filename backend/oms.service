@@ -1,0 +1,16 @@
+[Unit]
+Description=uWSGI instance to serve one-oms
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/data/app/one/backend
+ExecStart=/root/.pyenv/versions/boce/bin/uwsgi --ini oms.ini --touch-reload=/etc/nginx/uwsgi_params
+Restart=on-failure
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
