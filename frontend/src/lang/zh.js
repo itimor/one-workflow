@@ -3,6 +3,7 @@ export default {
     dashboard: '首页',
     sys: '系统管理',
     user: '用户管理',
+    group: '用户组管理',
     role: '角色管理',
     menu: '菜单管理',
     icon: '图标管理',

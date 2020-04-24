@@ -3,6 +3,7 @@ export default {
     dashboard: 'Dashboard',
     sys: 'sysManager',
     user: 'userManager',
+    group: 'groupManager',
     role: 'roleManager',
     menu: 'menuManager',
     icon: 'iconManager',
