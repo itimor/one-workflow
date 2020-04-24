@@ -53,7 +53,7 @@ class State(BaseModel):
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
     is_hidden = models.BooleanField('是否隐藏', default=False, help_text='设置为True时,获取工单步骤api中不显示此状态(当前处于此状态时除外)')
     order_id = models.IntegerField('状态顺序', default=0)
-    type = models.CharField(max_length=1, choices=state_type, default=0, verbose_name='状态类型')
+    state_type = models.CharField(max_length=1, choices=state_type, default=0, verbose_name='状态类型')
     enable_retreat = models.BooleanField('允许撤回', default=False, help_text='开启后允许工单创建人在此状态直接撤回工单到初始状态')
     participant_type = models.CharField(max_length=1, choices=participant_type, default=0, verbose_name='参与者类型')
     participant = models.CharField('参与者', default='', blank=True, max_length=100,
@@ -87,13 +87,13 @@ class Transition(BaseModel):
     """
     name = models.CharField('操作', max_length=50)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
-    type = models.CharField(max_length=1, choices=state_type, default=0, verbose_name='流转类型')
+    transition_type = models.CharField(max_length=1, choices=transition_type, default=0, verbose_name='流转类型')
     timer = models.IntegerField('定时器(单位秒)', default=0, help_text='流转类型设置为定时器流转时生效,单位秒。处于源状态X秒后如果状态都没有过变化则自动流转到目标状态')
     source_state = models.ForeignKey(State, on_delete=models.CASCADE, related_name="source_state", verbose_name='源状态')
     dest_state = models.ForeignKey(State, on_delete=models.CASCADE, related_name="dest_state", verbose_name='目的状态')
     condition_expression = models.TextField('条件表达式', default='[]',
                                             help_text='流转条件表达式，根据表达式中的条件来确定流转的下个状态，格式为[{"expression":"{days} > 3 and {days}<10", "target_state_id":11}] 其中{}用于填充工单的字段key,运算时会换算成实际的值，当符合条件下个状态将变为target_state_id中的值,表达式只支持简单的运算或datetime/time运算.loonflow会以首次匹配成功的条件为准，所以多个条件不要有冲突')
-    attribute_type = models.CharField(max_length=1, choices=state_type, default=0, verbose_name='属性类型')
+    attribute_type = models.CharField(max_length=1, choices=attribute_type, default=0, verbose_name='属性类型')
     alert_enable = models.BooleanField('点击弹窗提示', default=False)
     alert_text = models.CharField('弹窗内容', max_length=100, default='', blank=True)
 
@@ -127,6 +127,7 @@ class CustomField(BaseModel):
     """自定义字段, 设定某个工作流有哪些自定义字段"""
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
     field_type = models.CharField(max_length=1, choices=field_type, default=0, verbose_name='字段类型')
+    field_key = models.CharField('字段标识', max_length=50, help_text='字段类型请尽量特殊，避免与系统中关键字冲突')
     field_name = models.CharField('字段名称', max_length=50)
     order_id = models.IntegerField('排序', default=0)
     default_value = models.CharField('默认值', null=True, blank=True, max_length=100,

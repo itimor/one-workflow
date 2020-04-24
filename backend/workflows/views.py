@@ -17,14 +17,14 @@ class StateViewSet(BulkModelMixin):
     serializer_class = StateSerializer
     search_fields = ['name']
     filter_fields = ['name']
-    ordering_fields = ['type', 'order_id']
+    ordering_fields = ['state_type', 'order_id']
 
 
 class TransitionViewSet(BulkModelMixin):
     queryset = Transition.objects.all()
     serializer_class = TransitionSerializer
     search_fields = ['name']
-    filter_fields = ['name', 'type']
+    filter_fields = ['name', 'transition_type']
     ordering_fields = ['name']
 
 
