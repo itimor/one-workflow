@@ -80,63 +80,52 @@
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
-      :fullscreen="true"
     >
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px">
-        <el-row type="flex" class="row-bg" justify="space-between">
-          <el-col :span="4">
-            <el-form-item label="父级" prop="parent">
-              <SelectTree
-                v-model.number="temp.parent"
-                type="number"
-                :props="propsSelectTree"
-                :options="optionDataSelectTree2"
-                :value="valueIdSelectTree2"
-                :clearable="true"
-                :accordion="true"
-                @getValue="getSelectTreeValue($event, 2)"
-              />
-            </el-form-item>
-            <el-form-item label="名称" prop="name">
-              <el-input v-model="temp.name" />
-            </el-form-item>
-            <el-form-item label="代码" prop="code">
-              <el-input v-model="temp.code" />
-            </el-form-item>
-            <el-form-item label="排序值" prop="sequence">
-              <el-input v-model="temp.sequence" />
-            </el-form-item>
-            <el-form-item label="备注" prop="memo">
-              <el-input v-model="temp.memo" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="菜单" prop="menus">
-              <el-tree
-                ref="tree"
-                :check-strictly="false"
-                :data="treeData"
-                :props="treeProps"
-                show-checkbox
-                accordion
-                default-expand-all
-                node-key="id"
-                class="permission-tree"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="模块权限" prop="model_perms">
-              <el-transfer
-                v-model="temp.model_perms"
-                filterable
-                :titles="['未选择', '已选择']"
-                  :data="allperm"
-                :props="permprops"
-              ></el-transfer>
-            </el-form-item>
-          </el-col>
-        </el-row>
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="80px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item label="父级" prop="parent">
+          <SelectTree
+            v-model.number="temp.parent"
+            type="number"
+            :props="propsSelectTree"
+            :options="optionDataSelectTree2"
+            :value="valueIdSelectTree2"
+            :clearable="true"
+            :accordion="true"
+            @getValue="getSelectTreeValue($event, 2)"
+          />
+        </el-form-item>
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="代码" prop="code">
+          <el-input v-model="temp.code" />
+        </el-form-item>
+        <el-form-item label="排序值" prop="sequence">
+          <el-input v-model="temp.sequence" />
+        </el-form-item>
+        <el-form-item label="备注" prop="memo">
+          <el-input v-model="temp.memo" />
+        </el-form-item>
+        <el-form-item label="角色" prop="roles">
+          <el-tree
+            ref="tree"
+            :check-strictly="false"
+            :data="treeData"
+            :props="treeProps"
+            show-checkbox
+            accordion
+            default-expand-all
+            node-key="id"
+            class="permission-tree"
+          />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ "取消" }}</el-button>
@@ -150,7 +139,7 @@
 </template>
 
 <script>
-import { role, menu, perm, auth } from "@/api/all";
+import { group, menu, role, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import SelectTree from "@/components/TreeSelect";
 import {
@@ -161,7 +150,7 @@ import {
 } from "@/utils/permission";
 
 export default {
-  name: "role",
+  name: "group",
   components: { Pagination, SelectTree },
   data() {
     return {
@@ -202,7 +191,7 @@ export default {
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
         code: [{ required: true, message: "请输入代码", trigger: "blur" }],
-        sequence: [{ required: true, message: "请输入排序", trigger: "blur" }],
+        sequence: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       multipleSelection: [],
       treeProps: {
@@ -210,7 +199,7 @@ export default {
         label: "name"
       },
       treeData: [],
-      allrole: [],
+      allgroup: [],
       allperm: [],
       permprops: {
         key: "id",
@@ -220,11 +209,11 @@ export default {
   },
   computed: {
     optionDataSelectTree2() {
-      const cloneData = this.allrole;
+      const cloneData = this.allgroup;
       const ha = cloneData.filter(father => {
         const branchArr = cloneData.filter(child => father.id === child.parent);
         branchArr.length > 0 ? (father.children = branchArr) : "";
-        return father.parent === this.allrole[0].parent;
+        return father.parent === this.allgroup[0].parent;
       });
       return ha;
     }
@@ -233,8 +222,7 @@ export default {
     this.getMenuButton();
     this.getList();
     this.getTreeData();
-    this.getAllRole();
-    this.getAllPerm();
+    this.getAllgroup();
   },
   methods: {
     checkPermission() {
@@ -245,7 +233,7 @@ export default {
     },
     getMenuButton() {
       auth
-        .requestMenuButton("role")
+        .requestMenuButton("group")
         .then(response => {
           this.operationList = response.results;
         })
@@ -255,20 +243,15 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      role.requestGet(this.listQuery).then(response => {
+      group.requestGet(this.listQuery).then(response => {
         this.list = response.results;
         this.total = response.count;
         this.listLoading = false;
       });
     },
-    getAllRole() {
-      role.requestGet().then(response => {
-        this.allrole = response.results;
-      });
-    },
-    getAllPerm() {
-      perm.requestGet().then(response => {
-        this.allperm = response.results;
+    getAllgroup() {
+      group.requestGet().then(response => {
+        this.allgroup = response.results;
       });
     },
     handleFilter() {
@@ -289,8 +272,7 @@ export default {
         name: "",
         code: "",
         sequence: "",
-        menus: [],
-        model_perms: [],
+        roles: [],
         memo: ""
       };
     },
@@ -308,8 +290,8 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
-          this.temp.menus = this.$refs.tree.getCheckedKeys();
-          role
+          this.temp.roles = this.$refs.tree.getCheckedKeys();
+          group
             .requestPost(this.temp)
             .then(response => {
               this.dialogFormVisible = false;
@@ -334,7 +316,7 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
         this.valueIdSelectTree2 = this.temp.parent;
-        this.$refs.tree.setCheckedKeys(row.menus);
+        this.$refs.tree.setCheckedKeys(row.roles);
       });
     },
     updateData() {
@@ -342,8 +324,8 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
-          this.temp.menus = this.$refs.tree.getCheckedKeys();
-          role
+          this.temp.roles = this.$refs.tree.getCheckedKeys();
+          group
             .requestPut(this.temp.id, this.temp)
             .then(() => {
               this.dialogFormVisible = false;
@@ -367,7 +349,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          role.requestDelete(row.id).then(() => {
+          group.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
               type: "success"
@@ -409,7 +391,7 @@ export default {
       })
         .then(() => {
           const ids = this.multipleSelection.map(x => x.id);
-          role.requestBulkDelete(ids).then(response => {
+          group.requestBulkDelete(ids).then(response => {
             console.log(response.results);
             this.getList();
           });
@@ -422,7 +404,7 @@ export default {
         });
     },
     getTreeData() {
-      menu.requestGet().then(response => {
+      role.requestGet().then(response => {
         this.treeData = this.optionDataSelectTree(response.results);
       });
     },
@@ -437,9 +419,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.el-transfer-panel{
-  width: 230px!important
-}
-</style>

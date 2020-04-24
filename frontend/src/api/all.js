@@ -11,5 +11,5 @@ export const menu = new Request('/sys/menu/')
 export const perm = new Request('/sys/perm/')
 
 // tools
-export const auditlog = new Request('/tool/auditlog/')
+export const audit = new Request('/tool/audit/')
 export const simple = new Request('/tool/simple/')

@@ -8,7 +8,7 @@ export default {
     icon: '图标管理',
     test: '测试页面',
     tool: '工具管理',
-    auditlog: '审计日志',
+    audit: '审计日志',
     notice: '通知管理',
     mailbot: 'mail机器人',
     tgbot: 'tg机器人',

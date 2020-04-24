@@ -8,7 +8,7 @@ export default {
     icon: 'iconManager',
     test: 'testManager',
     tool: 'tool',
-    auditlog: 'auditlog',
+    audit: 'audit',
     notice: 'notice',
     mailbot: 'mail bot',
     tgbot: 'telegram bot',

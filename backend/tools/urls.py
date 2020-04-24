@@ -10,7 +10,7 @@ router = routers.DefaultRouter()
 
 router.register(r'upload', UploadViewSet)
 router.register(r'fileupload', FileUploadViewSet)
-router.register(r'auditlog', RequestEventViewSet)
+router.register(r'audit', RequestEventViewSet)
 router.register('simple', SimpleViewSet)
 
 urlpatterns = [
