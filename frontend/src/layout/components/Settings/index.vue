@@ -92,13 +92,14 @@ export default {
   .drawer-title {
     margin-bottom: 12px;
     color: #a030ed;
-    font-size: 14px;
+    font-size: 18px;
     line-height: 22px;
   }
 
   .drawer-item {
-    color: #ed5e1c;
+    color: #ed1c90;
     font-size: 14px;
+    font-weight: bold;
     padding: 12px 0;
   }
 

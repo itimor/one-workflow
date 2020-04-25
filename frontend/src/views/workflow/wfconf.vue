@@ -1,11 +1,11 @@
 <template>
   <div class="filter-container">
-    <a>{{listQuery.workflow}}</a>
+    <a>{{wfdata.name}}</a>
   </div>
 </template>
 
 <script>
-import { customfield, state, transition, auth } from "@/api/all";
+import { workflow, customfield, state, transition, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import {
   checkAuthAdd,
@@ -35,6 +35,7 @@ export default {
         ordering: undefined,
         workflow: undefined
       },
+      wfdata: {},
       customfield_list: [],
       customfield_total: 0,
       customfield_listLoading: false
@@ -42,34 +43,48 @@ export default {
   },
 
   created() {
-    this.listQuery.workflow = this.$route.params && this.$route.params.id;
-    this.getCustomfieldList();
+    const id = this.$route.params && this.$route.params.id;
+    this.fetchData(id);
     this.tempRoute = Object.assign({}, this.$route);
-    this.setTagsViewTitle()
-    this.setPageTitle()
   },
   methods: {
+    fetchData(id) {
+      this.listQuery.workflow = id;
+      const params = {
+        id: id
+      };
+      workflow.requestGet(params).then(response => {
+        this.wfdata = response.results[0];
+
+        this.setTagsViewTitle();
+        this.setPageTitle();
+      });
+    },
     getCustomfieldList() {
       this.customfield_listLoading = true;
+      this.listQuery.workflow = id;
       customfield.requestGet(this.listQuery).then(response => {
         this.customfield_list = response.results;
         this.customfield_total = response.count;
-        this.listLoading = false;
+        this.customfield_listLoading = false;
+
+        this.setTagsViewTitle();
+        this.setPageTitle();
       });
     },
     handleFilter() {
       this.getCustomfieldList();
     },
-    setTagsViewTitle(id) {
-      const title = "工作流配置";
+    setTagsViewTitle() {
+      const title = this.wfdata.name;
       const route = Object.assign({}, this.tempRoute, {
-        title: `${title}-${this.listQuery.workflow}`
+        title: `${title} - 配置`
       });
       this.$store.dispatch("tagsView/updateVisitedView", route);
     },
     setPageTitle() {
-      const title = "工作流配置";
-      document.title = `${title} - ${this.listQuery.workflow}`;
+      const title = this.wfdata.name;
+      document.title = `${title} - 配置`;
     }
   }
 };

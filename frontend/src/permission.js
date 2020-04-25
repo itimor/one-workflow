@@ -4,6 +4,8 @@ import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
+import getPageTitle from '@/utils/get-page-title'
+import i18n from '@/lang'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -12,6 +14,10 @@ const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
+
+  // set page title
+  const i18ntitle = i18n.t(`route.${to.meta.title}`)
+  document.title = getPageTitle(i18ntitle)
 
   // determine whether the user has logged in
   const hasToken = getToken()
@@ -24,7 +30,6 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      // alert(hasRoles)
       if (hasRoles) {
         next()
       } else {
@@ -38,6 +43,7 @@ router.beforeEach(async(to, from, next) => {
 
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
+
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
@@ -52,6 +58,7 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
+
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

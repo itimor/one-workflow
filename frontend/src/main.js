@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Cookies from 'js-cookie'
 
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
@@ -17,10 +17,6 @@ import i18n from './lang' // Internationalization
 import './icons' // icon
 import './permission' // permission control
 
-// cron表达式
-import VueCron from 'point-vue-cron'
-Vue.use(VueCron)
-
 import * as filters from './filters' // global filters
 
 Vue.use(Element, {
@@ -28,7 +24,7 @@ Vue.use(Element, {
   i18n: (key, value) => i18n.t(key, value)
 })
 
-// register global utility filters.
+// register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })

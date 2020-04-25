@@ -39,7 +39,6 @@ export function filterAsyncRoutes(routes, roles) {
 
 // 在这里定义state 状态管理
 const state = {
-  token02: 'aabb02', // getToken(),
   routes: [],
   addRoutes: []
 }
@@ -64,8 +63,7 @@ const actions = {
         return
         /**
         // 从服务端请求菜单列表数据
-        // alert(state.token02)
-        getMenus(state.token02).then(response => {
+        getMenus(state.username).then(response => {
           const { code, menus } = response // 这种形式可以直接接收 {code:2000,data:"ok"}
           console.log(code)
           console.log(menus)
@@ -173,7 +171,7 @@ export const componentsMap = {
   user: () => import('@/views/sys/user'), // 用户
   group: () => import('@/views/sys/group'), // 用户组
   role: () => import('@/views/sys/role'), // 角色
-  icon: () => import('@/views/svg-icons/index'), // 图标管理
+  icon: () => import('@/views/icons/index'), // 图标管理
 
   // tool
   audit: () => import('@/views/tool/audit'), // 审计日志

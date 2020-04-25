@@ -53,7 +53,8 @@ def set_menu(menus, parent_id):
             'component': item.code,
             'name': item.code,
             'hidden': item.hidden,
-            'meta': {'title': item.code, 'icon': item.icon, 'no_cache': item.no_cache, 'active_menu': item.active_menu},
+            'meta': {'title': item.code, 'icon': item.icon, 'no_cache': item.no_cache, 'active_menu': item.active_menu,
+                     'name': item.name},
             'children': []
         }
         if item.type == 3:
@@ -71,7 +72,7 @@ def set_menu(menus, parent_id):
                 'component': item.code,
                 'name': item.code,
                 'meta': {'title': item.code, 'icon': item.icon, 'no_cache': item.no_cache,
-                         'active_menu': item.active_menu},
+                         'active_menu': item.active_menu, 'name': item.name},
                 'children': []
             }
             menu['children'].append(menu_index)

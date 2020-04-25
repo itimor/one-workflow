@@ -1,4 +1,6 @@
 export default {
+  systemTitle: '后台管理系统',
+
   route: {
     dashboard: '首页',
     sys: '系统管理',
@@ -17,6 +19,7 @@ export default {
     notice: '通知管理',
     mailbot: 'mail机器人',
     tgbot: 'tg机器人',
+    ComponentDemo: '组件例子',
   },
   navbar: {
     logOut: '退出登录',

@@ -57,10 +57,7 @@ const mutations = {
   },
 
   UPDATE_VISITED_VIEW: (state, view) => {
-    console.log(state.visitedViews)
-    console.log(view)
     for (let v of state.visitedViews) {
-      console.log(12e3123)
       if (v.path === view.path) {
         v = Object.assign(v, view)
         break

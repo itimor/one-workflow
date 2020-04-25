@@ -1,13 +1,21 @@
 'use strict'
 const path = require('path')
-const pkg = require('./package.json')
+const defaultSettings = require('./src/settings.js')
+const i18n = require('./src/lang/index.js')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-//const name = pkg.name || 'vue-element-admin' // page title
-const name = '后台管理系统' // page title
+// const name = defaultSettings.title || 'vue Element Admin' // page title
+const name = i18n.t('systemTitle')
+
+// If your port is set to 80,
+// use administrator privileges to execute the command line.
+// For example, Mac: sudo npm run
+// You can change the port by the following method:
+// port = 9527 npm run dev OR npm run dev --port = 9527
+const port = process.env.port || process.env.npm_config_port || 9527 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -19,7 +27,7 @@ module.exports = {
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
   publicPath: '/',
-  outputDir: './dist',
+  outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
@@ -80,11 +88,6 @@ module.exports = {
         return options
       })
       .end()
-
-    config
-      .when(process.env.NODE_ENV === 'development',
-        config => config.devtool('cheap-source-map')
-      )
 
     config
       .when(process.env.NODE_ENV !== 'development',

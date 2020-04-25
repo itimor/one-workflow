@@ -7,7 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* Router Modules */
-// import chartsRouter from './modules/charts'
+import componentsRouter from './modules/components'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -17,7 +17,7 @@ import Layout from '@/layout'
  * alwaysShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
  *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
+ * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
     roles: ['admin','editor']    control the page roles (you can set multiple roles)
@@ -43,27 +43,28 @@ export const constantRoutes = [
   },
   {
     path: '/404',
-    component: () => import('@/views/errorPage/404'),
+    component: () => import('@/views/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/errorPage/401'),
+    component: () => import('@/views/error-page/401'),
     hidden: true
   },
   {
     path: '/',
     component: Layout,
-    redirect: 'dashboard',
+    redirect: '/dashboard',
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', noCache: false, affix: true }
+        name: 'dashboard',
+        meta: { title: 'dashboard', icon: 'dashboard', affix: true }
       }
     ]
   },
+  componentsRouter
 ]
 
 const createRouter = () => new Router({

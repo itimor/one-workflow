@@ -9,7 +9,7 @@ class WorkflowViewSet(BulkModelMixin):
     queryset = Workflow.objects.all()
     serializer_class = WorkflowSerializer
     search_fields = ['name']
-    filter_fields = ['name']
+    filter_fields = ['name', 'id']
 
 
 class StateViewSet(BulkModelMixin):

@@ -1,4 +1,6 @@
 export default {
+  systemTitle: 'OMS',
+  
   route: {
     dashboard: 'Dashboard',
     sys: 'sysManager',
@@ -17,6 +19,7 @@ export default {
     notice: 'notice',
     mailbot: 'mail bot',
     tgbot: 'telegram bot',
+    ComponentDemo: 'ComponentDemo',
   },
   navbar: {
     logOut: 'Log Out',

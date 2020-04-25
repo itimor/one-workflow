@@ -9,11 +9,11 @@
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
         class="tags-view-item"
-        @click.middle.native="closeSelectedTag(tag)"
+        @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ generateTitle(tag.title) }}
-    <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
