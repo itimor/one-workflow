@@ -63,7 +63,7 @@ export const constantRoutes = [
         meta: { title: '首页', icon: 'dashboard', noCache: false, affix: true }
       }
     ]
-  }
+  },
 ]
 
 const createRouter = () => new Router({

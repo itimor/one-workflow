@@ -11,6 +11,7 @@ class Workflow(BaseModel):
     """
     name = models.CharField('名称', max_length=50)
     ticket_sn_prefix = models.CharField('工单流水号前缀', default='xxoo', max_length=20)
+    status = models.BooleanField(default=True)
     view_permission_check = models.BooleanField('查看权限校验', default=True, help_text='开启后，只允许工单的关联人(创建人、曾经的处理人)有权限查看工单')
     limit_expression = models.TextField('限制表达式', default='{}', blank=True,
                                         help_text='限制周期({"period":24} 24小时), 限制次数({"count":1}在限制周期内只允许提交1次), 限制级别({"level":1} 针对(1单个用户 2全局)限制周期限制次数,默认特定用户);允许特定人员提交({"allow_persons":"zhangsan,lisi"}只允许张三提交工单,{"allow_depts":"1,2"}只允许部门id为1和2的用户提交工单，{"allow_roles":"1,2"}只允许角色id为1和2的用户提交工单)')
@@ -18,8 +19,6 @@ class Workflow(BaseModel):
                                         help_text='默认"[]"，用于用户只有对应工单查看权限时显示哪些字段,field_key的list的json,如["days","sn"],内置特殊字段participant_info.participant_name:当前处理人信息(部门名称、角色名称)，state.state_name:当前状态的状态名,workflow.workflow_name:工作流名称')
     title_template = models.CharField('标题模板', max_length=50, default='你有一个待办工单:{title}', null=True, blank=True,
                                       help_text='工单字段的值可以作为参数写到模板中，格式如：你有一个待办工单:{title}')
-    content_template = models.TextField('内容模板', default='标题:{title}, 创建时间:{gmt_created}', null=True,
-                                        blank=True, help_text='工单字段的值可以作为参数写到模板中，格式如：标题:{title}, 创建时间:{gmt_created}')
 
     def __str__(self):
         return self.name

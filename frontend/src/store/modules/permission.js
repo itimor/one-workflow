@@ -151,7 +151,8 @@ function generateRouter(item, isParent) {
     path: item.path,
     name: item.name,
     meta: item.meta,
-    // noCache: item.no_cache,
+    noCache: item.no_cache,
+    activeMenu: item.active_menu,
     hidden: item.hidden,
     // component: isParent ? Layout : () => import(item.component) // 这个不可以
     // component: isParent ? Layout : componentsMap[item.component]
@@ -177,4 +178,11 @@ export const componentsMap = {
   // tool
   audit: () => import('@/views/tool/audit'), // 审计日志
   test: () => import('@/views/tool/test'), // test
+
+  // workflow
+  wfset: () => import('@/views/workflow/wfset'), // 工作流设计
+  wfconf: () => import('@/views/workflow/wfconf'), // 工作流配置
+
+  // tickets
+  myticket: () => import('@/views/workflow/myticket'), // 我的工单
 }

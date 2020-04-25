@@ -41,9 +41,7 @@
       </el-button-group>
     </div>
 
-    <el-table :data="list" v-loading="listLoading" border style="width: 100%" highlight-current-row @sort-change="handleSortChange"
-              @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55"/>
+    <el-table :data="list" v-loading="listLoading" border style="width: 100%" highlight-current-row @sort-change="handleSortChange">
       <el-table-column label="菜单名称" prop="name"></el-table-column>
       <el-table-column label="菜单代码" prop="code"></el-table-column>
       <el-table-column label="排序值" prop="sequence"></el-table-column>
@@ -103,17 +101,6 @@
         label-width="80px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="父级" prop="parent">
-          <SelectTree
-            v-model.number="temp.parent"
-            type="number"
-            :props="propsSelectTree"
-            :options="optionDataSelectTree"
-            :value="valueIdSelectTree2"
-            :clearable="true"
-            :accordion="true"
-            @getValue="getSelectTreeValue($event, 2)"
-          />
         </el-form-item>
         <el-form-item label="菜单名称" prop="name">
           <el-input v-model="temp.name"/>
@@ -140,16 +127,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-show="showOpera" label="操作类型" prop="operate">
-          <el-select v-model="temp.operate" placeholder="状态" style="width: 90px" class="filter-item">
-            <el-option
-              v-for="item in operateTypeOptions"
-              :key="item.key"
-              :label="item.display_name"
-              :value="item.key"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="菜单状态" prop="status">
           <el-switch
             v-model="temp.status"
@@ -157,22 +134,15 @@
             inactive-color="#ff4949">
           </el-switch>
         </el-form-item>
-        <el-form-item label="是否缓存" prop="no_cache">
-          <el-switch
-            v-model="temp.no_cache"
-            active-color="#13ce66"
-            inactive-color="#ff4949">
-          </el-switch>
-        </el-form-item>
-        <el-form-item label="隐藏菜单" prop="hidden">
+                <el-form-item label="隐藏菜单" prop="hidden">
           <el-switch
             v-model="temp.hidden"
             active-color="#13ce66"
             inactive-color="#ff4949">
           </el-switch>
         </el-form-item>
-        <el-form-item label="激活菜单" prop="active_menu">
-          <el-input v-model="temp.active_menu"/>
+        <el-form-item label="备注" prop="memo">
+          <el-input v-model="temp.memo"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -188,29 +158,16 @@
 </template>
 
 <script>
-  import {menu, auth} from '@/api/all'
+  import {workflow, auth} from '@/api/all'
   import Pagination from '@/components/Pagination'
-  import SelectTree from '@/components/TreeSelect'
   import {checkAuthAdd, checkAuthDel, checkAuthView, checkAuthUpdate} from '@/utils/permission'
 
   export default {
-    name: 'ymenu',
+    name: 'workflow',
 
-    components: {Pagination, SelectTree},
+    components: {Pagination},
     data() {
       return {
-        valueIdSelectTree: 0,
-        valueIdSelectTree2: 0,
-        propsSelectTree: {
-          value: 'id',
-          label: 'name',
-          children: 'children',
-          placeholder: '父级'
-        },
-        propsSelectlist: [],
-        propsSelectlist2: [
-          {id: 0, parent: -1, name: '顶级'}
-        ],
         operationList: [],
         permissionList: {
           add: false,
@@ -240,41 +197,13 @@
           sequence: [{ required: true, message: "请输入排序", trigger: "blur" }],
         },
         multipleSelection: [],
-        treeProps: {
-          children: 'children',
-          label: 'name'
-        },
-        treeData: [],
-        menuTypeOptions: [
-          {key: 1, display_name: '模块'},
-          {key: 2, display_name: '菜单'},
-          {key: 3, display_name: '操作'}
-        ],
-        operateTypeOptions: [
-          {key: 'none', display_name: '无'},
-          {key: 'add', display_name: '新增'},
-          {key: 'del', display_name: '删除'},
-          {key: 'update', display_name: '编辑'},
-          {key: 'view', display_name: '查看'},
-        ],
-        showOpera: false,
-        allmean: [],
       }
     },
     computed: {
-      optionDataSelectTree() {
-        const cloneData = this.allmean
-        return cloneData.filter(father => {
-          const branchArr = cloneData.filter(child => father.id === child.parent)
-          branchArr.length > 0 ? father.children = branchArr : ''
-          return father.parent === this.allmean[0].parent
-        })
-      }
     },
     created() {
       this.getMenuButton()
       this.getList()
-      this.getAllMean()
     },
     methods: {
       checkPermission() {
@@ -284,7 +213,7 @@
         this.permissionList.update = checkAuthUpdate(this.operationList)
       },
       getMenuButton() {
-        auth.requestMenuButton('menu').then(response => {
+        auth.requestMenuButton('workflow').then(response => {
           this.operationList = response.results
         }).then(() => {
           this.checkPermission()
@@ -292,15 +221,10 @@
       },
       getList() {
         this.listLoading = true
-        menu.requestGet(this.listQuery).then(response => {
+        workflow.requestGet(this.listQuery).then(response => {
           this.list = response.results
           this.total = response.count
           this.listLoading = false
-        })
-      },
-      getAllMean() {
-        menu.requestGet().then(response => {
-          this.allmean = response.results
         })
       },
       handleFilter() {
@@ -326,9 +250,8 @@
           type: 2,
           operate: 'none',
           status: true,
-          no_cache: true,
           hidden: false,
-          active_menu: '',
+          memo: '',
           parent: 0
         }
       },
@@ -345,8 +268,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.loading = true
-            this.temp.parent = this.valueIdSelectTree2
-            menu.requestPost(this.temp).then(response => {
+            workflow.requestPost(this.temp).then(response => {
               this.dialogFormVisible = false
               this.$notify({
                 title: '成功',
@@ -366,7 +288,6 @@
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.valueIdSelectTree2 = this.temp.parent
           this.$refs['dataForm'].clearValidate()
         })
       },
@@ -374,8 +295,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.loading = true
-            this.temp.parent = this.valueIdSelectTree2
-            menu.requestPut(this.temp.id, this.temp).then(() => {
+            workflow.requestPut(this.temp.id, this.temp).then(() => {
               this.dialogFormVisible = false
               this.$notify({
                 title: '成功',
@@ -395,7 +315,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          menu.requestDelete(row.id).then(() => {
+          workflow.requestDelete(row.id).then(() => {
             this.$message({
               message: '删除成功',
               type: 'success'
@@ -408,22 +328,6 @@
             message: '已取消删除'
           })
         })
-      },
-      handleshowOpera(val) {
-        if (val === 3) {
-          this.showOpera = true
-        } else {
-          this.showOpera = false
-          this.temp.operate = 'none'
-        }
-      },
-      getSelectTreeValue(value, type) {
-        if (type === 1) {
-          this.valueIdSelectTree = value
-          this.handleFilter()
-        } else {
-          this.valueIdSelectTree2 = value
-        }
       },
       handleSelectionChange(val) {
         this.multipleSelection = val
@@ -443,7 +347,7 @@
           type: 'warning'
         }).then(() => {
           const ids = this.multipleSelection.map(x => x.id)
-          menu.requestBulkDelete(ids).then(response => {
+          workflow.requestBulkDelete(ids).then(response => {
             console.log(response.results)
             this.getList()
           })
