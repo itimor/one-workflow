@@ -29,7 +29,7 @@ class Menu(BaseModel):
     icon = models.CharField(max_length=32, blank=True, verbose_name='菜单图标')
     hidden = models.BooleanField(default=False, verbose_name='菜单是否隐藏')
     no_cache = models.BooleanField(default=True, verbose_name='菜单是否缓存')
-    active_menu = models.CharField(max_length=32, verbose_name='激活菜单')
+    active_menu = models.CharField(max_length=32, blank=True, verbose_name='激活菜单')
     sequence = models.SmallIntegerField(default=0, verbose_name='排序值')
     type = models.CharField(max_length=1, choices=tuple(menu_type.items()), default=2, verbose_name='菜单类型')
     status = models.BooleanField(default=True, verbose_name='状态')

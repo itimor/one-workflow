@@ -231,6 +231,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
+            this.$emit('checkdata')
             })
             .catch(() => {});
         }
@@ -275,6 +276,7 @@ export default {
               message: "删除成功",
               type: "success"
             });
+            this.$emit('checkdata')
           });
         })
         .catch(() => {

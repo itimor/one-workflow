@@ -17,13 +17,7 @@ class Command(BaseCommand):
         menumodel = Menu.objects.create(name='工作流设计', code='wfset', curl='/wfset', icon='wfset', sequence=10, type=2,
                                         parent_id=workflowmenu.id)
         init_menu(menumodel)
-        menumodel = Menu.objects.create(name='工作流配置', code='wfconf', curl='/wfconf', icon='wfconf', sequence=20, type=2,
-                                        parent_id=workflowmenu.id)
+        menumodel = Menu.objects.create(name='工作流配置', code='wfconf', curl='/wfconf/:id', icon='wfconf', sequence=20, type=2,
+                                        hidden=True, parent_id=workflowmenu.id)
         init_menu(menumodel)
-        # menumodel = Menu.objects.create(name='我相关的', code='myticket', curl='/myticket', icon='myticket', sequence=20, type=2,
-        #                                 parent_id=wfmanagermenu.id)
-        # init_menu(menumodel)
-        # menumodel = Menu.objects.create(name='所有工单', code='myticket', curl='/myticket', icon='myticket', sequence=20, type=2,
-        #                                 parent_id=wfmanagermenu.id)
-        # init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

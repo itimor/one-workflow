@@ -51,6 +51,8 @@
   transition: 600ms ease all;
   position: relative;
   display: inline-block;
+  width: 100%;
+  text-align: center;
 
   &:hover {
     background: #fff;

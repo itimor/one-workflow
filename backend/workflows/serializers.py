@@ -17,6 +17,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
         State.objects.create(name="结束", order_id=99, state_type=2, workflow=obj)
         return obj
 
+
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State

@@ -180,7 +180,9 @@ export const componentsMap = {
   // workflow
   wfset: () => import('@/views/workflow/wfset'), // 工作流设计
   wfconf: () => import('@/views/workflow/wfconf'), // 工作流配置
+  myticket: () => import('@/views/workflow/myticket'), // 我的工单
 
   // tickets
-  myticket: () => import('@/views/workflow/myticket'), // 我的工单
+  c_ticket: () => import('@/views/ticket/c_ticket'), // 我的工单
+
 }
