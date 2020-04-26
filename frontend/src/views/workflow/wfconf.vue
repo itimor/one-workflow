@@ -13,6 +13,12 @@
           <tab-state :wfdata="wfdata" :list="state_list"></tab-state>
         </keep-alive>
       </el-tab-pane>
+
+      <el-tab-pane label="工作流步骤" name="transition">
+        <keep-alive>
+          <tab-transition :wfdata="wfdata" :statedata="state_list" :list="transition_list"></tab-transition>
+        </keep-alive>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -21,6 +27,7 @@
 import { workflow, customfield, state, transition, auth } from "@/api/all";
 import tabCustomfield from "./pages/customfield";
 import tabState from "./pages/state";
+import tabTransition from "./pages/transition";
 
 import {
   checkAuthAdd,
@@ -32,7 +39,7 @@ import {
 export default {
   name: "wfconf",
 
-  components: { tabCustomfield, tabState },
+  components: { tabCustomfield, tabState, tabTransition },
   data() {
     return {
       activeName: "customfield",
@@ -47,6 +54,7 @@ export default {
       wfdata: {},
       customfield_list: [],
       state_list: [],
+      transition_list: [],
       temp: {
         workflow: undefined
       }
@@ -70,6 +78,7 @@ export default {
         this.setPageTitle();
         this.getCustomfieldList();
         this.getStateList();
+        this.getTransitionList();
       });
     },
     getCustomfieldList() {
@@ -80,6 +89,11 @@ export default {
     getStateList() {
       state.requestGet(this.temp).then(response => {
         this.state_list = response.results;
+      });
+    },
+    getTransitionList() {
+      transition.requestGet(this.temp).then(response => {
+        this.transition_list = response.results;
       });
     },
     handleFilter() {

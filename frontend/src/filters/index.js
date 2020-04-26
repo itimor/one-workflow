@@ -99,12 +99,31 @@ export function FieldTypeFilter(val) {
   return Map[val]
 }
 
-// 状态状态
+// 状态类型
 export function StateTypeFilter(val) {
   const Map = {
     0: '普通状态',
     1: '初始状态',
     2: '结束状态',
+  }
+  return Map[val]
+}
+
+// 流转类型
+export function TransitionTypeFilter(val) {
+  const Map = {
+    0: '常规流转',
+    1: '定时器流转',
+  }
+  return Map[val]
+}
+
+// 属性类型
+export function AttributeTypeFilter(val) {
+  const Map = {
+    0: '同意',
+    1: '拒绝',
+    2: '其他',
   }
   return Map[val]
 }

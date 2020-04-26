@@ -17,6 +17,13 @@ class StateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TransitionReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transition
+        fields = '__all__'
+        depth = 1
+
+
 class TransitionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transition

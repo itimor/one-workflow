@@ -72,7 +72,7 @@ class State(BaseModel):
 
 transition_type = {
     0: '常规流转',
-    2: '结束状态',
+    1: '定时器流转',
 }
 
 attribute_type = {

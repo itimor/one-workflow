@@ -26,6 +26,11 @@ class TransitionViewSet(BulkModelMixin):
     search_fields = ['name']
     filter_fields = ['workflow', 'transition_type']
 
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve'] or self.resultData:
+            return TransitionReadSerializer
+        return TransitionSerializer
+
 
 class CustomFieldViewSet(BulkModelMixin):
     queryset = CustomField.objects.all()
