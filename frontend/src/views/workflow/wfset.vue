@@ -76,7 +76,6 @@
                 v-if="permissionList.update"
                 size="small"
                 type="warning"
-                @click="handleUpdate(row)"
               >{{ "配置" }}</el-button>
             </router-link>
           </el-button-group>
