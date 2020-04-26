@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <el-card class="title">
-      <h2 style="text-align: center;">{{wfdata.name}}</h2>
-    </el-card>
     <el-card>
+      <div slot="header" class="clearfix">
+        <h2 style="text-align: center;">{{wfdata.name}}</h2>
+      </div>
       <div class="form" v-show="customfield_list.length>0">
         <el-form ref="dataForm" :rules="rules" :model="temp">
           <el-row :gutter="20">
@@ -104,9 +104,9 @@ export default {
       },
       rules: {},
       btn_types: {
-        0:'primary',
-        1:'danger',
-        2:'warning',
+        0: "primary",
+        1: "danger",
+        2: "warning"
       }
     };
   },
@@ -138,7 +138,7 @@ export default {
     getStateList() {
       state.requestGet(this.temp).then(response => {
         this.state_list = response.results;
-        this.temp.source_state = this.state_list[0].id
+        this.temp.source_state = this.state_list[0].id;
         this.getTransitionList();
       });
     },
