@@ -7,20 +7,19 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from systems.models import *
 from common.models import BaseModel
 
-menu_type = (
-    (1, '模块'),
-    (2, '菜单'),
-    (3, '操作'),
-)
+menu_type = {
+    1: '模块',
+    2: '菜单',
+    3: '操作',
+}
 
-operate_type = (
-    ('none', '无'),
-    ('add', '新增'),
-    ('del', '删除'),
-    ('update', '编辑'),
-    ('view', '查看'),
-)
-
+operate_type = {
+    'none': '无',
+    'add': '新增',
+    'del': '删除',
+    'update': '编辑',
+    'view': '查看',
+}
 
 class Menu(BaseModel):
     parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL, verbose_name='父级菜单')
@@ -32,9 +31,9 @@ class Menu(BaseModel):
     no_cache = models.BooleanField(default=True, verbose_name='菜单是否缓存')
     active_menu = models.CharField(max_length=32, verbose_name='激活菜单')
     sequence = models.SmallIntegerField(default=0, verbose_name='排序值')
-    type = models.CharField(max_length=1, choices=menu_type, default=2, verbose_name='菜单类型')
+    type = models.CharField(max_length=1, choices=tuple(menu_type.items()), default=2, verbose_name='菜单类型')
     status = models.BooleanField(default=True, verbose_name='状态')
-    operate = models.CharField(max_length=11, choices=operate_type, default='none', verbose_name='操作类型')
+    operate = models.CharField(max_length=11, choices=tuple(operate_type.items()), default='none', verbose_name='操作类型')
 
     def __str__(self):
         return "{parent}{name}".format(name=self.name, parent="%s-->" % self.parent.name if self.parent else '')

@@ -1,5 +1,5 @@
 // set function parseTime,formatTime to filter
-export {parseTime, formatTime} from '@/utils'
+export { parseTime, formatTime } from '@/utils'
 
 function pluralize(time, label) {
   if (time === 1) {
@@ -22,12 +22,12 @@ export function timeAgo(time) {
 /* 数字 格式化*/
 export function numberFormatter(num, digits) {
   const si = [
-    {value: 1E18, symbol: 'E'},
-    {value: 1E15, symbol: 'P'},
-    {value: 1E12, symbol: 'T'},
-    {value: 1E9, symbol: 'G'},
-    {value: 1E6, symbol: 'M'},
-    {value: 1E3, symbol: 'k'}
+    { value: 1E18, symbol: 'E' },
+    { value: 1E15, symbol: 'P' },
+    { value: 1E12, symbol: 'T' },
+    { value: 1E9, symbol: 'G' },
+    { value: 1E6, symbol: 'M' },
+    { value: 1E3, symbol: 'k' }
   ]
   for (let i = 0; i < si.length; i++) {
     if (num >= si[i].value) {
@@ -78,15 +78,33 @@ export function operateTypeFilter(val) {
   return Map[val]
 }
 
-// 工单状态
-export function TicketStatusFilter(val) {
+// 字段类型
+export function FieldTypeFilter(val) {
   const Map = {
-    1: '待提交',
-    2: '执行中',
-    3: '执行驳回',
-    4: '执行完成',
-    5: '完成关闭',
-    6: '驳回关闭',
+    10: '字符串',
+    15: '整形',
+    20: '浮点型',
+    25: '布尔',
+    30: '日期',
+    35: '时间',
+    40: '日期时间',
+    45: '单选框',
+    50: '多选框',
+    55: '下拉列表',
+    60: '多选下拉列表',
+    65: '文本域',
+    70: '用户名',
+    75: '多选的用户名',
+  }
+  return Map[val]
+}
+
+// 状态状态
+export function StateTypeFilter(val) {
+  const Map = {
+    0: '普通状态',
+    1: '初始状态',
+    2: '结束状态',
   }
   return Map[val]
 }

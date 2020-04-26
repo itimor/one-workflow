@@ -72,11 +72,7 @@
               @click="handleUpdate(row)"
             >{{ "流程图" }}</el-button>
             <router-link :to="'/wfconf/'+ row.id">
-              <el-button
-                v-if="permissionList.update"
-                size="small"
-                type="warning"
-              >{{ "配置" }}</el-button>
+              <el-button v-if="permissionList.update" size="small" type="warning">{{ "配置" }}</el-button>
             </router-link>
           </el-button-group>
         </template>
@@ -204,8 +200,7 @@ export default {
         ticket_sn_prefix: [
           { required: true, message: "请输入工单流水号前缀", trigger: "blur" }
         ]
-      },
-      multipleSelection: []
+      }
     };
   },
   computed: {},
@@ -345,9 +340,6 @@ export default {
             message: "已取消删除"
           });
         });
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
     }
   }
 };

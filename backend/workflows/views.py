@@ -16,7 +16,7 @@ class StateViewSet(BulkModelMixin):
     queryset = State.objects.all()
     serializer_class = StateSerializer
     search_fields = ['name']
-    filter_fields = ['name']
+    filter_fields = ['workflow']
     ordering_fields = ['state_type', 'order_id']
 
 
@@ -24,8 +24,7 @@ class TransitionViewSet(BulkModelMixin):
     queryset = Transition.objects.all()
     serializer_class = TransitionSerializer
     search_fields = ['name']
-    filter_fields = ['name', 'transition_type']
-    ordering_fields = ['name']
+    filter_fields = ['workflow', 'transition_type']
 
 
 class CustomFieldViewSet(BulkModelMixin):

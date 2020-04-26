@@ -13,16 +13,19 @@
     </div>
 
     <el-table :data="list" border style="width: 100%" highlight-current-row>
-      <el-table-column label="名称" prop="field_name"></el-table-column>
-      <el-table-column label="标识" prop="field_key"></el-table-column>
-      <el-table-column label="类型" prop="field_type">
+      <el-table-column label="名称" prop="name"></el-table-column>
+      <el-table-column label="类型" prop="state_type">
         <template slot-scope="{ row }">
-          <span>{{row.field_type|FieldTypeFilter}}</span>
+          <span>{{row.state_type|StateTypeFilter}}</span>
         </template>
       </el-table-column>
       <el-table-column label="排序" prop="order_id"></el-table-column>
-      <el-table-column label="默认值" prop="default_value"></el-table-column>
-      <el-table-column label="标签" prop="label"></el-table-column>
+      <el-table-column label="是否隐藏" prop="is_hidden">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.is_hidden" type="success">是</el-tag>
+          <el-tag v-else type="danger">否</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button-group>
@@ -55,17 +58,16 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="字段名称" prop="field_name">
-          <el-input v-model="temp.field_name" />
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="字段标识" prop="field_key">
-          <el-input v-model="temp.field_key" />
-          <a class="tips">字段类型请尽量特殊，避免与系统中关键字冲突</a>
+        <el-form-item label="隐藏" prop="is_hidden">
+          <el-switch v-model="temp.is_hidden" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
-        <el-form-item label="字段类型" prop="field_type">
-          <el-select v-model="temp.field_type" clearable placeholder="请选择">
+        <el-form-item label="类型" prop="state_type">
+          <el-select v-model="temp.state_type" clearable placeholder="请选择">
             <el-option
-              v-for="(label, value) in field_types"
+              v-for="(label, value) in state_types"
               :key="value"
               :label="label"
               :value="parseInt(value)"
@@ -75,26 +77,31 @@
         <el-form-item label="排序" prop="order_id">
           <el-input v-model="temp.order_id" />
         </el-form-item>
-        <el-form-item label="默认值" prop="default_value">
-          <el-input v-model="temp.default_value" />
-          <a class="tips">前端展示时，可以将此内容作为表单中的该字段的默认值</a>
+        <el-form-item label="允许撤回" prop="enable_retreat">
+          <el-switch v-model="temp.enable_retreat" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <a class="tips">开启后允许工单创建人在此状态直接撤回工单到初始状态</a>
         </el-form-item>
-        <el-form-item label="文本域模板" prop="field_template">
-          <el-input v-model="temp.field_template" />
-          <a class="tips">文本域类型字段前端显示时可以将此内容作为字段的placeholder</a>
+        <el-form-item label="参与者类型" prop="participant_type">
+          <el-select v-model="temp.participant_type" clearable placeholder="请选择">
+            <el-option
+              v-for="(label, value) in participant_types"
+              :key="value"
+              :label="label"
+              :value="parseInt(value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="布尔类型显示名" prop="boolean_field_display">
-          <el-input v-model="temp.boolean_field_display" />
-          <a class="tips">当为布尔类型时候，可以支持自定义显示形式。{"1":"是","0":"否"}或{"1":"需要","0":"不需要"}，注意数字也需要引号</a>
-        </el-form-item>
-        <el-form-item label="多选值" prop="field_choice">
-          <el-input v-model="temp.field_choice" />
+        <el-form-item label="参与者" prop="participant">
+          <el-input v-model="temp.participant" />
           <a
             class="tips"
-          >radio,checkbox,select,multiselect类型可供选择的选项，格式为json如:{"1":"中国", "2":"美国"},注意数字也需要引号</a>
+          >可以为空(无处理人的情况，如结束状态)、username\多个username(以,隔开)\部门id\角色id\变量(creator,creator_tl)\脚本记录的id等，包含子工作流的需要设置处理人为loonrobot</a>
         </el-form-item>
-        <el-form-item label="标签" prop="label">
-          <el-input v-model="temp.label" />
+        <el-form-item label="表单字段" prop="state_field_str">
+          <el-input v-model="temp.state_field_str" />
+          <a
+            class="tips"
+          >json格式字典存储,包括读写属性1：只读，2：必填，3：可选. 示例：{"created_at":1,"title":2, "sn":1}, 内置特殊字段participant_info.participant_name:当前处理人信息(部门名称、角色名称)，state.state_name:当前状态的状态名,workflow.workflow_name:工作流名称') # json格式存储,包括读写属性1：只读，2：必填，3：可选，4：不显示, 字典的字典</a>
         </el-form-item>
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
@@ -112,7 +119,7 @@
 </template>
 
 <script>
-import { customfield, auth } from "@/api/all";
+import { state, auth } from "@/api/all";
 import {
   checkAuthAdd,
   checkAuthDel,
@@ -121,7 +128,7 @@ import {
 } from "@/utils/permission";
 
 export default {
-  name: "customfield",
+  name: "state",
   props: {
     wfdata: {
       type: Object,
@@ -153,21 +160,17 @@ export default {
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }]
       },
-      field_types: {
-        10: "字符串",
-        15: "整形",
-        20: "浮点型",
-        25: "布尔",
-        30: "日期",
-        35: "时间",
-        40: "日期时间",
-        45: "单选框",
-        50: "多选框",
-        55: "下拉列表",
-        60: "多选下拉列表",
-        65: "文本域",
-        70: "用户名",
-        75: "多选的用户名"
+      state_types: {
+        0: "普通状态",
+        1: "初始状态",
+        2: "结束状态"
+      },
+      participant_types: {
+        0: "无处理人",
+        1: "个人",
+        2: "多人",
+        3: "部门",
+        4: "角色"
       }
     };
   },
@@ -184,7 +187,7 @@ export default {
     },
     getMenuButton() {
       auth
-        .requestMenuButton("customfield")
+        .requestMenuButton("state")
         .then(response => {
           this.operationList = response.results;
         })
@@ -196,15 +199,14 @@ export default {
     resetTemp() {
       this.temp = {
         memo: "",
-        field_type: "10",
-        field_key: "",
-        field_name: "",
-        order_id: 10,
-        default_value: "",
-        field_template: "",
-        boolean_field_display: "",
-        field_choice: "",
-        label: "",
+        name: "",
+        is_hidden: false,
+        order_id: 1,
+        state_type: 1,
+        enable_retreat: false,
+        participant_type: 1,
+        participant: "",
+        state_field_str: '{"name":2,"start_time":2,"end_time":2}',
         workflow: this.wfdata.id
       };
     },
@@ -219,7 +221,7 @@ export default {
     createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          customfield
+          state
             .requestPost(this.temp)
             .then(response => {
               this.dialogFormVisible = false;
@@ -245,7 +247,7 @@ export default {
     updateData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          customfield
+          state
             .requestPut(this.temp.id, this.temp)
             .then(() => {
               this.dialogFormVisible = false;
@@ -256,9 +258,7 @@ export default {
                 duration: 2000
               });
             })
-            .catch(() => {
-              this.loading = false;
-            });
+            .catch(() => {});
         }
       });
     },
@@ -269,7 +269,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          customfield.requestDelete(row.id).then(() => {
+          state.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
               type: "success"

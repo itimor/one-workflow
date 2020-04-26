@@ -1,12 +1,27 @@
 <template>
-  <div class="filter-container">
-    <a>{{wfdata.name}}</a>
+  <div class="tab-container">
+    <el-tag>{{wfdata.name}} - 配置</el-tag>
+    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+      <el-tab-pane label="工作流字段" name="customfield">
+        <keep-alive>
+          <tab-customfield :wfdata="wfdata" :list="customfield_list"></tab-customfield>
+        </keep-alive>
+      </el-tab-pane>
+
+      <el-tab-pane label="工作流节点" name="state">
+        <keep-alive>
+          <tab-state :wfdata="wfdata" :list="state_list"></tab-state>
+        </keep-alive>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
 import { workflow, customfield, state, transition, auth } from "@/api/all";
-import Pagination from "@/components/Pagination";
+import tabCustomfield from "./pages/customfield";
+import tabState from "./pages/state";
+
 import {
   checkAuthAdd,
   checkAuthDel,
@@ -17,9 +32,10 @@ import {
 export default {
   name: "wfconf",
 
-  components: { Pagination },
+  components: { tabCustomfield, tabState },
   data() {
     return {
+      activeName: "customfield",
       operationList: [],
       permissionList: {
         add: false,
@@ -28,17 +44,12 @@ export default {
         update: false
       },
       tempRoute: {},
-      listQuery: {
-        page: 1,
-        limit: 20,
-        search: undefined,
-        ordering: undefined,
-        workflow: undefined
-      },
       wfdata: {},
       customfield_list: [],
-      customfield_total: 0,
-      customfield_listLoading: false
+      state_list: [],
+      temp: {
+        workflow: undefined
+      }
     };
   },
 
@@ -49,31 +60,30 @@ export default {
   },
   methods: {
     fetchData(id) {
-      this.listQuery.workflow = id;
+      this.temp.workflow = id;
       const params = {
         id: id
       };
       workflow.requestGet(params).then(response => {
         this.wfdata = response.results[0];
-
         this.setTagsViewTitle();
         this.setPageTitle();
+        this.getCustomfieldList();
+        this.getStateList();
       });
     },
     getCustomfieldList() {
-      this.customfield_listLoading = true;
-      this.listQuery.workflow = id;
-      customfield.requestGet(this.listQuery).then(response => {
+      customfield.requestGet(this.temp).then(response => {
         this.customfield_list = response.results;
-        this.customfield_total = response.count;
-        this.customfield_listLoading = false;
-
-        this.setTagsViewTitle();
-        this.setPageTitle();
+      });
+    },
+    getStateList() {
+      state.requestGet(this.temp).then(response => {
+        this.state_list = response.results;
       });
     },
     handleFilter() {
-      this.getCustomfieldList();
+      this.fetchData();
     },
     setTagsViewTitle() {
       const title = this.wfdata.name;
@@ -89,3 +99,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.tab-container {
+  margin: 30px;
+}
+</style>

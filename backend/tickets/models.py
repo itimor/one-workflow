@@ -5,22 +5,22 @@ from django.db import models
 from common.models import BaseModel
 from workflows.models import *
 
-participant_type = (
-    (0, '无处理人'),
-    (1, '个人'),
-    (2, '多人'),
-    (3, '部门'),
-    (4, '角色'),
-)
+participant_type = {
+    0: '无处理人',
+    1: '个人',
+    2: '多人',
+    3: '部门',
+    4: '角色',
+}
 
-act_state = (
-    (0, '草稿中'),
-    (1, '进行中'),
-    (2, '被退回'),
-    (3, '被撤回'),
-    (4, '已完成'),
-    (5, '已关闭'),
-)
+act_state = {
+    0: '草稿中',
+    1: '进行中',
+    2: '被退回',
+    3: '被撤回',
+    4: '已完成',
+    5: '已关闭',
+}
 
 
 class Ticket(BaseModel):
@@ -31,12 +31,13 @@ class Ticket(BaseModel):
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
     sn = models.CharField(u'流水号', max_length=25, help_text="工单的流水号")
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
-    participant_type = models.CharField(max_length=1, choices=participant_type, default=0, verbose_name='当前处理人类型')
+    participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0,
+                                        verbose_name='当前处理人类型')
     participant = models.CharField('当前处理人', max_length=100, default='', blank=True,
                                    help_text='可以为空(无处理人的情况，如结束状态)、username\多个username(以,隔开)\部门id\角色id\脚本文件名等')
     relation = models.CharField('工单关联人', max_length=255, default='', blank=True,
                                 help_text='工单流转过程中将保存所有相关的人(包括创建人、曾经的待处理人)，用于查询')
-    act_state = models.CharField(max_length=1, choices=act_state, default=0, verbose_name='进行状态')
+    act_state = models.CharField(max_length=1, choices=tuple(act_state.items()), default=0, verbose_name='进行状态')
     multi_all_person = models.TextField('全部处理的结果', default='{}', help_text='需要当前状态处理人全部处理时实际的处理结果，json格式')
 
     def __str__(self):
@@ -47,15 +48,15 @@ class Ticket(BaseModel):
         verbose_name_plural = verbose_name
 
 
-intervene_type = (
-    (0, '转交操作'),
-    (1, '接单操作'),
-    (2, '评论操作'),
-    (3, '删除操作'),
-    (4, '强制关闭操作'),
-    (5, '强制修改状态操作'),
-    (6, '撤回'),
-)
+intervene_type = {
+    0: '转交操作',
+    1: '接单操作',
+    2: '评论操作',
+    3: '删除操作',
+    4: '强制关闭操作',
+    5: '强制修改状态操作',
+    6: '撤回',
+}
 
 
 class TicketFlowLog(BaseModel):
@@ -65,10 +66,12 @@ class TicketFlowLog(BaseModel):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='工单')
     transition = models.ForeignKey(Transition, on_delete=models.CASCADE, verbose_name='流转')
     suggestion = models.TextField('处理意见', default='', blank=True)
-    participant_type = models.CharField(max_length=1, choices=participant_type, default=0, verbose_name='处理人类型')
+    participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0,
+                                        verbose_name='处理人类型')
     participant = models.CharField('处理人', max_length=50, default='', blank=True)
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
-    intervene_type = models.CharField(max_length=1, choices=intervene_type, default=0, verbose_name='干预类型')
+    intervene_type = models.CharField(max_length=1, choices=tuple(intervene_type.items()), default=0,
+                                      verbose_name='干预类型')
     ticket_data = models.TextField('工单数据', default='', blank=True, help_text='可以用于记录当前表单数据，json格式')
 
     class Meta:
@@ -76,22 +79,22 @@ class TicketFlowLog(BaseModel):
         verbose_name_plural = verbose_name
 
 
-field_type = (
-    (5, '字符串'),
-    (10, '整形'),
-    (15, '浮点型'),
-    (20, '布尔'),
-    (25, '日期'),
-    (30, '时间'),
-    (35, '日期时间'),
-    (40, '单选框'),
-    (45, '多选框'),
-    (50, '下拉列表'),
-    (55, '多选下拉列表'),
-    (60, '文本域'),
-    (65, '用户名'),
-    (70, '多选的用户名'),
-)
+field_type = {
+    10: '字符串',
+    15: '整形',
+    20: '浮点型',
+    25: '布尔',
+    30: '日期',
+    35: '时间',
+    40: '日期时间',
+    45: '单选框',
+    50: '多选框',
+    55: '下拉列表',
+    60: '多选下拉列表',
+    65: '文本域',
+    70: '用户名',
+    75: '多选的用户名',
+}
 
 
 class TicketCustomField(BaseModel):
@@ -101,7 +104,7 @@ class TicketCustomField(BaseModel):
     name = models.CharField(u'字段名', max_length=50)
     field_key = models.CharField(u'字段标识', max_length=50)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='工单')
-    field_type = models.CharField(max_length=1, choices=field_type, default=0, verbose_name='字段类型')
+    field_type = models.CharField(max_length=1, choices=tuple(field_type.items()), default=0, verbose_name='字段类型')
     char_value = models.CharField('字符串值', max_length=255, default='', blank=True)
     int_value = models.IntegerField('整形值', default=0, blank=True)
     float_value = models.FloatField('浮点值', default=0.0, blank=True)
