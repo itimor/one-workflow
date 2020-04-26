@@ -1,14 +1,14 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
-const i18n = require('./src/lang/index.js')
+// const i18n = require('./src/lang/index.js')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-// const name = defaultSettings.title || 'vue Element Admin' // page title
-const name = i18n.t('systemTitle')
+const name = defaultSettings.title || 'vue Element Admin' // page title
+// const name = i18n.t('systemTitle')
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.

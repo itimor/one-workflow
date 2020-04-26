@@ -1,7 +1,8 @@
-import i18n from '@/lang'
+// import i18n from '@/lang'
 
 module.exports = {
-  title: i18n.t('systemTitle'),
+  // title: i18n.t('systemTitle'),
+  title: '后台管理系统',
 
   /**
    * @type {boolean} true | false
