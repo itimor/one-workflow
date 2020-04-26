@@ -1,22 +1,28 @@
 <template>
   <div class="tab-container">
-    <el-tag>{{wfdata.name}} - 配置</el-tag>
+    <el-card>
+      <!-- <el-steps :active="1" finish-status="success" process-status="finish"> -->
+      <el-steps>
+        <el-step v-for="item in state_list" :ken="item.id" :title="item.name"></el-step>
+      </el-steps>
+    </el-card>
+
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
       <el-tab-pane label="工作流字段" name="customfield">
         <keep-alive>
-          <tab-customfield :wfdata="wfdata" :list="customfield_list"></tab-customfield>
+          <tab-customfield @checkdata="getCustomfieldList" :wfdata="wfdata" :list="customfield_list"></tab-customfield>
         </keep-alive>
       </el-tab-pane>
 
       <el-tab-pane label="工作流节点" name="state">
         <keep-alive>
-          <tab-state :wfdata="wfdata" :list="state_list"></tab-state>
+          <tab-state @checkdata="getStateList" :wfdata="wfdata" :list="state_list"></tab-state>
         </keep-alive>
       </el-tab-pane>
 
       <el-tab-pane label="工作流步骤" name="transition">
         <keep-alive>
-          <tab-transition :wfdata="wfdata" :statedata="state_list" :list="transition_list"></tab-transition>
+          <tab-transition @checkdata="getTransitionList" :wfdata="wfdata" :statedata="state_list" :list="transition_list"></tab-transition>
         </keep-alive>
       </el-tab-pane>
     </el-tabs>

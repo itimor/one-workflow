@@ -17,68 +17,63 @@
           type="primary"
           icon="el-icon-search"
           @click="handleFilter"
-        >
-          {{ "搜索" }}
-        </el-button>
+        >{{ "搜索" }}</el-button>
         <el-button
           v-if="permissionList.add"
           class="filter-item"
           type="success"
           icon="el-icon-edit"
           @click="handleCreate"
-        >
-          {{ "添加" }}
-        </el-button>
-        <el-button
-          v-if="permissionList.del"
-          class="filter-item"
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleBatchDel"
-        >
-          {{ "删除" }}
-        </el-button>
+        >{{ "添加" }}</el-button>
       </el-button-group>
     </div>
 
-    <el-table :data="list" v-loading="listLoading" border style="width: 100%" highlight-current-row @sort-change="handleSortChange">
-      <el-table-column label="菜单名称" prop="name"></el-table-column>
-      <el-table-column label="菜单代码" prop="code"></el-table-column>
-      <el-table-column label="排序值" prop="sequence"></el-table-column>
-      <el-table-column label="菜单类型" prop="type">
+    <el-table
+      :data="list"
+      v-loading="listLoading"
+      border
+      style="width: 100%"
+      highlight-current-row
+      @sort-change="handleSortChange"
+    >
+      <el-table-column label="名称" prop="name"></el-table-column>
+      <el-table-column label="工单流水号前缀" prop="ticket_sn_prefix"></el-table-column>
+      <el-table-column label="状态" prop="status" sortable="custom">
         <template slot-scope="scope">
-          <span>{{ scope.row.type | menuTypeFilter }}</span>
+          <el-tag v-if="scope.row.status" type="success">启用</el-tag>
+          <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作类型" prop="operate">
+      <el-table-column label="查看权限校验" prop="view_permission_check" sortable="custom">
         <template slot-scope="scope">
-          <span>{{ scope.row.operate | operateTypeFilter }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="菜单状态" prop="status">
-        <template slot-scope="scope">
-          <span>{{scope.row.status}}</span>
+          <el-tag v-if="scope.row.view_permission_check" type="success">启用</el-tag>
+          <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button-group v-show="row.id !== 1">
+          <el-button-group>
             <el-button
               v-if="permissionList.update"
               size="small"
               type="primary"
               @click="handleUpdate(row)"
-            >
-              {{ "编辑" }}
-            </el-button>
+            >{{ "编辑" }}</el-button>
             <el-button
               v-if="permissionList.del"
               size="small"
               type="danger"
               @click="handleDelete(row)"
-            >
-              {{ "删除" }}
-            </el-button>
+            >{{ "删除" }}</el-button>
+            <el-button
+              v-if="permissionList.update"
+              size="small"
+              type="success"
+              @click="handleUpdate(row)"
+            >{{ "流程图" }}</el-button>
+            <router-link :to="'/wfconf/'+ row.id">
+              <el-button v-if="permissionList.update" size="small" type="warning">{{ "配置" }}</el-button>
+            </router-link>
           </el-button-group>
         </template>
       </el-table-column>
@@ -92,272 +87,260 @@
         @pagination="getList"
       />
     </div>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         ref="dataForm"
         :rules="rules"
         :model="temp"
         label-position="left"
-        label-width="80px"
+        label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="菜单名称" prop="name">
-          <el-input v-model="temp.name"/>
+        <el-form-item label="工单号前缀" prop="ticket_sn_prefix">
+          <el-input v-model="temp.ticket_sn_prefix" />
         </el-form-item>
-        <el-form-item label="菜单代码" prop="code">
-          <el-input v-model="temp.code"/>
+        <el-form-item label="状态" prop="status">
+          <el-switch v-model="temp.status" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
-        <el-form-item label="菜单URL" prop="curl">
-          <el-input v-model="temp.curl"/>
-        </el-form-item>
-        <el-form-item label="菜单图标" prop="icon">
-          <el-input v-model="temp.icon"/>
-        </el-form-item>
-        <el-form-item label="排序值" prop="sequence">
-          <el-input v-model="temp.sequence"/>
-        </el-form-item>
-        <el-form-item label="菜单类型" prop="type">
-          <el-select v-model.number="temp.type" placeholder="状态" style="width: 90px" @change="handleshowOpera">
-            <el-option
-              v-for="item in menuTypeOptions"
-              :key="item.key"
-              :label="item.display_name"
-              :value="item.key"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="菜单状态" prop="status">
+        <el-form-item label="查看权限校验" prop="view_permission_check">
           <el-switch
-            v-model="temp.status"
+            v-model="temp.view_permission_check"
             active-color="#13ce66"
-            inactive-color="#ff4949">
-          </el-switch>
+            inactive-color="#ff4949"
+          ></el-switch>
         </el-form-item>
-                <el-form-item label="隐藏菜单" prop="hidden">
-          <el-switch
-            v-model="temp.hidden"
-            active-color="#13ce66"
-            inactive-color="#ff4949">
-          </el-switch>
+        <el-form-item label="限制表达式" prop="limit_expression">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="限制周期({'period':24} 24小时)"
+            v-model="temp.limit_expression"
+          />
+        </el-form-item>
+        <el-form-item label="展现表单字段" prop="display_form_str">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="['name','sn']"
+            v-model="temp.display_form_str"
+          />
+        </el-form-item>
+        <el-form-item label="标题模板" prop="title_template">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="你有一个待办工单:{name}"
+            v-model="temp.title_template"
+          />
         </el-form-item>
         <el-form-item label="备注" prop="memo">
-          <el-input v-model="temp.memo"/>
+          <el-input v-model="temp.memo" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          {{ "取消" }}
-        </el-button>
-        <el-button type="primary" @click="dialogStatus === 'create' ? createData() : updateData()">
-          {{ "确定" }}
-        </el-button>
+        <el-button @click="dialogFormVisible = false">{{ "取消" }}</el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+        >{{ "确定" }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import {workflow, auth} from '@/api/all'
-  import Pagination from '@/components/Pagination'
-  import {checkAuthAdd, checkAuthDel, checkAuthView, checkAuthUpdate} from '@/utils/permission'
+import { workflow, auth } from "@/api/all";
+import Pagination from "@/components/Pagination";
+import {
+  checkAuthAdd,
+  checkAuthDel,
+  checkAuthView,
+  checkAuthUpdate
+} from "@/utils/permission";
 
-  export default {
-    name: 'workflow',
+export default {
+  name: "wfset",
 
-    components: {Pagination},
-    data() {
-      return {
-        operationList: [],
-        permissionList: {
-          add: false,
-          del: false,
-          view: false,
-          update: false
-        },
-        list: [],
-        total: 0,
-        listLoading: true,
-        loading: true,
-        listQuery: {
-          page: 1,
-          limit: 20,
-          search: undefined,
-          ordering: undefined
-        },
-        temp: {},
-        dialogFormVisible: false,
-        dialogStatus: '',
-        textMap: {
-          update: '编辑',
-          create: '添加',
-        },
-        rules: {
-          name: [{required: true, message: '请输入名称', trigger: 'blur'}],
-          sequence: [{ required: true, message: "请输入排序", trigger: "blur" }],
-        },
-        multipleSelection: [],
+  components: { Pagination },
+  data() {
+    return {
+      operationList: [],
+      permissionList: {
+        add: false,
+        del: false,
+        view: false,
+        update: false
+      },
+      list: [],
+      total: 0,
+      listLoading: true,
+      loading: true,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        search: undefined,
+        ordering: undefined
+      },
+      temp: {},
+      dialogFormVisible: false,
+      dialogStatus: "",
+      textMap: {
+        update: "编辑",
+        create: "添加"
+      },
+      rules: {
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        ticket_sn_prefix: [
+          { required: true, message: "请输入工单流水号前缀", trigger: "blur" }
+        ]
       }
+    };
+  },
+  computed: {},
+  created() {
+    this.getMenuButton();
+    this.getList();
+  },
+  methods: {
+    checkPermission() {
+      this.permissionList.add = checkAuthAdd(this.operationList);
+      this.permissionList.del = checkAuthDel(this.operationList);
+      this.permissionList.view = checkAuthView(this.operationList);
+      this.permissionList.update = checkAuthUpdate(this.operationList);
     },
-    computed: {
+    getMenuButton() {
+      auth
+        .requestMenuButton("wfset")
+        .then(response => {
+          this.operationList = response.results;
+        })
+        .then(() => {
+          this.checkPermission();
+        });
     },
-    created() {
-      this.getMenuButton()
-      this.getList()
+    getList() {
+      this.listLoading = true;
+      workflow.requestGet(this.listQuery).then(response => {
+        this.list = response.results;
+        this.total = response.count;
+        this.listLoading = false;
+      });
     },
-    methods: {
-      checkPermission() {
-        this.permissionList.add = checkAuthAdd(this.operationList)
-        this.permissionList.del = checkAuthDel(this.operationList)
-        this.permissionList.view = checkAuthView(this.operationList)
-        this.permissionList.update = checkAuthUpdate(this.operationList)
-      },
-      getMenuButton() {
-        auth.requestMenuButton('workflow').then(response => {
-          this.operationList = response.results
-        }).then(() => {
-          this.checkPermission()
-        })
-      },
-      getList() {
-        this.listLoading = true
-        workflow.requestGet(this.listQuery).then(response => {
-          this.list = response.results
-          this.total = response.count
-          this.listLoading = false
-        })
-      },
-      handleFilter() {
-        this.getList()
-      },
-      handleSortChange(val) {
-        if (val.order === 'ascending') {
-          this.listQuery.ordering = val.prop
-        } else if (val.order === 'descending') {
-          this.listQuery.ordering = '-' + val.prop
-        } else {
-          this.listQuery.ordering = ''
-        }
-        this.getList()
-      },
-      resetTemp() {
-        this.temp = {
-          name: '',
-          code: '',
-          curl: '',
-          icon: 'list',
-          sequence: '',
-          type: 2,
-          operate: 'none',
-          status: true,
-          hidden: false,
-          memo: '',
-          parent: 0
-        }
-      },
-      handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-        this.loading = false
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      },
-      createData() {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            this.loading = true
-            workflow.requestPost(this.temp).then(response => {
-              this.dialogFormVisible = false
+    handleFilter() {
+      this.getList();
+    },
+    handleSortChange(val) {
+      if (val.order === "ascending") {
+        this.listQuery.ordering = val.prop;
+      } else if (val.order === "descending") {
+        this.listQuery.ordering = "-" + val.prop;
+      } else {
+        this.listQuery.ordering = "";
+      }
+      this.getList();
+    },
+    resetTemp() {
+      this.temp = {
+        name: "",
+        ticket_sn_prefix: "xxoo",
+        status: true,
+        view_permission_check: true,
+        limit_expression: "",
+        display_form_str: "",
+        title_template: "",
+        content_template: "",
+        memo: ""
+      };
+    },
+    handleCreate() {
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
+      this.loading = false;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+    },
+    createData() {
+      this.$refs["dataForm"].validate(valid => {
+        if (valid) {
+          this.loading = true;
+          workflow
+            .requestPost(this.temp)
+            .then(response => {
+              this.dialogFormVisible = false;
               this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
+                title: "成功",
+                message: "创建成功",
+                type: "success",
                 duration: 2000
-              })
-              this.getList()
-            }).catch(() => {
-              this.loading = false
+              });
+              this.getList();
             })
-          }
-        })
-      },
-      handleUpdate(row) {
-        this.temp = row
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      },
-      updateData() {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            this.loading = true
-            workflow.requestPut(this.temp.id, this.temp).then(() => {
-              this.dialogFormVisible = false
+            .catch(() => {
+              this.loading = false;
+            });
+        }
+      });
+    },
+    handleUpdate(row) {
+      this.temp = row;
+      this.dialogStatus = "update";
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+    },
+    updateData() {
+      this.$refs["dataForm"].validate(valid => {
+        if (valid) {
+          this.loading = true;
+          workflow
+            .requestPut(this.temp.id, this.temp)
+            .then(() => {
+              this.dialogFormVisible = false;
               this.$notify({
-                title: '成功',
-                message: '更新成功',
-                type: 'success',
+                title: "成功",
+                message: "更新成功",
+                type: "success",
                 duration: 2000
-              })
-            }).catch(() => {
-              this.loading = false
+              });
             })
-          }
-        })
-      },
-      handleDelete(row) {
-        this.$confirm('是否确定删除?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+            .catch(() => {
+              this.loading = false;
+            });
+        }
+      });
+    },
+    handleDelete(row) {
+      this.$confirm("是否确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
           workflow.requestDelete(row.id).then(() => {
             this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-            this.getList()
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+              message: "删除成功",
+              type: "success"
+            });
+            this.getList();
+          });
         })
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val
-      },
-      handleBatchDel() {
-        if (this.multipleSelection.length === 0) {
+        .catch(() => {
           this.$message({
-            message: '未选中任何行',
-            type: 'warning',
-            duration: 2000
-          })
-          return
-        }
-        this.$confirm('是否确定删除?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          const ids = this.multipleSelection.map(x => x.id)
-          workflow.requestBulkDelete(ids).then(response => {
-            console.log(response.results)
-            this.getList()
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-      }
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   }
+};
 </script>
