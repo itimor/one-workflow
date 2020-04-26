@@ -183,6 +183,7 @@ export const componentsMap = {
   myticket: () => import('@/views/workflow/myticket'), // 我的工单
 
   // tickets
-  c_ticket: () => import('@/views/ticket/c_ticket'), // 我的工单
+  c_ticket: () => import('@/views/ticket/c_ticket'), // 新建工单
+  u_ticket: () => import('@/views/ticket/u_ticket'), // 编辑工单
 
 }

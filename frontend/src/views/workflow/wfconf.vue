@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-container">
+  <div class="app-container">
     <el-card>
       <!-- <el-steps :active="1" finish-status="success" process-status="finish"> -->
       <el-steps>
@@ -119,8 +119,3 @@ export default {
   }
 };
 </script>
-<style scoped>
-.tab-container {
-  margin: 30px;
-}
-</style>

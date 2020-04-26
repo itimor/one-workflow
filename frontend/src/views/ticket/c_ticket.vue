@@ -1,5 +1,5 @@
 <template>
-  <div class="ticket-container">
+  <div class="app-container">
     <el-row :gutter="20" style="margin-top:50px;">
       <el-col :span="6" v-for="item in list" :key="item.id">
         <el-card class="box-card">
@@ -69,11 +69,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.ticket-container {
-  background-color: #f0f2f5;
-  padding: 30px;
-  min-height: calc(100vh - 84px);
-}
-</style>
