@@ -51,7 +51,7 @@ class State(BaseModel):
     name = models.CharField('名称', max_length=50)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
     is_hidden = models.BooleanField('是否隐藏', default=False, help_text='设置为True时,获取工单步骤api中不显示此状态(当前处于此状态时除外)')
-    order_id = models.IntegerField('状态顺序', default=0)
+    order_id = models.IntegerField('状态顺序', default=1)
     state_type = models.CharField(max_length=1, choices=tuple(state_type.items()), default=0, verbose_name='状态类型')
     enable_retreat = models.BooleanField('允许撤回', default=False, help_text='开启后允许工单创建人在此状态直接撤回工单到初始状态')
     participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0,
