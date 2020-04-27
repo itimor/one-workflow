@@ -26,6 +26,7 @@ class Ticket(BaseModel):
     relation = models.CharField('工单关联人', max_length=255, default='', blank=True,
                                 help_text='工单流转过程中将保存所有相关的人(包括创建人、曾经的待处理人)，用于查询')
     transition = models.ForeignKey(Transition, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='进行状态')
+    customfield = models.TextField('所有表单数据', default=[])
     multi_all_person = models.TextField('全部处理的结果', default='{}', help_text='需要当前状态处理人全部处理时实际的处理结果，json格式')
 
     def __str__(self):
@@ -89,33 +90,12 @@ class TicketCustomField(BaseModel):
     """
     工单自定义字段， 工单自定义字段实际的值。
     """
-    name = models.CharField(u'字段名', max_length=50)
-    field_key = models.CharField(u'字段标识', max_length=50)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='工单')
-    field_type = models.CharField(max_length=1, choices=tuple(field_type.items()), default=0, verbose_name='字段类型')
-    char_value = models.CharField('字符串值', max_length=255, default='', blank=True)
-    int_value = models.IntegerField('整形值', default=0, blank=True)
-    float_value = models.FloatField('浮点值', default=0.0, blank=True)
-    bool_value = models.BooleanField('布尔值', default=False, blank=True)
-    # date_value = models.DateField('日期值', default='0001-01-01', blank=True)
-    date_value = models.DateField('日期值', auto_now_add=True, blank=True)
-    # datetime_value = models.DateTimeField('日期时间值', default='0001-01-01 00:00:00', blank=True)
-    datetime_value = models.DateTimeField('日期时间值', auto_now_add=True, blank=True)
-    # time_value = models.TimeField('时间值', default='00:00:01', blank=True)
-    time_value = models.TimeField('时间值', auto_now_add=True, blank=True)
-    radio_value = models.CharField('radio值', default='', max_length=50, blank=True)
-    checkbox_value = models.CharField('checkbox值', default='', max_length=50, blank=True, help_text='逗号隔开多个选项')
-    select_value = models.CharField('下拉列表值', default='', max_length=50, blank=True)
-    multi_select_value = models.CharField('多选下拉列表值', default='', max_length=50, blank=True, help_text='逗号隔开多个选项')
-    text_value = models.TextField('文本值', default='', blank=True)
-    username_value = models.CharField('用户名', max_length=50, default='', blank=True)
-    multi_username_value = models.CharField('多选用户名', max_length=255, default='', blank=True)
-
-    def __str__(self):
-        return self.name
+    customfield = models.ForeignKey(CustomField, on_delete=models.CASCADE, verbose_name='字段')
+    field_value = models.TextField('字段值', default='', blank=True)
 
     class Meta:
-        verbose_name = '工单自定义字段'
+        verbose_name = '工单自定义字段值'
         verbose_name_plural = verbose_name
 
 

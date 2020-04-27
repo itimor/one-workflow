@@ -5,6 +5,8 @@ from tickets.models import *
 from workflows.models import *
 from rest_framework import serializers
 from utils.index import gen_time_pid
+import json
+
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,6 +17,7 @@ class TicketSerializer(serializers.ModelSerializer):
         workflow = validated_data["workflow"]
         transition = validated_data["transition"]
         state = validated_data["state"]
+        customfield_list = validated_data["customfield"]
 
         # save ticket
         validated_data["sn"] = gen_time_pid(workflow.ticket_sn_prefix)
@@ -30,10 +33,17 @@ class TicketSerializer(serializers.ModelSerializer):
         ticketlog["participant_type"] = state.participant_type
         TicketFlowLog.objects.create(**ticketlog)
 
+        # save customfield
+        field_models = []
+        for customfield in json.loads(customfield_list):
+            field_models.append(
+                TicketCustomField(ticket=ticket, customfield_id=int(customfield['id']), field_value=customfield['field_value']))
+        TicketCustomField.objects.bulk_create(field_models)
+
         # save ticketuser
         TicketUser.objects.create(ticket=ticket, username=validated_data["create_user"], worked=True)
         TicketUser.objects.create(ticket=ticket, username=state.participant, in_process=True)
-        print(ticket)
+
         return ticket
 
 

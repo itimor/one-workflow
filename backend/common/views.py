@@ -50,6 +50,7 @@ class ModelViewSet(viewsets.ModelViewSet):
                 ('results', serializer.data)
             ], code=status.HTTP_200_OK), headers=headers)
         except Exception as e:
+            print(e)
             return JsonResponse(OrderedDict([
                 ('results', {"msg": ExceptionX.PasreRaise(e)})
             ], code=status.HTTP_500_INTERNAL_SERVER_ERROR))

@@ -15,42 +15,42 @@
               <el-form-item :label="item.field_name" :prop="item.field_key">
                 <el-input
                   v-if="item.field_type === 10"
-                  v-model="temp[item.field_key]"
+                  v-model="item.field_value"
                   :placeholder="item.field_name"
                 />
                 <el-input-number
                   v-if="item.field_type === 15"
-                  v-model="temp[item.field_key]"
+                  v-model="temp.fields[item.field_key]"
                   :placeholder="item.field_name"
                 ></el-input-number>
                 <el-switch
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   v-if="item.field_type === 25"
-                  v-model="temp[item.field_key]"
+                  v-model="temp.fields[item.field_key]"
                 ></el-switch>
                 <el-time-picker
                   v-if="item.field_type === 35"
-                  v-model="temp[item.field_key]"
+                  v-model="temp.fields[item.field_key]"
                   :placeholder="item.field_name"
                 ></el-time-picker>
                 <el-date-picker
                   type="date"
                   v-if="item.field_type === 30"
-                  v-model="temp[item.field_key]"
+                  v-model="temp.fields[item.field_key]"
                   :placeholder="item.field_name"
                 ></el-date-picker>
                 <el-date-picker
                   type="datetime"
                   v-if="item.field_type === 40"
-                  v-model="temp[item.field_key]"
+                  v-model="item.field_value"
                   :placeholder="item.field_name"
                 ></el-date-picker>
                 <el-input
                   type="textarea"
                   :autosize="{ minRows: 5, maxRows: 8}"
                   v-if="item.field_type === 65"
-                  v-model="temp[item.field_key]"
+                  v-model="item.field_value"
                   :placeholder="item.field_name"
                 ></el-input>
               </el-form-item>
@@ -109,7 +109,7 @@ export default {
       state_list: [],
       transition_list: [],
       temp: {
-        workflow: undefined
+        fields: []
       },
       rules: {},
       btn_types: {
@@ -173,13 +173,18 @@ export default {
       document.title = `${title} - 创建`;
     },
     handleButton(transition) {
+      for(var i of this.customfield_list) {
+        this.temp.fields.push({id: i.id, field_value:i.field_value})
+      }
       this.temp = Object.assign(this.temp, {
         transition: transition.id,
         state: transition.dest_state.id,
         workflow: this.wfdata.id,
         name: this.wfdata.name,
         create_user: this.username,
+        customfield: JSON.stringify(this.temp.fields)
       });
+      console.log(this.temp)
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           ticket
