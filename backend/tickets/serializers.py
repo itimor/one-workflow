@@ -67,11 +67,10 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.save()
 
         # save ticketuser
-        print(instance.state)
-        # user1 = User.objects.get(username=validated_data["create_user"])
-        # user2 = User.objects.get(username=state.participant)
-        # TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
-        # TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
+        user1 = User.objects.get(username=validated_data["create_user"])
+        user2 = User.objects.get(username=state.participant)
+        TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
+        TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
         return instance
 
 
@@ -99,6 +98,13 @@ class TicketCustomFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketCustomField
         fields = '__all__'
+
+
+class TicketUserReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketUser
+        fields = '__all__'
+        depth = 2
 
 
 class TicketUserSerializer(serializers.ModelSerializer):

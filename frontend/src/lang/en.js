@@ -21,6 +21,7 @@ export default {
     u_ticket: 'u_ticket',
     s_ticket: 's_ticket',
     my_ticket: 'my_ticket',
+    todo_ticket: 'todo_ticket',
     all_ticket: 'all_ticket',
     notice: 'notice',
     mailbot: 'mail bot',

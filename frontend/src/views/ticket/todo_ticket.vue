@@ -1,30 +1,8 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input
-        v-model="listQuery.search"
-        placeholder="请输入内容"
-        clearable
-        prefix-icon="el-icon-search"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-button-group>
-        <el-button
-          class="filter-item"
-          type="primary"
-          icon="el-icon-search"
-          @click="handleFilter"
-        >{{ "搜索" }}</el-button>
-      </el-button-group>
-    </div>
-
     <el-table
       :data="list"
       v-loading="listLoading"
-      border
       style="width: 100%"
       highlight-current-row
       @sort-change="handleSortChange"
@@ -49,36 +27,12 @@
       </el-table-column>
       <el-table-column label="创建者" prop="create_user"></el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }">
-          <el-button-group>
-            <el-button v-if="permissionList.update && row.state.order_id < 3" size="small" type="success">{{ "编辑" }}</el-button>
-          </el-button-group>
-          <el-button-group>
-            <el-button
-              v-if="permissionList.del && row.state.order_id < 3"
-              size="small"
-              type="danger"
-              @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
-          </el-button-group>
-        </template>
-      </el-table-column>
     </el-table>
-    <div class="table-pagination">
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.limit"
-        @pagination="getList"
-      />
-    </div>
   </div>
 </template>
 
 <script>
-import { ticket, auth } from "@/api/all";
+import { ticket, ticketuser, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import {
   checkAuthAdd,
@@ -103,14 +57,7 @@ export default {
       },
       list: [],
       total: 0,
-      listLoading: true,
-      loading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        search: undefined,
-        ordering: undefined
-      }
+      listLoading: true
     };
   },
   computed: {
@@ -139,10 +86,15 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      this.listQuery.create_user = this.username;
-      ticket.requestGet(this.listQuery).then(response => {
-        this.list = response.results;
-        this.total = response.count;
+
+      const params = {
+        username__username: this.username,
+        in_process: true
+      };
+      ticketuser.requestGet().then(response => {
+        for (var i of response.results) {
+          this.list.push(i.ticket);
+        }
         this.listLoading = false;
       });
     },
