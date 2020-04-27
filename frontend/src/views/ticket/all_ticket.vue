@@ -32,7 +32,7 @@
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="工单流水号" prop="sn" width="260" ></el-table-column>
       <el-table-column label="当前状态" prop="state"></el-table-column>
-      <el-table-column label="进行状态" prop="act_state"></el-table-column>
+      <el-table-column label="进行状态" prop="transition"></el-table-column>
       <el-table-column label="创建者" prop="create_user"></el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">

@@ -61,6 +61,7 @@
               v-for="item in transition_list"
               :key="item.id"
               :type="btn_types[item.attribute_type]"
+              @click="handleButton(item)"
             >{{item.name}}</el-button>
             <el-button>取消</el-button>
           </el-form-item>
@@ -71,7 +72,14 @@
 </template>
 
 <script>
-import { workflow, customfield, state, transition, ticket, auth } from "@/api/all";
+import {
+  workflow,
+  customfield,
+  state,
+  transition,
+  ticket,
+  auth
+} from "@/api/all";
 
 import {
   checkAuthAdd,
@@ -79,6 +87,7 @@ import {
   checkAuthView,
   checkAuthUpdate
 } from "@/utils/permission";
+import { mapGetters } from "vuex";
 
 export default {
   name: "u_ticket",
@@ -110,7 +119,9 @@ export default {
       }
     };
   },
-
+  computed: {
+    ...mapGetters(["username"])
+  },
   created() {
     const id = this.$route.params && this.$route.params.id;
     this.fetchData(id);
@@ -161,10 +172,16 @@ export default {
       const title = this.wfdata.name;
       document.title = `${title} - 创建`;
     },
-    handleButton() {
+    handleButton(transition) {
+      this.temp = Object.assign(this.temp, {
+        transition: transition.id,
+        state: transition.dest_state.id,
+        workflow: this.wfdata.id,
+        name: this.wfdata.name,
+        create_user: this.username,
+      });
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          this.temp.workflow = this.wfdata.id
           ticket
             .requestPost(this.temp)
             .then(response => {
@@ -175,12 +192,12 @@ export default {
                 type: "success",
                 duration: 2000
               });
-            this.$emit('checkdata')
+              this.$emit("checkdata");
             })
             .catch(() => {});
         }
       });
-    },
+    }
   }
 };
 </script>

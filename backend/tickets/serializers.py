@@ -13,9 +13,27 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         workflow = validated_data["workflow"]
+        transition = validated_data["transition"]
+        state = validated_data["state"]
+
+        # save ticket
         validated_data["sn"] = gen_time_pid(workflow.ticket_sn_prefix)
+        validated_data["relation"] = [state.participant]
         ticket = Ticket.objects.create(**validated_data)
-        ticket.save()
+
+        # save ticketlog
+        ticketlog = dict()
+        ticketlog["ticket"] = ticket
+        ticketlog["state"] = state
+        ticketlog["transition"] = transition
+        ticketlog["participant"] = state.participant
+        ticketlog["participant_type"] = state.participant_type
+        TicketFlowLog.objects.create(**ticketlog)
+
+        # save ticketuser
+        TicketUser.objects.create(ticket=ticket, username=validated_data["create_user"], worked=True)
+        TicketUser.objects.create(ticket=ticket, username=state.participant, in_process=True)
+        print(ticket)
         return ticket
 
 

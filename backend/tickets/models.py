@@ -13,15 +13,6 @@ participant_type = {
     4: '角色',
 }
 
-act_state = {
-    0: '草稿中',
-    1: '进行中',
-    2: '被退回',
-    3: '被撤销',
-    4: '已完成',
-    5: '已关闭',
-}
-
 
 class Ticket(BaseModel):
     """
@@ -32,13 +23,9 @@ class Ticket(BaseModel):
     sn = models.CharField(u'流水号', max_length=25, blank=True, help_text="工单的流水号")
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
     create_user = models.CharField('创建者', blank=True, max_length=50)
-    participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0,
-                                        verbose_name='当前处理人类型')
-    participant = models.CharField('当前处理人', max_length=100, default='', blank=True,
-                                   help_text='可以为空(无处理人的情况，如结束状态)、username\多个username(以,隔开)\部门id\角色id\脚本文件名等')
     relation = models.CharField('工单关联人', max_length=255, default='', blank=True,
                                 help_text='工单流转过程中将保存所有相关的人(包括创建人、曾经的待处理人)，用于查询')
-    act_state = models.CharField(max_length=1, choices=tuple(act_state.items()), default=0, verbose_name='进行状态')
+    transition = models.ForeignKey(Transition, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='进行状态')
     multi_all_person = models.TextField('全部处理的结果', default='{}', help_text='需要当前状态处理人全部处理时实际的处理结果，json格式')
 
     def __str__(self):
