@@ -42,7 +42,6 @@
                 :type="btn_types[item.attribute_type]"
                 @click="handleButton(item)"
               >{{item.name}}</el-button>
-              <el-button>取消</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -104,9 +103,7 @@ export default {
       state_list: [],
       transition_list: [],
       ticketlog_list: [],
-      temp: {
-        fields: []
-      },
+      temp: {},
       rules: {},
       btn_types: {
         0: "primary",
@@ -180,30 +177,32 @@ export default {
       document.title = `${title} - 处理`;
     },
     handleButton(transition) {
-      for (var i of this.customfield_list) {
-        this.temp.fields.push({ id: i.id, field_value: i.field_value });
-      }
-      this.temp = Object.assign(this.temp, {
+      const data = Object.assign({}, this.wfdata, {
         transition: transition.id,
         state: transition.dest_state.id,
-        workflow: this.wfdata.id,
-        name: this.wfdata.name,
-        create_user: this.username,
-        ticketcustomfield: JSON.stringify(this.temp.fields)
+        workflow: this.wfdata.workflow.id,
+        create_user: this.username
       });
+      console.log(data)
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           ticket
-            .requestPost(this.temp)
+            .requestPut(data.id, data)
             .then(response => {
-              this.dialogFormVisible = false;
-              this.$notify({
-                title: "成功",
-                message: "创建成功",
-                type: "success",
-                duration: 2000
+              this.temp = Object.assign(this.temp, {
+                transition: transition.id,
+                state: transition.dest_state.id,
+                participant: this.username
               });
-              this.$emit("checkdata");
+              ticketflowlog.requestPost(this.temp).then(response => {
+                this.$notify({
+                  title: "成功",
+                  message: "更新成功",
+                  type: "success",
+                  duration: 2000
+                });
+                this.fetchData(this.temp.ticket);
+              });
             })
             .catch(() => {});
         }

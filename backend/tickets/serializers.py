@@ -3,6 +3,7 @@
 
 from tickets.models import *
 from workflows.models import *
+from systems.models import User
 from rest_framework import serializers
 from utils.index import gen_time_pid
 import json
@@ -28,7 +29,6 @@ class TicketSerializer(serializers.ModelSerializer):
 
         # save ticket
         validated_data["sn"] = gen_time_pid(workflow.ticket_sn_prefix)
-        validated_data["relation"] = [state.participant]
         ticket = Ticket.objects.create(**validated_data)
 
         # save ticketlog
@@ -49,10 +49,30 @@ class TicketSerializer(serializers.ModelSerializer):
         TicketCustomField.objects.bulk_create(field_models)
 
         # save ticketuser
-        TicketUser.objects.create(ticket=ticket, username=validated_data["create_user"], worked=True)
-        TicketUser.objects.create(ticket=ticket, username=state.participant, in_process=True)
+        user1 = User.objects.get(username=validated_data["create_user"])
+        user2 = User.objects.get(username=state.participant)
+        TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
+        TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
 
         return ticket
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.workflow = validated_data.get('workflow', instance.workflow)
+        instance.sn = validated_data.get('sn', instance.sn)
+        instance.state = validated_data.get('state', instance.state)
+        instance.create_user = validated_data.get('create_user', instance.create_user)
+        instance.transition = validated_data.get('transition', instance.transition)
+        instance.customfield = validated_data.get('customfield', instance.customfield)
+        instance.save()
+
+        # save ticketuser
+        print(instance.state)
+        # user1 = User.objects.get(username=validated_data["create_user"])
+        # user2 = User.objects.get(username=state.participant)
+        # TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
+        # TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
+        return instance
 
 
 class TicketFlowLogReadSerializer(serializers.ModelSerializer):

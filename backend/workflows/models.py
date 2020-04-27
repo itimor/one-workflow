@@ -137,6 +137,7 @@ class CustomField(BaseModel):
     field_key = models.CharField('字段标识', max_length=50, help_text='字段类型请尽量特殊，避免与系统中关键字冲突')
     field_name = models.CharField('字段名称', max_length=50)
     order_id = models.IntegerField('排序', default=0)
+    field_attribute = models.BooleanField('字段是否必填', default=True)
     default_value = models.CharField('默认值', null=True, blank=True, max_length=100,
                                      help_text='前端展示时，可以将此内容作为表单中的该字段的默认值')
     field_template = models.TextField('文本域模板', default='', blank=True, help_text='文本域类型字段前端显示时可以将此内容作为字段的placeholder')

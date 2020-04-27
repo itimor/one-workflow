@@ -22,7 +22,7 @@
 
                   <el-input-number
                     v-if="item.field_type === 15"
-                    v-model="temp.fields[item.field_key]"
+                    v-model="temp.field_value"
                     :placeholder="item.field_name"
                   ></el-input-number>
 
@@ -136,7 +136,6 @@
                 :type="btn_types[item.attribute_type]"
                 @click="handleButton(item)"
               >{{item.name}}</el-button>
-              <el-button>取消</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -163,6 +162,7 @@ import {
   checkAuthUpdate
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
+import Validators from "@/utils/validators";
 
 export default {
   name: "u_ticket",
@@ -194,7 +194,54 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["username"])
+    ...mapGetters(["username"]),
+
+    FormRules() {
+      let validators = {};
+      this.customfield_list.map(item => {
+        if (item.field_attribute) {
+          if ([10, 45, 55, 65, 70].includes(item.field_type)) {
+            validators[item.field_key] = [
+              { required: true, type: "string", trigger: "blur" }
+            ];
+          } else if ([30, 35, 40].includes(item.field_type)) {
+            validators[item.field_key] = [
+              {
+                validator: Validators.datetime,
+                type: "date",
+                trigger: "change"
+              }
+            ];
+          } else if ([50, 60, 75].includes(item.field_type)) {
+            validators[item.field_key] = [
+              { required: true, type: "array", trigger: "change" }
+            ];
+          } else if ([15, 20].includes(item.field_type)) {
+            validators[item.field_key] = [
+              { required: true, type: "number", trigger: "blur" }
+            ];
+          } else if (item.field_type === 25) {
+            validators[item.field_type] = [
+              { required: true, type: "boolean", trigger: "blur" }
+            ];
+          }
+        }
+      });
+      return validators;
+    },
+    newForm() {
+      let form = {};
+      for (let i = 0; i < this.customfield_list.length; i++) {
+        if ([50, 60, 70].includes(this.customfield_list[i].field_type)) {
+          form[this.init_state.field_list[i].field_key] = [];
+        } else if ([15, 20].includes(this.customfield_list[i].field_type_id)) {
+          form[this.customfield_list[i].field_key] = 0;
+        } else {
+          form[this.customfield_list[i].field_key] = "";
+        }
+      }
+      return form;
+    }
   },
   created() {
     const id = this.$route.params && this.$route.params.id;
@@ -269,14 +316,12 @@ export default {
           ticket
             .requestPost(this.temp)
             .then(response => {
-              this.dialogFormVisible = false;
               this.$notify({
                 title: "成功",
                 message: "创建成功",
                 type: "success",
                 duration: 2000
               });
-              this.$emit("checkdata");
             })
             .catch(() => {});
         }

@@ -20,6 +20,12 @@
           <span>{{row.field_type|FieldTypeFilter}}</span>
         </template>
       </el-table-column>
+      <el-table-column label="字段是否必填" prop="field_attribute">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.field_attribute" type="success">是</el-tag>
+          <el-tag v-else type="danger">否</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="排序" prop="order_id"></el-table-column>
       <el-table-column label="默认值" prop="default_value"></el-table-column>
       <el-table-column label="标签" prop="label"></el-table-column>
@@ -74,6 +80,9 @@
         </el-form-item>
         <el-form-item label="排序" prop="order_id">
           <el-input v-model="temp.order_id" />
+        </el-form-item>
+        <el-form-item label="字段是否必填" prop="field_attribute">
+          <el-switch v-model="temp.field_attribute" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="默认值" prop="default_value">
           <el-input v-model="temp.default_value" />
@@ -200,6 +209,7 @@ export default {
         field_key: "",
         field_name: "",
         order_id: 10,
+        field_attribute: true,
         default_value: "",
         field_template: "",
         boolean_field_display: "",
@@ -229,7 +239,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
-            this.$emit('checkdata')
+              this.$emit("checkdata");
             })
             .catch(() => {});
         }
@@ -256,7 +266,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
-            this.$emit('checkdata')
+              this.$emit("checkdata");
             })
             .catch(() => {
               this.loading = false;
@@ -276,7 +286,7 @@ export default {
               message: "删除成功",
               type: "success"
             });
-            this.$emit('checkdata')
+            this.$emit("checkdata");
           });
         })
         .catch(() => {
