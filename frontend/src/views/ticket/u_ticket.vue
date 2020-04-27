@@ -13,39 +13,46 @@
               :key="item.id"
             >
               <el-form-item :label="item.field_name" :prop="item.field_key">
+
                 <el-input
                   v-if="item.field_type === 10"
                   v-model="item.field_value"
                   :placeholder="item.field_name"
                 />
+
                 <el-input-number
                   v-if="item.field_type === 15"
                   v-model="temp.fields[item.field_key]"
                   :placeholder="item.field_name"
                 ></el-input-number>
+
                 <el-switch
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   v-if="item.field_type === 25"
                   v-model="temp.fields[item.field_key]"
                 ></el-switch>
+
                 <el-time-picker
                   v-if="item.field_type === 35"
                   v-model="temp.fields[item.field_key]"
                   :placeholder="item.field_name"
                 ></el-time-picker>
+
                 <el-date-picker
                   type="date"
                   v-if="item.field_type === 30"
                   v-model="temp.fields[item.field_key]"
                   :placeholder="item.field_name"
                 ></el-date-picker>
+
                 <el-date-picker
                   type="datetime"
                   v-if="item.field_type === 40"
                   v-model="item.field_value"
                   :placeholder="item.field_name"
                 ></el-date-picker>
+
                 <el-input
                   type="textarea"
                   :autosize="{ minRows: 5, maxRows: 8}"
@@ -53,6 +60,63 @@
                   v-model="item.field_value"
                   :placeholder="item.field_name"
                 ></el-input>
+
+                <el-radio-group
+                  v-if="item.field_type === 45"
+                  v-model="item.field_value"
+                  :placeholder="item.field_name"
+                >
+                  <el-radio v-for="t in JSON.parse(item.field_choice)" :label="t.value">{{t.label}}</el-radio>
+                </el-radio-group>
+
+                <el-checkbox-group
+                  v-if="item.field_type === 50"
+                  v-model="item.field_value"
+                  :placeholder="item.field_name"
+                >
+                  <el-checkbox
+                    v-for="t in JSON.parse(item.field_choice)" :label="t.value">{{t.label}}</el-checkbox>
+                </el-checkbox-group>
+
+                <el-select
+                  v-if="item.field_type === 55"
+                  v-model="item.field_value"
+                  :placeholder="item.field_name"
+                  clearable
+                >
+                  <el-option v-for="t in JSON.parse(item.field_choice)" :value="t.value">{{t.label}}</el-option>
+                </el-select>
+
+ 
+                <el-select
+                  v-if="item.field_type === 60"
+                  v-model="item.field_value"
+                  :placeholder="item.field_name"
+                  clearable
+                  multiple
+                >
+                  <el-option v-for="t in JSON.parse(item.field_choice)" :value="t.value">{{t.label}}</el-option>
+                </el-select>
+
+                <el-select
+                  v-if="item.field_type === 70"
+                  v-model="item.field_value"
+                  :placeholder="item.field_name"
+                  clearable
+                >
+                  <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                </el-select>
+
+                <el-select
+                  v-if="item.field_type === 55"
+                  v-model="item.field_value"
+                  :placeholder="item.field_name"
+                  clearable
+                  multiple
+                >
+                  <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                </el-select>
+
               </el-form-item>
             </el-col>
           </el-row>
@@ -78,6 +142,7 @@ import {
   state,
   transition,
   ticket,
+  user,
   auth
 } from "@/api/all";
 
@@ -125,6 +190,7 @@ export default {
   created() {
     const id = this.$route.params && this.$route.params.id;
     this.fetchData(id);
+    this.getUserList();
     this.tempRoute = Object.assign({}, this.$route);
   },
   methods: {
@@ -158,6 +224,11 @@ export default {
         this.transition_list = response.results;
       });
     },
+    getUserList() {
+      user.requestGet().then(response => {
+        this.user_list = response.results;
+      });
+    },
     handleFilter() {
       this.fetchData();
     },
@@ -173,8 +244,8 @@ export default {
       document.title = `${title} - 创建`;
     },
     handleButton(transition) {
-      for(var i of this.customfield_list) {
-        this.temp.fields.push({id: i.id, field_value:i.field_value})
+      for (var i of this.customfield_list) {
+        this.temp.fields.push({ id: i.id, field_value: i.field_value });
       }
       this.temp = Object.assign(this.temp, {
         transition: transition.id,
@@ -184,7 +255,7 @@ export default {
         create_user: this.username,
         customfield: JSON.stringify(this.temp.fields)
       });
-      console.log(this.temp)
+      console.log(this.temp);
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           ticket

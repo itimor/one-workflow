@@ -23,8 +23,7 @@ class TicketFlowLogViewSet(BulkModelMixin):
 class TicketCustomFieldViewSet(BulkModelMixin):
     queryset = TicketCustomField.objects.all()
     serializer_class = TicketCustomFieldSerializer
-    search_fields = ['name']
-    filter_fields = ['name', 'field_key', 'field_type']
+    filter_fields = ['ticket_id', 'customfield_id']
 
 
 class TicketUserViewSet(BulkModelMixin):
