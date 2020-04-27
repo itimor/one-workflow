@@ -18,6 +18,13 @@
           icon="el-icon-search"
           @click="handleFilter"
         >{{ "搜索" }}</el-button>
+        <el-button
+          v-if="permissionList.del"
+          class="filter-item"
+          type="danger"
+          icon="el-icon-delete"
+          @click="handleBatchDel"
+        >{{ "删除" }}</el-button>
       </el-button-group>
     </div>
 
@@ -28,9 +35,11 @@
       style="width: 100%"
       highlight-current-row
       @sort-change="handleSortChange"
+      @selection-change="handleSelectionChange"
     >
+      <el-table-column type="selection" width="55" />
       <el-table-column label="名称" prop="name"></el-table-column>
-      <el-table-column label="工单流水号" prop="sn" width="260" ></el-table-column>
+      <el-table-column label="工单流水号" prop="sn" width="260"></el-table-column>
       <el-table-column label="当前状态" prop="state"></el-table-column>
       <el-table-column label="进行状态" prop="transition"></el-table-column>
       <el-table-column label="创建者" prop="create_user"></el-table-column>
@@ -93,6 +102,7 @@ export default {
         search: undefined,
         ordering: undefined
       },
+      multipleSelection: []
     };
   },
   computed: {},
@@ -150,6 +160,37 @@ export default {
               message: "删除成功",
               type: "success"
             });
+            this.getList();
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    handleBatchDel() {
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          message: "未选中任何行",
+          type: "warning",
+          duration: 2000
+        });
+        return;
+      }
+      this.$confirm("是否确定删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          const ids = this.multipleSelection.map(x => x.id);
+          ticket.requestBulkDelete(ids).then(response => {
+            console.log(response.results);
             this.getList();
           });
         })
