@@ -224,3 +224,15 @@ p img {
   font-weight: 900;
   font-size: 1.8em;
 }
+
+.ticket {
+  .el-card {
+    .ticket-title {
+      font-weight: 700;
+    }
+    margin-bottom: 20px !important;
+    .ticket-form {
+      margin: 20px 100px !important  ;
+    }
+  }
+}

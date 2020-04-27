@@ -1,137 +1,147 @@
 <template>
   <div class="app-container">
-    <el-card>
-      <div slot="header" class="clearfix">
-        <h2 style="text-align: center;">{{wfdata.name}}</h2>
-      </div>
-      <div class="form" v-show="customfield_list.length>0">
-        <el-form ref="dataForm" :rules="rules" :model="temp">
-          <el-row :gutter="20">
-            <el-col
-              :md="{span: item.field_type === 65 ? 22 : 11}"
-              v-for="item in customfield_list"
-              :key="item.id"
-            >
-              <el-form-item :label="item.field_name" :prop="item.field_key">
+    <div class="ticket">
+      <el-card>
+        <div slot="header" class="clearfix">
+          <h2 style="text-align: center;">{{wfdata.name}}</h2>
+        </div>
+        <div class="ticket-form" v-show="customfield_list.length>0">
+          <el-form ref="dataForm" :rules="rules" :model="temp">
+            <el-row :gutter="20">
+              <el-col
+                :md="{span: item.field_type === 65 ? 22 : 11}"
+                v-for="item in customfield_list"
+                :key="item.id"
+              >
+                <el-form-item :label="item.field_name" :prop="item.field_key">
+                  <el-input
+                    v-if="item.field_type === 10"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                  />
 
-                <el-input
-                  v-if="item.field_type === 10"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                />
+                  <el-input-number
+                    v-if="item.field_type === 15"
+                    v-model="temp.fields[item.field_key]"
+                    :placeholder="item.field_name"
+                  ></el-input-number>
 
-                <el-input-number
-                  v-if="item.field_type === 15"
-                  v-model="temp.fields[item.field_key]"
-                  :placeholder="item.field_name"
-                ></el-input-number>
+                  <el-switch
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                    v-if="item.field_type === 25"
+                    v-model="temp.fields[item.field_key]"
+                  ></el-switch>
 
-                <el-switch
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  v-if="item.field_type === 25"
-                  v-model="temp.fields[item.field_key]"
-                ></el-switch>
+                  <el-time-picker
+                    v-if="item.field_type === 35"
+                    v-model="temp.fields[item.field_key]"
+                    :placeholder="item.field_name"
+                  ></el-time-picker>
 
-                <el-time-picker
-                  v-if="item.field_type === 35"
-                  v-model="temp.fields[item.field_key]"
-                  :placeholder="item.field_name"
-                ></el-time-picker>
+                  <el-date-picker
+                    type="date"
+                    v-if="item.field_type === 30"
+                    v-model="temp.fields[item.field_key]"
+                    :placeholder="item.field_name"
+                  ></el-date-picker>
 
-                <el-date-picker
-                  type="date"
-                  v-if="item.field_type === 30"
-                  v-model="temp.fields[item.field_key]"
-                  :placeholder="item.field_name"
-                ></el-date-picker>
+                  <el-date-picker
+                    type="datetime"
+                    v-if="item.field_type === 40"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                  ></el-date-picker>
 
-                <el-date-picker
-                  type="datetime"
-                  v-if="item.field_type === 40"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                ></el-date-picker>
+                  <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 5, maxRows: 8}"
+                    v-if="item.field_type === 65"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                  ></el-input>
 
-                <el-input
-                  type="textarea"
-                  :autosize="{ minRows: 5, maxRows: 8}"
-                  v-if="item.field_type === 65"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                ></el-input>
+                  <el-radio-group
+                    v-if="item.field_type === 45"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                  >
+                    <el-radio
+                      v-for="t in JSON.parse(item.field_choice)"
+                      :label="t.value"
+                    >{{t.label}}</el-radio>
+                  </el-radio-group>
 
-                <el-radio-group
-                  v-if="item.field_type === 45"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                >
-                  <el-radio v-for="t in JSON.parse(item.field_choice)" :label="t.value">{{t.label}}</el-radio>
-                </el-radio-group>
+                  <el-checkbox-group
+                    v-if="item.field_type === 50"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                  >
+                    <el-checkbox
+                      v-for="t in JSON.parse(item.field_choice)"
+                      :label="t.value"
+                    >{{t.label}}</el-checkbox>
+                  </el-checkbox-group>
 
-                <el-checkbox-group
-                  v-if="item.field_type === 50"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                >
-                  <el-checkbox
-                    v-for="t in JSON.parse(item.field_choice)" :label="t.value">{{t.label}}</el-checkbox>
-                </el-checkbox-group>
+                  <el-select
+                    v-if="item.field_type === 55"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                    clearable
+                  >
+                    <el-option
+                      v-for="t in JSON.parse(item.field_choice)"
+                      :value="t.value"
+                    >{{t.label}}</el-option>
+                  </el-select>
 
-                <el-select
-                  v-if="item.field_type === 55"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                  clearable
-                >
-                  <el-option v-for="t in JSON.parse(item.field_choice)" :value="t.value">{{t.label}}</el-option>
-                </el-select>
+                  <el-select
+                    v-if="item.field_type === 60"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                    clearable
+                    multiple
+                  >
+                    <el-option
+                      v-for="t in JSON.parse(item.field_choice)"
+                      :value="t.value"
+                    >{{t.label}}</el-option>
+                  </el-select>
 
- 
-                <el-select
-                  v-if="item.field_type === 60"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                  clearable
-                  multiple
-                >
-                  <el-option v-for="t in JSON.parse(item.field_choice)" :value="t.value">{{t.label}}</el-option>
-                </el-select>
+                  <el-select
+                    v-if="item.field_type === 70"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                    clearable
+                  >
+                    <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                  </el-select>
 
-                <el-select
-                  v-if="item.field_type === 70"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                  clearable
-                >
-                  <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
-                </el-select>
-
-                <el-select
-                  v-if="item.field_type === 55"
-                  v-model="item.field_value"
-                  :placeholder="item.field_name"
-                  clearable
-                  multiple
-                >
-                  <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
-                </el-select>
-
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item style="text-align: center;">
-            <el-button
-              v-for="item in transition_list"
-              :key="item.id"
-              :type="btn_types[item.attribute_type]"
-              @click="handleButton(item)"
-            >{{item.name}}</el-button>
-            <el-button>取消</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </el-card>
+                  <el-select
+                    v-if="item.field_type === 55"
+                    v-model="item.field_value"
+                    :placeholder="item.field_name"
+                    clearable
+                    multiple
+                  >
+                    <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item style="text-align: center;">
+              <el-button
+                v-for="item in transition_list"
+                :key="item.id"
+                :type="btn_types[item.attribute_type]"
+                @click="handleButton(item)"
+              >{{item.name}}</el-button>
+              <el-button>取消</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -160,7 +170,6 @@ export default {
   components: {},
   data() {
     return {
-      activeName: "customfield",
       operationList: [],
       permissionList: {
         add: false,
@@ -255,7 +264,6 @@ export default {
         create_user: this.username,
         customfield: JSON.stringify(this.temp.fields)
       });
-      console.log(this.temp);
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           ticket

@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
     <el-card>
-      <!-- <el-steps :active="1" finish-status="success" process-status="finish"> -->
       <el-steps>
         <el-step v-for="item in state_list" :ken="item.id" :title="item.name"></el-step>
       </el-steps>

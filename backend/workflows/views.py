@@ -19,6 +19,11 @@ class StateViewSet(BulkModelMixin):
     filter_fields = ['workflow']
     ordering_fields = ['state_type', 'order_id']
 
+    # def get_serializer_class(self):
+    #     if self.action in ['list', 'retrieve'] or self.resultData:
+    #         return StateReadSerializer
+    #     return StateSerializer
+
 
 class TransitionViewSet(BulkModelMixin):
     queryset = Transition.objects.all()

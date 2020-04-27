@@ -18,6 +18,13 @@ class WorkflowSerializer(serializers.ModelSerializer):
         return obj
 
 
+class StateReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = State
+        fields = '__all__'
+        depth = 1
+
+
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State

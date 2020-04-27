@@ -19,6 +19,7 @@ export default {
     ticket: 'ticket',
     c_ticket: 'c_ticket',
     u_ticket: 'u_ticket',
+    s_ticket: 's_ticket',
     my_ticket: 'my_ticket',
     all_ticket: 'all_ticket',
     notice: 'notice',

@@ -19,6 +19,7 @@ export default {
     ticket: '工单系统',
     c_ticket: '新建工单',
     u_ticket: '编辑工单',
+    s_ticket: '处理工单',
     my_ticket: '我的工单',
     all_ticket: '所有工单',
     notice: '通知管理',

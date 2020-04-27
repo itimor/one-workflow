@@ -12,6 +12,11 @@ class TicketViewSet(BulkModelMixin):
     filter_fields = ['name', 'sn']
     ordering_fields = ['state']
 
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve'] or self.resultData:
+            return TicketReadSerializer
+        return TicketSerializer
+
 
 class TicketFlowLogViewSet(BulkModelMixin):
     queryset = TicketFlowLog.objects.all()
@@ -19,11 +24,21 @@ class TicketFlowLogViewSet(BulkModelMixin):
     search_fields = ['ticket']
     filter_fields = ['ticket', 'state']
 
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve'] or self.resultData:
+            return TicketFlowLogReadSerializer
+        return TicketFlowLogSerializer
+
 
 class TicketCustomFieldViewSet(BulkModelMixin):
     queryset = TicketCustomField.objects.all()
     serializer_class = TicketCustomFieldSerializer
-    filter_fields = ['ticket_id', 'customfield_id']
+    filter_fields = ['ticket', 'customfield']
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve'] or self.resultData:
+            return TicketCustomFieldReadSerializer
+        return TicketCustomFieldSerializer
 
 
 class TicketUserViewSet(BulkModelMixin):
