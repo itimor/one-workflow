@@ -8,7 +8,7 @@ from tickets.views import TicketViewSet, TicketFlowLogViewSet, TicketCustomField
 
 router = routers.DefaultRouter()
 
-router.register(r'tickiet', TicketViewSet)
+router.register(r'ticket', TicketViewSet)
 router.register('ticketflowlog', TicketFlowLogViewSet)
 router.register(r'ticketcustomfield', TicketCustomFieldViewSet)
 router.register(r'ticketuser', TicketUserViewSet)

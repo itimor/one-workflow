@@ -50,6 +50,7 @@ class State(BaseModel):
     """
     name = models.CharField('名称', max_length=50)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
+    create_user = models.CharField('创建者', max_length=50)
     is_hidden = models.BooleanField('是否隐藏', default=False, help_text='设置为True时,获取工单步骤api中不显示此状态(当前处于此状态时除外)')
     order_id = models.IntegerField('状态顺序', default=1)
     state_type = models.CharField(max_length=1, choices=tuple(state_type.items()), default=0, verbose_name='状态类型')
@@ -76,9 +77,12 @@ transition_type = {
 }
 
 attribute_type = {
-    0: '同意',
-    1: '拒绝',
-    2: '其他',
+    0: '草稿中',
+    1: '进行中',
+    2: '被退回',
+    3: '被撤销',
+    4: '已完成',
+    5: '已关闭',
 }
 
 

@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { workflow, customfield, state, transition, auth } from "@/api/all";
+import { workflow, customfield, state, transition, ticket, auth } from "@/api/all";
 
 import {
   checkAuthAdd,
@@ -160,7 +160,27 @@ export default {
     setPageTitle() {
       const title = this.wfdata.name;
       document.title = `${title} - 创建`;
-    }
+    },
+    handleButton() {
+      this.$refs["dataForm"].validate(valid => {
+        if (valid) {
+          this.temp.workflow = this.wfdata.id
+          ticket
+            .requestPost(this.temp)
+            .then(response => {
+              this.dialogFormVisible = false;
+              this.$notify({
+                title: "成功",
+                message: "创建成功",
+                type: "success",
+                duration: 2000
+              });
+            this.$emit('checkdata')
+            })
+            .catch(() => {});
+        }
+      });
+    },
   }
 };
 </script>

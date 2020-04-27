@@ -2,7 +2,7 @@ import Request from '@/api/common'
 
 // auth
 import * as auths from '@/api/auths'
-export const auth = auths
+export const auth = auths 
 
 // systems
 export const user = new Request('/sys/user/')
@@ -22,7 +22,7 @@ export const transition = new Request('/workflow/transition/')
 export const customfield = new Request('/workflow/customfield/')
 
 // tickets
-export const tickiet = new Request('/tickiet/tickiet/')
-export const ticketflowlog = new Request('/tickiet/ticketflowlog/')
-export const ticketcustomfield = new Request('/tickiet/ticketcustomfield/')
-export const ticketuser = new Request('/tickiet/ticketuser/')
+export const ticket = new Request('/ticket/ticket/')
+export const ticketflowlog = new Request('/ticket/ticketflowlog/')
+export const ticketcustomfield = new Request('/ticket/ticketcustomfield/')
+export const ticketuser = new Request('/ticket/ticketuser/')

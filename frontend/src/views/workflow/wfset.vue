@@ -65,12 +65,6 @@
               type="danger"
               @click="handleDelete(row)"
             >{{ "删除" }}</el-button>
-            <el-button
-              v-if="permissionList.update"
-              size="small"
-              type="success"
-              @click="handleUpdate(row)"
-            >{{ "流程图" }}</el-button>
             <router-link :to="'/wfconf/'+ row.id">
               <el-button v-if="permissionList.update" size="small" type="warning">{{ "配置" }}</el-button>
             </router-link>

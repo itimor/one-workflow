@@ -24,7 +24,7 @@ class TransitionViewSet(BulkModelMixin):
     queryset = Transition.objects.all()
     serializer_class = TransitionSerializer
     search_fields = ['name']
-    filter_fields = ['workflow', 'transition_type']
+    filter_fields = ['workflow', 'transition_type', 'source_state']
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve'] or self.resultData:

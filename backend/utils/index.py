@@ -5,13 +5,8 @@ from datetime import datetime, timedelta
 import time
 
 
-def create_time_pid():
-    pid = datetime.now().strftime('%Y%m%d%H%M%S')
-    return pid
-
-
-def gen_pid():
-    pid = str(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))) + str(time.time()).replace('.', '')[-5:]
+def gen_time_pid(prefix):
+    pid = '{}_{}'.format(prefix, datetime.now().strftime('%Y%m%d%H%M%S') + str(time.time()).replace('.', '')[-3:])
     return pid
 
 
@@ -25,4 +20,5 @@ def diff_times_in_seconds(t1, t2):
 
 
 if __name__ == '__main__':
-    print(gen_pid())
+    prefix = 'xxoo'
+    print(gen_time_pid(prefix))

@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column label="下一个节点" prop="dest_state">
         <template slot-scope="{ row }">
-          <span>{{row.source_state.name}}</span>
+          <span>{{row.dest_state.name}}</span>
         </template>
       </el-table-column>
       <el-table-column label="属性类型" prop="attribute_type">
@@ -185,9 +185,12 @@ export default {
         1: "定时器流转"
       },
       attribute_types: {
-        0: "同意",
-        1: "拒绝",
-        2: "其他"
+        0: "草稿中",
+        1: "进行中",
+        2: "被退回",
+        3: "被撤销",
+        4: "已完成",
+        5: "已关闭"
       }
     };
   },
@@ -239,6 +242,7 @@ export default {
     createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
+          this.temp.workflow = this.wfdata.id;
           transition
             .requestPost(this.temp)
             .then(response => {
@@ -249,7 +253,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
-            this.$emit('checkdata')
+              this.$emit("checkdata");
             })
             .catch(() => {});
         }
@@ -258,7 +262,8 @@ export default {
     handleUpdate(row) {
       this.temp = Object.assign({}, row, {
         source_state: row.source_state.id,
-        dest_state: row.dest_state.id
+        dest_state: row.dest_state.id,
+        workflow: this.wfdata.id
       });
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
@@ -279,7 +284,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
-            this.$emit('checkdata')
+              this.$emit("checkdata");
             })
             .catch(() => {});
         }
@@ -297,7 +302,7 @@ export default {
               message: "删除成功",
               type: "success"
             });
-            this.$emit('checkdata')
+            this.$emit("checkdata");
           });
         })
         .catch(() => {
