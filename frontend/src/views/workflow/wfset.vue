@@ -310,6 +310,9 @@ export default {
     },
     handleUpdate(row) {
       this.temp = row;
+      this.temp = Object.assign({},this.temp, {
+        type: this.temp.type.id
+      })
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
