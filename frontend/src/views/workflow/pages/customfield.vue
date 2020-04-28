@@ -205,7 +205,7 @@ export default {
     resetTemp() {
       this.temp = {
         memo: "",
-        field_type: "10",
+        field_type: 10,
         field_key: "",
         field_name: "",
         order_id: 10,

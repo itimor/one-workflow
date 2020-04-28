@@ -1,12 +1,14 @@
 <template>
   <div class="app-container">
     <div class="ticket">
-      <el-card>
-        <div slot="header" class="clearfix">
-          <h2 style="text-align: center;">{{wfdata.name}}</h2>
-        </div>
-        <div class="ticket-form" v-show="customfield_list.length>0">
-          <el-form ref="dataForm" :rules="rules" :model="temp">
+      <div class="ticket-form" v-if="customfield_list.length>0">
+        <el-form ref="dataForm" :rules="rules" :model="temp" label-width="100px">
+          <el-card>
+            <div slot="header" class="card-solt">
+              <el-form-item label="工单标题">
+                <el-input v-model="temp.name" />
+              </el-form-item>
+            </div>
             <el-row :gutter="20">
               <el-col
                 :md="{span: item.field_type === 65 ? 22 : 11}"
@@ -129,7 +131,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item style="text-align: center;">
+            <el-form-item>
               <el-button
                 v-for="item in transition_list"
                 :key="item.id"
@@ -137,9 +139,12 @@
                 @click="handleButton(item)"
               >{{item.name}}</el-button>
             </el-form-item>
-          </el-form>
-        </div>
-      </el-card>
+          </el-card>
+        </el-form>
+      </div>
+      <div v-else>
+        <h1 style="text-align: center;">没有设置工作流字段</h1>
+      </div>
     </div>
   </div>
 </template>
@@ -163,6 +168,7 @@ import {
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
 import Validators from "@/utils/validators";
+import { GenDatetime } from "@/utils"
 
 export default {
   name: "u_ticket",
@@ -183,6 +189,7 @@ export default {
       state_list: [],
       transition_list: [],
       temp: {
+        name: "",
         fields: []
       },
       rules: {},
@@ -259,6 +266,9 @@ export default {
         this.wfdata = response.results[0];
         this.setTagsViewTitle();
         this.setPageTitle();
+
+        const d = new Date();
+        this.temp.name = this.wfdata.name + '-' + GenDatetime(d);
         this.getCustomfieldList();
         this.getStateList();
       });
@@ -331,3 +341,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.card-solt {
+  width: 450px;
+}
+</style>

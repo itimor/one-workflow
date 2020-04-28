@@ -1,22 +1,22 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20" style="margin-top:50px;">
-      <el-col :span="6" v-for="item in list" :key="item.id">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>{{item.ticket_sn_prefix}}</span>
+    <el-card class="box-card" v-for="(item, key) in list" :key="item.id">
+      <div slot="header">
+        <span class="card-title">{{item.name}}</span>
+      </div>
+      <el-row :gutter="20">
+        <el-col :span="4" v-for="w in item.workflow_set" :key="w.id">
+          <div style="height:50px;">
+            <router-link :class="'pan-btn ' + wf_color[key]" :to="'/u_ticket/' + w.id">{{w.name}}</router-link>
           </div>
-          <div style="height:100px;">
-            <router-link class="pan-btn light-blue-btn" :to="'/u_ticket/' + item.id">{{item.name}}</router-link>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </el-col>
+      </el-row>
+    </el-card>
   </div>
 </template>
 
 <script>
-import { workflow, auth } from "@/api/all";
+import { workflowtype, auth } from "@/api/all";
 import {
   checkAuthAdd,
   checkAuthDel,
@@ -25,7 +25,7 @@ import {
 } from "@/utils/permission";
 
 export default {
-  name: "c_ticket",
+  name: "new_ticket",
   components: {},
   data() {
     return {
@@ -36,7 +36,14 @@ export default {
         view: false,
         update: false
       },
-      list: []
+      list: [],
+      wf_color: {
+        0: "blue-btn",
+        1: "pink-btn",
+        2: "green-btn",
+        3: "yellow-btn",
+        4: "tiffany-btn"
+      }
     };
   },
   computed: {},
@@ -53,7 +60,7 @@ export default {
     },
     getMenuButton() {
       auth
-        .requestMenuButton("wfset")
+        .requestMenuButton("new_ticket")
         .then(response => {
           this.operationList = response.results;
         })
@@ -62,10 +69,10 @@ export default {
         });
     },
     getList() {
-      workflow.requestGet().then(response => {
+      workflowtype.requestGet().then(response => {
         this.list = response.results;
       });
-    },
+    }
   }
 };
 </script>

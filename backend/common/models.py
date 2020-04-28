@@ -10,6 +10,6 @@ class BaseModel(models.Model):
     memo = models.TextField(blank=True, verbose_name='备注')
 
     class Meta:
-        ordering = ('-create_time',)
+        ordering = ['-create_time']
         abstract = True
 

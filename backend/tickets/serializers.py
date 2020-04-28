@@ -48,9 +48,13 @@ class TicketSerializer(serializers.ModelSerializer):
                                   field_value=customfield['field_value']))
         TicketCustomField.objects.bulk_create(field_models)
 
-        # save ticketuser
+        # save
+        if transition.dest_state is None:
+            user2 = None
+        else:
+            user2 = User.objects.get(username=state.participant)
+
         user1 = User.objects.get(username=validated_data["create_user"])
-        user2 = User.objects.get(username=state.participant)
         TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
         TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
 
@@ -69,6 +73,8 @@ class TicketSerializer(serializers.ModelSerializer):
         # save ticketuser
         if instance.transition.dest_state is None:
             user2 = None
+        else:
+            user2 = User.objects.get(username=instance.state.participant)
 
         user1 = User.objects.get(username=validated_data["create_user"])
         TicketUser.objects.create(ticket=instance, username=user1, worked=True)

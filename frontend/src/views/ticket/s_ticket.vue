@@ -3,7 +3,7 @@
     <div class="ticket">
       <el-card>
         <div slot="header" class="clearfix">
-          <span class="ticket-title">流程</span>
+          <span class="card-title">流程</span>
         </div>
         <el-steps :active="temp.source_state" finish-status="success" process-status="finish">
           <el-step v-for="item in state_list" :ken="item.id" :title="item.name"></el-step>
@@ -11,10 +11,10 @@
       </el-card>
       <el-card>
         <div slot="header" class="clearfix">
-          <span class="ticket-title">{{wfdata.name}}</span>
+          <span class="card-title">{{wfdata.name}}</span>
         </div>
         <div class="ticket-form" v-show="customfield_list.length>0">
-          <el-form ref="dataForm" :rules="rules" :model="temp">
+          <el-form ref="dataForm" :rules="rules" :model="temp" label-width="100px">
             <el-row :gutter="20">
               <el-col
                 :md="{span: item.customfield.field_type === 65 ? 22 : 11}"
@@ -35,7 +35,7 @@
               ></el-input>
             </el-form-item>
 
-            <el-form-item style="text-align: center;" v-if="transition_list.length>1">
+            <el-form-item v-if="transition_list.length>1">
               <el-button
                 v-for="item in transition_list"
                 :key="item.id"
@@ -49,7 +49,7 @@
 
       <el-card>
         <div slot="header" class="clearfix">
-          <span class="ticket-title">操作日志</span>
+          <span class="card-title">操作日志</span>
         </div>
         <el-table :data="ticketlog_list" border style="width: 100%" highlight-current-row>
           <el-table-column label="节点" prop="state">
@@ -75,28 +75,14 @@ import {
   ticketflowlog,
   auth
 } from "@/api/all";
-
-import {
-  checkAuthAdd,
-  checkAuthDel,
-  checkAuthView,
-  checkAuthUpdate
-} from "@/utils/permission";
 import { mapGetters } from "vuex";
 
 export default {
-  name: "u_ticket",
+  name: "s_ticket",
 
   components: {},
   data() {
     return {
-      operationList: [],
-      permissionList: {
-        add: false,
-        del: false,
-        view: false,
-        update: false
-      },
       tempRoute: {},
       wfdata: {},
       customfield_list: [],

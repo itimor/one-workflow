@@ -21,6 +21,6 @@ class Command(BaseCommand):
                                         parent_id=workflowmenu.id)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='工作流配置', code='wfconf', curl='/wfconf/:id', icon='wfconf', sequence=30, type=2,
-                                        hidden=True, parent_id=workflowmenu.id)
+                                        hidden=True, active_menu='/wfset', parent_id=workflowmenu.id)
         init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

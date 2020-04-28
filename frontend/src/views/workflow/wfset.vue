@@ -105,7 +105,7 @@
         <el-form-item label="工单号前缀" prop="ticket_sn_prefix">
           <el-input v-model="temp.ticket_sn_prefix" />
         </el-form-item>
-        <el-form-item label="工单号前缀" prop="type">
+        <el-form-item label="工单类型" prop="type">
           <el-select v-model="temp.type" placeholder="请选择">
             <el-option
               v-for="item in wftype_list"
@@ -206,7 +206,7 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
-        type: [{ required: true, message: "请选择类型", trigger: "blur" }],
+        type: [{ required: true, message: "请选择类型", trigger: "change" }],
         ticket_sn_prefix: [
           { required: true, message: "请输入工单流水号前缀", trigger: "blur" }
         ]

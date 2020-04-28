@@ -5,12 +5,6 @@ from workflows.models import *
 from rest_framework import serializers
 
 
-class WorkflowTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WorkflowType
-        fields = '__all__'
-
-
 class WorkflowReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workflow
@@ -29,6 +23,14 @@ class WorkflowSerializer(serializers.ModelSerializer):
         State.objects.create(name="发起人-新建中", order_id=1, state_type=1, workflow=obj)
         State.objects.create(name="结束", order_id=99, state_type=2, workflow=obj)
         return obj
+
+
+class WorkflowTypeSerializer(serializers.HyperlinkedModelSerializer):
+    workflow_set = WorkflowSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = WorkflowType
+        fields = ['id', 'name', 'code', 'order_id', 'workflow_set']
 
 
 class StateReadSerializer(serializers.ModelSerializer):

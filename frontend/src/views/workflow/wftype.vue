@@ -38,6 +38,7 @@
     >
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="code" prop="code"></el-table-column>
+      <el-table-column label="顺序" prop="order_id"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button-group>
@@ -53,15 +54,6 @@
               type="danger"
               @click="handleDelete(row)"
             >{{ "删除" }}</el-button>
-            <el-button
-              v-if="permissionList.update"
-              size="small"
-              type="success"
-              @click="handleUpdate(row)"
-            >{{ "流程图" }}</el-button>
-            <router-link :to="'/wfconf/'+ row.id">
-              <el-button v-if="permissionList.update" size="small" type="warning">{{ "配置" }}</el-button>
-            </router-link>
           </el-button-group>
         </template>
       </el-table-column>
@@ -93,6 +85,9 @@
         </el-form-item>
         <el-form-item label="code" prop="code">
           <el-input v-model="temp.code" />
+        </el-form-item>
+        <el-form-item label="顺序" prop="order_id">
+          <el-input v-model="temp.order_id" />
         </el-form-item>
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
@@ -150,7 +145,7 @@ export default {
         create: "添加"
       },
       rules: {
-        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }]
       }
     };
   },
@@ -201,6 +196,7 @@ export default {
       this.temp = {
         name: "",
         code: "",
+        order_id: "",
         memo: ""
       };
     },

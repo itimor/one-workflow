@@ -89,7 +89,7 @@ import {
 import { mapGetters } from "vuex";
 
 export default {
-  name: "all_ticket",
+  name: "my_ticket",
 
   components: { Pagination },
   data() {
@@ -129,7 +129,7 @@ export default {
     },
     getMenuButton() {
       auth
-        .requestMenuButton("all_ticket")
+        .requestMenuButton("my_ticket")
         .then(response => {
           this.operationList = response.results;
         })

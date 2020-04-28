@@ -43,7 +43,7 @@ import {
 import { mapGetters } from "vuex";
 
 export default {
-  name: "all_ticket",
+  name: "todo_ticket",
 
   components: { Pagination },
   data() {
@@ -76,7 +76,7 @@ export default {
     },
     getMenuButton() {
       auth
-        .requestMenuButton("all_ticket")
+        .requestMenuButton("todo_ticket")
         .then(response => {
           this.operationList = response.results;
         })

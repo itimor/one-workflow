@@ -8,11 +8,13 @@ from common.models import BaseModel
 class WorkflowType(BaseModel):
     name = models.CharField('名称', max_length=50)
     code = models.CharField(max_length=32, unique=True, verbose_name='代码')
+    order_id = models.IntegerField('状态顺序', default=1)
 
     def __str__(self):
         return self.name
 
     class Meta:
+        ordering = ['order_id']
         verbose_name = '类型'
         verbose_name_plural = verbose_name
 
@@ -63,7 +65,6 @@ class State(BaseModel):
     """
     name = models.CharField('名称', max_length=50)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
-    create_user = models.CharField('创建者', max_length=50)
     is_hidden = models.BooleanField('是否隐藏', default=False, help_text='设置为True时,获取工单步骤api中不显示此状态(当前处于此状态时除外)')
     order_id = models.IntegerField('状态顺序', default=1)
     state_type = models.CharField(max_length=1, choices=tuple(state_type.items()), default=0, verbose_name='状态类型')
