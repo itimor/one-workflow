@@ -2,6 +2,7 @@ export default {
   systemTitle: 'OMS',
   
   route: {
+    login: 'Login',
     dashboard: 'Dashboard',
     sys: 'sysManager',
     user: 'userManager',
