@@ -15,7 +15,7 @@ export default {
     workflow: '工作流',
     wfset: '工作流设计',
     wfconf: '工作流配置',
-    myticket: '我的工单',
+    wftype: '工作流类型',
     ticket: '工单系统',
     new_ticket: '新建工单',
     u_ticket: '编辑工单',

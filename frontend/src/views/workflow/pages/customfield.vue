@@ -21,8 +21,8 @@
         </template>
       </el-table-column>
       <el-table-column label="字段是否必填" prop="field_attribute">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.field_attribute" type="success">是</el-tag>
+        <template slot-scope="{ row }">
+          <el-tag v-if="row.field_attribute" type="success">是</el-tag>
           <el-tag v-else type="danger">否</el-tag>
         </template>
       </el-table-column>

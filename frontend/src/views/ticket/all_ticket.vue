@@ -19,7 +19,7 @@
           @click="handleFilter"
         >{{ "搜索" }}</el-button>
         <el-button
-          v-if="permissionList.del"
+          v-if="permissionList.del & username === 'admin'"
           class="filter-item"
           type="danger"
           icon="el-icon-delete"
@@ -37,7 +37,7 @@
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" />
+      <el-table-column v-if="username === 'admin'" type="selection" width="55" />
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="工单流水号" prop="sn" width="260">
         <template slot-scope="{ row }">

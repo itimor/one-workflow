@@ -8,7 +8,9 @@
 cd backend
 pip install -r dev_requirements.txt
 python manage.py migrate
-python manage.py initdb
+python manage.py init_sys
+python manage.py init_wf
+python manage.py init_ticket
 python manage.py runserver
 ```
 ### 前端

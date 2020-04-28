@@ -15,7 +15,7 @@ export default {
     workflow: 'workflow',
     wfset: 'wfset',
     wfconf: 'wfconf',
-    myticket: 'myticket',
+    wftype: 'wftype',
     ticket: 'ticket',
     new_ticket: 'new_ticket',
     u_ticket: 'u_ticket',

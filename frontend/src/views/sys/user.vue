@@ -48,21 +48,21 @@
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="真实姓名" prop="realname"></el-table-column>
       <!-- <el-table-column label="角色" prop="roles">
-        <template slot-scope="scope">
-          <el-tag v-for="item in scope.row.roles" :key="item.id" size="medium">{{item.name}}</el-tag>
+        <template slot-scope="{ row }">
+          <el-tag v-for="item in row.roles" :key="item.id" size="medium">{{item.name}}</el-tag>
         </template>
-      </el-table-column>-->
+      </el-table-column> -->
       <el-table-column label="头像" align="center">
-        <template slot-scope="scope">
+        <template slot-scope="{ row }">
           <el-popover placement="top" width="200" trigger="hover">
-            <el-image :src="scope.row.avatar" fit="cover"></el-image>
-            <el-avatar slot="reference" :src="scope.row.avatar"></el-avatar>
+            <el-image :src="row.avatar" fit="cover"></el-image>
+            <el-avatar slot="reference" :src="row.avatar"></el-avatar>
           </el-popover>
         </template>
       </el-table-column>
       <el-table-column label="状态" prop="status" sortable="custom">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status" type="success">启用</el-tag>
+        <template slot-scope="{ row }">
+          <el-tag v-if="row.status" type="success">启用</el-tag>
           <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>

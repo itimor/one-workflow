@@ -4,10 +4,11 @@
 
 from django.conf.urls import url, include
 from rest_framework import routers
-from workflows.views import WorkflowViewSet, StateViewSet, TransitionViewSet, CustomFieldViewSet
+from workflows.views import WorkflowTypeViewSet, WorkflowViewSet, StateViewSet, TransitionViewSet, CustomFieldViewSet
 
 router = routers.DefaultRouter()
 
+router.register(r'workflowtype', WorkflowTypeViewSet)
 router.register(r'workflow', WorkflowViewSet)
 router.register('state', StateViewSet)
 router.register(r'transition', TransitionViewSet)

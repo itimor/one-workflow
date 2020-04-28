@@ -37,19 +37,7 @@
       @sort-change="handleSortChange"
     >
       <el-table-column label="名称" prop="name"></el-table-column>
-      <el-table-column label="工单流水号前缀" prop="ticket_sn_prefix"></el-table-column>
-      <el-table-column label="状态" prop="status" sortable="custom">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status" type="success">启用</el-tag>
-          <el-tag v-else type="danger">禁用</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="查看权限校验" prop="view_permission_check" sortable="custom">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.view_permission_check" type="success">启用</el-tag>
-          <el-tag v-else type="danger">禁用</el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column label="code" prop="code"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button-group>
@@ -103,42 +91,8 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="工单号前缀" prop="ticket_sn_prefix">
-          <el-input v-model="temp.ticket_sn_prefix" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-switch v-model="temp.status" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-        </el-form-item>
-        <el-form-item label="查看权限校验" prop="view_permission_check">
-          <el-switch
-            v-model="temp.view_permission_check"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          ></el-switch>
-        </el-form-item>
-        <el-form-item label="限制表达式" prop="limit_expression">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="限制周期({'period':24} 24小时)"
-            v-model="temp.limit_expression"
-          />
-        </el-form-item>
-        <el-form-item label="展现表单字段" prop="display_form_str">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="['name','sn']"
-            v-model="temp.display_form_str"
-          />
-        </el-form-item>
-        <el-form-item label="标题模板" prop="title_template">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="你有一个待办工单:{name}"
-            v-model="temp.title_template"
-          />
+        <el-form-item label="code" prop="code">
+          <el-input v-model="temp.code" />
         </el-form-item>
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
@@ -156,7 +110,7 @@
 </template>
 
 <script>
-import { workflow, auth } from "@/api/all";
+import { workflowtype, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import {
   checkAuthAdd,
@@ -197,9 +151,6 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
-        ticket_sn_prefix: [
-          { required: true, message: "请输入工单流水号前缀", trigger: "blur" }
-        ]
       }
     };
   },
@@ -227,7 +178,7 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      workflow.requestGet(this.listQuery).then(response => {
+      workflowtype.requestGet(this.listQuery).then(response => {
         this.list = response.results;
         this.total = response.count;
         this.listLoading = false;
@@ -249,13 +200,7 @@ export default {
     resetTemp() {
       this.temp = {
         name: "",
-        ticket_sn_prefix: "xxoo",
-        status: true,
-        view_permission_check: true,
-        limit_expression: "",
-        display_form_str: "",
-        title_template: "",
-        content_template: "",
+        code: "",
         memo: ""
       };
     },
@@ -272,7 +217,7 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           this.loading = true;
-          workflow
+          workflowtype
             .requestPost(this.temp)
             .then(response => {
               this.dialogFormVisible = false;
@@ -302,7 +247,7 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           this.loading = true;
-          workflow
+          workflowtype
             .requestPut(this.temp.id, this.temp)
             .then(() => {
               this.dialogFormVisible = false;
@@ -326,7 +271,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          workflow.requestDelete(row.id).then(() => {
+          workflowtype.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
               type: "success"

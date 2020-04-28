@@ -21,8 +21,8 @@
       </el-table-column>
       <el-table-column label="排序" prop="order_id"></el-table-column>
       <el-table-column label="是否隐藏" prop="is_hidden">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.is_hidden" type="success">是</el-tag>
+        <template slot-scope="{ row }">
+          <el-tag v-if="row.is_hidden" type="success">是</el-tag>
           <el-tag v-else type="danger">否</el-tag>
         </template>
       </el-table-column>

@@ -5,6 +5,18 @@ from django.db import models
 from common.models import BaseModel
 
 
+class WorkflowType(BaseModel):
+    name = models.CharField('名称', max_length=50)
+    code = models.CharField(max_length=32, unique=True, verbose_name='代码')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = '类型'
+        verbose_name_plural = verbose_name
+
+
 class Workflow(BaseModel):
     """
     工作流
@@ -12,6 +24,7 @@ class Workflow(BaseModel):
     name = models.CharField('名称', max_length=50)
     ticket_sn_prefix = models.CharField('工单流水号前缀', default='xxoo', max_length=20)
     status = models.BooleanField(default=True)
+    type = models.ForeignKey(WorkflowType, on_delete=models.CASCADE, verbose_name='工作流类型')
     view_permission_check = models.BooleanField('查看权限校验', default=True, help_text='开启后，只允许工单的关联人(创建人、曾经的处理人)有权限查看工单')
     limit_expression = models.TextField('限制表达式', default='{}', blank=True,
                                         help_text='限制周期({"period":24} 24小时), 限制次数({"count":1}在限制周期内只允许提交1次), 限制级别({"level":1} 针对(1单个用户 2全局)限制周期限制次数,默认特定用户);允许特定人员提交({"allow_persons":"zhangsan,lisi"}只允许张三提交工单,{"allow_depts":"1,2"}只允许部门id为1和2的用户提交工单，{"allow_roles":"1,2"}只允许角色id为1和2的用户提交工单)')

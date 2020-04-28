@@ -5,11 +5,23 @@ from workflows.serializers import *
 from common.views import ModelViewSet, FKModelViewSet, JsonResponse, BulkModelMixin
 
 
+class WorkflowTypeViewSet(BulkModelMixin):
+    queryset = WorkflowType.objects.all()
+    serializer_class = WorkflowTypeSerializer
+    search_fields = ['name']
+    filter_fields = ['name', 'code']
+
+
 class WorkflowViewSet(BulkModelMixin):
     queryset = Workflow.objects.all()
     serializer_class = WorkflowSerializer
     search_fields = ['name']
-    filter_fields = ['name', 'id']
+    filter_fields = ['name', 'id', 'type']
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve'] or self.resultData:
+            return WorkflowReadSerializer
+        return WorkflowSerializer
 
 
 class StateViewSet(BulkModelMixin):

@@ -5,6 +5,19 @@ from workflows.models import *
 from rest_framework import serializers
 
 
+class WorkflowTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkflowType
+        fields = '__all__'
+
+
+class WorkflowReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workflow
+        fields = '__all__'
+        depth = 1
+
+
 class WorkflowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workflow

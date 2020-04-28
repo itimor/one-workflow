@@ -37,16 +37,21 @@
       @sort-change="handleSortChange"
     >
       <el-table-column label="名称" prop="name"></el-table-column>
+      <el-table-column label="类型" prop="type">
+        <template slot-scope="{ row }">
+          <span>{{row.type.name}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="工单流水号前缀" prop="ticket_sn_prefix"></el-table-column>
       <el-table-column label="状态" prop="status" sortable="custom">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status" type="success">启用</el-tag>
+        <template slot-scope="{ row }">
+          <el-tag v-if="row.status" type="success">启用</el-tag>
           <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="查看权限校验" prop="view_permission_check" sortable="custom">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.view_permission_check" type="success">启用</el-tag>
+        <template slot-scope="{ row }">
+          <el-tag v-if="row.view_permission_check" type="success">启用</el-tag>
           <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>
@@ -100,6 +105,16 @@
         <el-form-item label="工单号前缀" prop="ticket_sn_prefix">
           <el-input v-model="temp.ticket_sn_prefix" />
         </el-form-item>
+        <el-form-item label="工单号前缀" prop="type">
+          <el-select v-model="temp.type" placeholder="请选择">
+            <el-option
+              v-for="item in wftype_list"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-switch v-model="temp.status" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
@@ -150,7 +165,7 @@
 </template>
 
 <script>
-import { workflow, auth } from "@/api/all";
+import { workflow, workflowtype, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import {
   checkAuthAdd,
@@ -191,16 +206,19 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        type: [{ required: true, message: "请选择类型", trigger: "blur" }],
         ticket_sn_prefix: [
           { required: true, message: "请输入工单流水号前缀", trigger: "blur" }
         ]
-      }
+      },
+      wftype_list: []
     };
   },
   computed: {},
   created() {
     this.getMenuButton();
     this.getList();
+    this.getWftypeList();
   },
   methods: {
     checkPermission() {
@@ -227,6 +245,11 @@ export default {
         this.listLoading = false;
       });
     },
+    getWftypeList() {
+      workflowtype.requestGet().then(response => {
+        this.wftype_list = response.results;
+      });
+    },
     handleFilter() {
       this.getList();
     },
@@ -244,6 +267,7 @@ export default {
       this.temp = {
         name: "",
         ticket_sn_prefix: "xxoo",
+        type: "",
         status: true,
         view_permission_check: true,
         limit_expression: "",

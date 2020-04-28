@@ -48,18 +48,18 @@
       <el-table-column label="菜单代码" prop="code"></el-table-column>
       <el-table-column label="排序值" prop="sequence"></el-table-column>
       <el-table-column label="菜单类型" prop="type">
-        <template slot-scope="scope">
-          <span>{{ scope.row.type | menuTypeFilter }}</span>
+        <template slot-scope="{ row }">
+          <span>{{ row.type | menuTypeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作类型" prop="operate">
-        <template slot-scope="scope">
-          <span>{{ scope.row.operate | operateTypeFilter }}</span>
+        <template slot-scope="{ row }">
+          <span>{{ row.operate | operateTypeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column label="菜单状态" prop="status">
-        <template slot-scope="scope">
-          <span>{{scope.row.status}}</span>
+        <template slot-scope="{ row }">
+          <span>{{row.status}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
