@@ -17,7 +17,7 @@ export default {
     wfconf: 'wfconf',
     myticket: 'myticket',
     ticket: 'ticket',
-    c_ticket: 'c_ticket',
+    new_ticket: 'new_ticket',
     u_ticket: 'u_ticket',
     s_ticket: 's_ticket',
     my_ticket: 'my_ticket',

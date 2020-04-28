@@ -67,10 +67,12 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.save()
 
         # save ticketuser
+        if instance.transition.dest_state is None:
+            user2 = None
+
         user1 = User.objects.get(username=validated_data["create_user"])
-        user2 = User.objects.get(username=state.participant)
-        TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
-        TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
+        TicketUser.objects.create(ticket=instance, username=user1, worked=True)
+        TicketUser.objects.create(ticket=instance, username=user2, in_process=True)
         return instance
 
 

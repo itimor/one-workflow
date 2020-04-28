@@ -54,7 +54,8 @@ def set_menu(menus, parent_id):
             'name': item.code,
             'hidden': item.hidden,
             'meta': {'title': item.code, 'icon': item.icon, 'no_cache': item.no_cache, 'active_menu': item.active_menu,
-                     'name': item.name},
+                     'hidden': item.hidden,
+                     },
             'children': []
         }
         if item.type == 3:
@@ -71,8 +72,10 @@ def set_menu(menus, parent_id):
                 'path': 'index',
                 'component': item.code,
                 'name': item.code,
+                'hidden': item.hidden,
                 'meta': {'title': item.code, 'icon': item.icon, 'no_cache': item.no_cache,
-                         'active_menu': item.active_menu, 'name': item.name},
+                         'active_menu': item.active_menu, 'hidden': item.hidden,
+                         },
                 'children': []
             }
             menu['children'].append(menu_index)

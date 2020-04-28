@@ -95,8 +95,10 @@ class Transition(BaseModel):
     transition_type = models.CharField(max_length=1, choices=tuple(transition_type.items()), default=0,
                                        verbose_name='流转类型')
     timer = models.IntegerField('定时器(单位秒)', default=0, help_text='流转类型设置为定时器流转时生效,单位秒。处于源状态X秒后如果状态都没有过变化则自动流转到目标状态')
-    source_state = models.ForeignKey(State, on_delete=models.CASCADE, related_name="source_state", verbose_name='源状态')
-    dest_state = models.ForeignKey(State, on_delete=models.CASCADE, related_name="dest_state", verbose_name='目的状态')
+    source_state = models.ForeignKey(State, null=True, blank=True, on_delete=models.SET_NULL,
+                                     related_name="source_state", verbose_name='源状态')
+    dest_state = models.ForeignKey(State, null=True, blank=True, on_delete=models.SET_NULL, related_name="dest_state",
+                                   verbose_name='目的状态')
     condition_expression = models.TextField('条件表达式', default='[]',
                                             help_text='流转条件表达式，根据表达式中的条件来确定流转的下个状态，格式为[{"expression":"{days} > 3 and {days}<10", "target_state_id":11}] 其中{}用于填充工单的字段key,运算时会换算成实际的值，当符合条件下个状态将变为target_state_id中的值,表达式只支持简单的运算或datetime/time运算.loonflow会以首次匹配成功的条件为准，所以多个条件不要有冲突')
     attribute_type = models.CharField(max_length=1, choices=tuple(attribute_type.items()), default=0,

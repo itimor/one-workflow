@@ -179,11 +179,11 @@ export default {
     handleButton(transition) {
       const data = Object.assign({}, this.wfdata, {
         transition: transition.id,
-        state: transition.dest_state.id,
+        state: transition.source_state.id,
         workflow: this.wfdata.workflow.id,
         create_user: this.username
       });
-      console.log(data)
+      console.log(this.temp)
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           ticket
@@ -191,7 +191,7 @@ export default {
             .then(response => {
               this.temp = Object.assign(this.temp, {
                 transition: transition.id,
-                state: transition.dest_state.id,
+                state: transition.source_state.id,
                 participant: this.username
               });
               ticketflowlog.requestPost(this.temp).then(response => {
@@ -201,7 +201,7 @@ export default {
                   type: "success",
                   duration: 2000
                 });
-                this.fetchData(this.temp.ticket);
+                this.$router.push({ path: "/todo_ticket" })
               });
             })
             .catch(() => {});

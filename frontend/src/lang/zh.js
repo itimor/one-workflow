@@ -17,7 +17,7 @@ export default {
     wfconf: '工作流配置',
     myticket: '我的工单',
     ticket: '工单系统',
-    c_ticket: '新建工单',
+    new_ticket: '新建工单',
     u_ticket: '编辑工单',
     s_ticket: '处理工单',
     my_ticket: '我创建的',

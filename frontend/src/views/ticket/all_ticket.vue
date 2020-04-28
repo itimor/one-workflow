@@ -62,7 +62,7 @@
         <template slot-scope="{ row }">
           <el-button-group>
             <el-button
-              v-if="permissionList.del"
+              v-if="permissionList.del & username === 'admin'"
               size="small"
               type="danger"
               @click="handleDelete(row)"
@@ -92,6 +92,7 @@ import {
   checkAuthView,
   checkAuthUpdate
 } from "@/utils/permission";
+import { mapGetters } from "vuex";
 
 export default {
   name: "all_ticket",
@@ -119,7 +120,9 @@ export default {
       multipleSelection: []
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["username"])
+  },
   created() {
     this.getMenuButton();
     this.getList();

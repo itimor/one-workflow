@@ -21,12 +21,14 @@
       </el-table-column>
       <el-table-column label="上一个节点" prop="source_state">
         <template slot-scope="{ row }">
-          <span>{{row.source_state.name}}</span>
+          <span v-if="row.source_state">{{row.source_state.name}}</span>
+          <span v-else>None</span>
         </template>
       </el-table-column>
       <el-table-column label="下一个节点" prop="dest_state">
         <template slot-scope="{ row }">
-          <span>{{row.dest_state.name}}</span>
+          <span v-if="row.dest_state">{{row.dest_state.name}}</span>
+          <span v-else>None</span>
         </template>
       </el-table-column>
       <el-table-column label="属性类型" prop="attribute_type">
