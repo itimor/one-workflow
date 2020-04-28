@@ -89,13 +89,13 @@ def set_menu(menus, parent_id):
 def init_menu(menu):
     if menu.type == 2:
         menu_list = [
-            {"name": "新增", "code": menu.code + "add", "curl": menu.curl + "/add", 'type': 3, "operate": "add",
+            {"name": "新增", "code": menu.code + "_add", "curl": menu.curl + "/add", 'type': 3, "operate": "add",
              "sequence": 10},
-            {"name": "删除", "code": menu.code + "del", "curl": menu.curl + "/del", 'type': 3, "operate": "del",
+            {"name": "删除", "code": menu.code + "_del", "curl": menu.curl + "/del", 'type': 3, "operate": "del",
              "sequence": 20},
-            {"name": "编辑", "code": menu.code + "update", "curl": menu.curl + "/update", 'type': 3, "operate": "update",
+            {"name": "编辑", "code": menu.code + "_update", "curl": menu.curl + "/update", 'type': 3, "operate": "update",
              "sequence": 30},
-            {"name": "查看", "code": menu.code + "view", "curl": menu.curl + "/view", 'type': 3, "operate": "view",
+            {"name": "查看", "code": menu.code + "_view", "curl": menu.curl + "/view", 'type': 3, "operate": "view",
              "sequence": 40},
         ]
 

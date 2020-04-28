@@ -26,6 +26,9 @@ class Command(BaseCommand):
         menumodel = Menu.objects.create(name='我的工单', code='my_ticket', curl='/my_ticket', icon='my_ticket', sequence=30, type=2,
                                         parent_id=ticketmenu.id)
         init_menu(menumodel)
+        menumodel = Menu.objects.create(name='我的待办', code='todo_ticket', curl='/todo_ticket', icon='todo_ticket', sequence=40, type=2,
+                                        parent_id=ticketmenu.id)
+        init_menu(menumodel)
         menumodel = Menu.objects.create(name='所有工单', code='all_ticket', curl='/all_ticket', icon='all_ticket', sequence=90, type=2,
                                         parent_id=ticketmenu.id)
         init_menu(menumodel)
