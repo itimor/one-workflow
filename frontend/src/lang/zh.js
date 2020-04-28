@@ -2,6 +2,7 @@ export default {
   systemTitle: '后台管理系统',
 
   route: {
+    login: '登录',
     dashboard: '首页',
     sys: '系统管理',
     user: '用户管理',
