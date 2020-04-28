@@ -86,12 +86,11 @@ export default {
     },
     getList() {
       this.listLoading = true;
-
       const params = {
         username__username: this.username,
         in_process: true
       };
-      ticketuser.requestGet().then(response => {
+      ticketuser.requestGet(params).then(response => {
         for (var i of response.results) {
           this.list.push(i.ticket);
         }

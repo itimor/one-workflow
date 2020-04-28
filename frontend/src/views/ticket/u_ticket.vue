@@ -233,7 +233,7 @@ export default {
       let form = {};
       for (let i = 0; i < this.customfield_list.length; i++) {
         if ([50, 60, 70].includes(this.customfield_list[i].field_type)) {
-          form[this.init_state.field_list[i].field_key] = [];
+          form[this.customfield_list[i].field_key] = [];
         } else if ([15, 20].includes(this.customfield_list[i].field_type_id)) {
           form[this.customfield_list[i].field_key] = 0;
         } else {
