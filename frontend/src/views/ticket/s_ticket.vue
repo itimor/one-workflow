@@ -27,7 +27,7 @@
               </el-col>
             </el-row>
 
-            <el-form-item label="处理意见">
+            <el-form-item label="处理意见" v-if="wfdata.transition.dest_state">
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 5, maxRows: 8}"
@@ -35,7 +35,7 @@
               ></el-input>
             </el-form-item>
 
-            <el-form-item style="text-align: center;">
+            <el-form-item style="text-align: center;" v-if="wfdata.transition.dest_state">
               <el-button
                 v-for="item in transition_list"
                 :key="item.id"
