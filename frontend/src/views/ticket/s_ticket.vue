@@ -27,7 +27,7 @@
               </el-col>
             </el-row>
 
-            <el-form-item label="处理意见" v-if="wfdata.transition.dest_state">
+            <el-form-item label="处理意见" v-if="transition_list.length>1">
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 5, maxRows: 8}"
@@ -35,7 +35,7 @@
               ></el-input>
             </el-form-item>
 
-            <el-form-item style="text-align: center;" v-if="wfdata.transition.dest_state">
+            <el-form-item style="text-align: center;" v-if="transition_list.length>1">
               <el-button
                 v-for="item in transition_list"
                 :key="item.id"
@@ -183,7 +183,6 @@ export default {
         workflow: this.wfdata.workflow.id,
         create_user: this.username
       });
-      console.log(this.temp)
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           ticket
