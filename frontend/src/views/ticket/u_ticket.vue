@@ -69,9 +69,9 @@
                     :placeholder="item.field_name"
                   >
                     <el-radio
-                      v-for="t in JSON.parse(item.field_choice)"
-                      :label="t.value"
-                    >{{t.label}}</el-radio>
+                      v-for="(value, index) in JSON.parse(item.field_choice)"
+                      :label="value"
+                    >{{value}}</el-radio>
                   </el-radio-group>
 
                   <el-checkbox-group
@@ -80,9 +80,9 @@
                     :placeholder="item.field_name"
                   >
                     <el-checkbox
-                      v-for="t in JSON.parse(item.field_choice)"
-                      :label="t.value"
-                    >{{t.label}}</el-checkbox>
+                      v-for="(value, index)  in JSON.parse(item.field_choice)"
+                      :label="value"
+                    >{{value}}</el-checkbox>
                   </el-checkbox-group>
 
                   <el-select
@@ -92,9 +92,9 @@
                     clearable
                   >
                     <el-option
-                      v-for="t in JSON.parse(item.field_choice)"
-                      :value="t.value"
-                    >{{t.label}}</el-option>
+                      v-for="(value, index)  in JSON.parse(item.field_choice)"
+                      :value="value"
+                    >{{value}}</el-option>
                   </el-select>
 
                   <el-select
@@ -105,9 +105,9 @@
                     multiple
                   >
                     <el-option
-                      v-for="t in JSON.parse(item.field_choice)"
-                      :value="t.value"
-                    >{{t.label}}</el-option>
+                      v-for="(value, index)  in JSON.parse(item.field_choice)"
+                      :value="value"
+                    >{{value}}</el-option>
                   </el-select>
 
                   <el-select
@@ -168,7 +168,7 @@ import {
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
 import Validators from "@/utils/validators";
-import { GenDatetime } from "@/utils"
+import { GenDatetime } from "@/utils";
 
 export default {
   name: "u_ticket",
@@ -268,7 +268,7 @@ export default {
         this.setPageTitle();
 
         const d = new Date();
-        this.temp.name = this.wfdata.name + '-' + GenDatetime(d);
+        this.temp.name = this.wfdata.name + "-" + GenDatetime(d);
         this.getCustomfieldList();
         this.getStateList();
       });

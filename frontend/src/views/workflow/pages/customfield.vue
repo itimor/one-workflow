@@ -100,7 +100,7 @@
           <el-input v-model="temp.field_choice" />
           <a
             class="tips"
-          >radio,checkbox,select,multiselect类型可供选择的选项，格式为json如:{"1":"中国", "2":"美国"},注意数字也需要引号</a>
+          >radio,checkbox,select,multiselect类型可供选择的选项，格式为list如:["中国", "美国"],注意数字也需要引号</a>
         </el-form-item>
         <el-form-item label="标签" prop="label">
           <el-input v-model="temp.label" />

@@ -47,11 +47,6 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="真实姓名" prop="realname"></el-table-column>
-      <!-- <el-table-column label="角色" prop="roles">
-        <template slot-scope="{ row }">
-          <el-tag v-for="item in row.roles" :key="item.id" size="medium">{{item.name}}</el-tag>
-        </template>
-      </el-table-column> -->
       <el-table-column label="头像" align="center">
         <template slot-scope="{ row }">
           <el-popover placement="top" width="200" trigger="hover">
