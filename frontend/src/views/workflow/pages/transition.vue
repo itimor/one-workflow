@@ -13,7 +13,11 @@
     </div>
 
     <el-table :data="list" border style="width: 100%" highlight-current-row>
-      <el-table-column label="名称" prop="name"></el-table-column>
+      <el-table-column label="名称" prop="name">
+        <template slot-scope="{ row }">
+          <span>{{row.name|TransitionNameFilter}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="类型" prop="transition_type">
         <template slot-scope="{ row }">
           <span>{{row.transition_type|TransitionTypeFilter}}</span>
@@ -69,7 +73,14 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="名称" prop="name">
-          <el-input v-model="temp.name" />
+          <el-select v-model="temp.name" clearable placeholder="请选择">
+            <el-option
+              v-for="(label, value) in transition_names"
+              :key="value"
+              :label="label"
+              :value="parseInt(value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="类型" prop="transition_type">
           <el-select v-model="temp.transition_type" clearable placeholder="请选择">
@@ -193,6 +204,12 @@ export default {
         3: "被撤销",
         4: "已完成",
         5: "已关闭"
+      },
+      transition_names: {
+        0: "保存",
+        1: "转交下一步",
+        2: "驳回",
+        3: "撤销"
       }
     };
   },
@@ -228,8 +245,8 @@ export default {
         attribute_type: 0,
         alert_enable: false,
         alert_text: "",
-        source_state: 1,
-        dest_state: 2,
+        source_state: undefined,
+        dest_state: undefined,
         workflow: this.wfdata.id
       };
     },

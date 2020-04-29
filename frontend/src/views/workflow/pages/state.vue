@@ -56,7 +56,7 @@
         :model="temp"
         label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left:50px;"
+        style="margin-left:50px;"
       >
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" />
@@ -79,7 +79,7 @@
         </el-form-item>
         <el-form-item label="允许撤回" prop="enable_retreat">
           <el-switch v-model="temp.enable_retreat" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-          <a class="tips">开启后允许工单创建人在此状态直接撤回工单到初始状态</a>
+          <a class="tips">允许工单创建人在此状态直接撤回工单到初始状态</a>
         </el-form-item>
         <el-form-item label="参与者类型" prop="participant_type">
           <el-select v-model="temp.participant_type" clearable placeholder="请选择">
@@ -93,15 +93,15 @@
         </el-form-item>
         <el-form-item label="参与者" prop="participant">
           <el-input v-model="temp.participant" />
-          <a
-            class="tips"
-          >可以为空(无处理人的情况，如结束状态)、username\多个username(以,隔开)\部门id\角色id\变量(creator,creator_tl)\脚本记录的id等，包含子工作流的需要设置处理人为loonrobot</a>
         </el-form-item>
-        <el-form-item label="表单字段" prop="state_field_str">
-          <el-input v-model="temp.state_field_str" />
-          <a
-            class="tips"
-          >json格式字典存储,包括读写属性1：只读，2：必填，3：可选. 示例：{"created_at":1,"title":2, "sn":1}, 内置特殊字段participant_info.participant_name:当前处理人信息(部门名称、角色名称)，state.state_name:当前状态的状态名,workflow.workflow_name:工作流名称') # json格式存储,包括读写属性1：只读，2：必填，3：可选，4：不显示, 字典的字典</a>
+        <el-form-item  label="可編輯字段" prop="fields">
+          <el-transfer
+            v-model="temp.fields"
+            filterable
+            :titles="['未选择', '已选择']"
+            :data="customfield_list"
+            :props="permprops"
+          ></el-transfer>
         </el-form-item>
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
@@ -135,6 +135,10 @@ export default {
       default: {}
     },
     list: {
+      type: Array,
+      default: []
+    },
+    customfield_list: {
       type: Array,
       default: []
     }
@@ -171,6 +175,11 @@ export default {
         2: "多人",
         3: "部门",
         4: "角色"
+      },
+      permprops: {
+        key: "id",
+        label: "field_name",
+        disabled: "field_attribute"
       }
     };
   },
@@ -201,12 +210,12 @@ export default {
         memo: "",
         name: "",
         is_hidden: false,
-        order_id: 1,
-        state_type: 1,
+        order_id: undefined,
+        state_type: 0,
         enable_retreat: false,
         participant_type: 1,
-        participant: "",
-        state_field_str: '{"name":2,"start_time":2,"end_time":2}',
+        participant: "admin",
+        fields: [],
         workflow: this.wfdata.id
       };
     },
@@ -231,7 +240,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
-            this.$emit('checkdata')
+              this.$emit("checkdata");
             })
             .catch(() => {});
         }
@@ -258,7 +267,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
-            this.$emit('checkdata')
+              this.$emit("checkdata");
             })
             .catch(() => {});
         }
@@ -276,7 +285,7 @@ export default {
               message: "删除成功",
               type: "success"
             });
-            this.$emit('checkdata')
+            this.$emit("checkdata");
           });
         })
         .catch(() => {

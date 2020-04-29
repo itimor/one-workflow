@@ -20,25 +20,22 @@
                     v-if="item.field_type === 10"
                     v-model="item.field_value"
                     :placeholder="item.field_name"
+                    :disabled="item.field_attribute"
                   />
 
                   <el-input-number
                     v-if="item.field_type === 15"
                     v-model="temp.field_value"
                     :placeholder="item.field_name"
+                    :disabled="item.field_attribute"
                   ></el-input-number>
-
-                  <el-switch
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    v-if="item.field_type === 25"
-                    v-model="temp.fields[item.field_key]"
-                  ></el-switch>
 
                   <el-time-picker
                     v-if="item.field_type === 35"
                     v-model="temp.fields[item.field_key]"
                     :placeholder="item.field_name"
+                    :disabled="item.field_attribute"
+
                   ></el-time-picker>
 
                   <el-date-picker
@@ -46,6 +43,7 @@
                     v-if="item.field_type === 30"
                     v-model="temp.fields[item.field_key]"
                     :placeholder="item.field_name"
+                    :disabled="item.field_attribute"
                   ></el-date-picker>
 
                   <el-date-picker
@@ -53,6 +51,7 @@
                     v-if="item.field_type === 40"
                     v-model="item.field_value"
                     :placeholder="item.field_name"
+                    :disabled="item.field_attribute"
                   ></el-date-picker>
 
                   <el-input
@@ -61,8 +60,16 @@
                     v-if="item.field_type === 65"
                     v-model="item.field_value"
                     :placeholder="item.field_name"
+                    :disabled="item.field_attribute"
                   ></el-input>
 
+                  <el-switch
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                    v-if="item.field_type === 25"
+                    v-model="temp.fields[item.field_key]"
+                  ></el-switch>
+                  
                   <el-radio-group
                     v-if="item.field_type === 45"
                     v-model="item.field_value"

@@ -20,7 +20,7 @@
           <span>{{row.field_type|FieldTypeFilter}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="字段是否必填" prop="field_attribute">
+      <el-table-column label="字段是否内置" prop="field_attribute">
         <template slot-scope="{ row }">
           <el-tag v-if="row.field_attribute" type="success">是</el-tag>
           <el-tag v-else type="danger">否</el-tag>
@@ -80,9 +80,6 @@
         </el-form-item>
         <el-form-item label="排序" prop="order_id">
           <el-input v-model="temp.order_id" />
-        </el-form-item>
-        <el-form-item label="字段是否必填" prop="field_attribute">
-          <el-switch v-model="temp.field_attribute" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="默认值" prop="default_value">
           <el-input v-model="temp.default_value" />
@@ -209,7 +206,6 @@ export default {
         field_key: "",
         field_name: "",
         order_id: 10,
-        field_attribute: true,
         default_value: "",
         field_template: "",
         boolean_field_display: "",

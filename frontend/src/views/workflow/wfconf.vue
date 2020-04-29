@@ -9,19 +9,33 @@
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
       <el-tab-pane label="工作流字段" name="customfield">
         <keep-alive>
-          <tab-customfield @checkdata="getCustomfieldList" :wfdata="wfdata" :list="customfield_list"></tab-customfield>
+          <tab-customfield
+            @checkdata="getCustomfieldList"
+            :wfdata="wfdata"
+            :list="customfield_list"
+          ></tab-customfield>
         </keep-alive>
       </el-tab-pane>
 
       <el-tab-pane label="工作流节点" name="state">
         <keep-alive>
-          <tab-state @checkdata="getStateList" :wfdata="wfdata" :list="state_list"></tab-state>
+          <tab-state
+            @checkdata="getStateList"
+            :wfdata="wfdata"
+            :list="state_list"
+            :customfield_list="customfield_list"
+          ></tab-state>
         </keep-alive>
       </el-tab-pane>
 
       <el-tab-pane label="工作流步骤" name="transition">
         <keep-alive>
-          <tab-transition @checkdata="getTransitionList" :wfdata="wfdata" :statedata="state_list" :list="transition_list"></tab-transition>
+          <tab-transition
+            @checkdata="getTransitionList"
+            :wfdata="wfdata"
+            :statedata="state_list"
+            :list="transition_list"
+          ></tab-transition>
         </keep-alive>
       </el-tab-pane>
     </el-tabs>
@@ -61,8 +75,8 @@ export default {
       state_list: [],
       transition_list: [],
       temp: {
-        workflow: undefined
-      }
+        workflow: undefined,
+      },
     };
   },
 

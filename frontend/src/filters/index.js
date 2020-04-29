@@ -131,6 +131,18 @@ export function AttributeTypeFilter(val) {
   return Map[val]
 }
 
+
+// 流转名称
+export function TransitionNameFilter(val) {
+  const Map = {
+    0: '保存',
+    1: '转交下一步',
+    2: '驳回',
+    3: '撤销',
+  }
+  return Map[val]
+}
+
 // 取第一个字母并大写
 export function AvatarFilter(val) {
   return val.substr(0, 1).toUpperCase()

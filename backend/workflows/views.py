@@ -48,5 +48,5 @@ class CustomFieldViewSet(BulkModelMixin):
     queryset = CustomField.objects.all()
     serializer_class = CustomFieldSerializer
     search_fields = ['field_name']
-    filter_fields = ['workflow', 'field_type']
+    filter_fields = ['workflow', 'field_type', 'field_attribute']
     ordering_fields = ['field_type', 'order_id']

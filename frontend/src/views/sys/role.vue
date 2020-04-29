@@ -131,7 +131,7 @@
                 v-model="temp.model_perms"
                 filterable
                 :titles="['未选择', '已选择']"
-                  :data="allperm"
+                :data="allperm"
                 :props="permprops"
               ></el-transfer>
             </el-form-item>
