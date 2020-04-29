@@ -201,6 +201,7 @@ export default {
       customfield_list: [],
       state_list: [],
       transition_list: [],
+      user_list: [],
       temp: {},
       rules: {},
       btn_types: {

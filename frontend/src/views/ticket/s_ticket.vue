@@ -5,11 +5,7 @@
         <div slot="header" class="clearfix">
           <span class="card-title">流程</span>
         </div>
-        <el-steps
-          :active="stateActive"
-          finish-status="success"
-          process-status="finish"
-        >
+        <el-steps :active="stateActive" finish-status="success" process-status="finish">
           <el-step v-for="item in state_list" :ken="item.order_id" :title="item.name"></el-step>
         </el-steps>
       </el-card>
@@ -154,6 +150,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
+
             <el-form-item>
               <el-button
                 v-for="item in transition_list"
@@ -162,7 +159,7 @@
                 @click="handleButton('temp', item)"
               >{{item.name|TransitionNameFilter}}</el-button>
 
-              <el-button type="warning" style="margin: 0 5px;" @click="reset('temp')">重置</el-button>
+              <el-button v-if="wfdata.transition.dest_state" type="warning" style="margin: 0 5px;" @click="reset('temp')">重置</el-button>
             </el-form-item>
           </el-card>
         </el-form>
@@ -194,6 +191,7 @@ import {
   transition,
   ticket,
   ticketflowlog,
+  user,
   auth
 } from "@/api/all";
 import { mapGetters } from "vuex";
@@ -210,6 +208,7 @@ export default {
       state_list: [],
       transition_list: [],
       ticketlog_list: [],
+      user_list: [],
       temp: {},
       rules: {},
       btn_types: {
@@ -231,6 +230,7 @@ export default {
   created() {
     const id = this.$route.params && this.$route.params.id;
     this.fetchData(id);
+    this.getUserList();
     this.tempRoute = Object.assign({}, this.$route);
   },
   methods: {
@@ -278,6 +278,11 @@ export default {
         this.ticketlog_list = response.results;
       });
     },
+    getUserList() {
+      user.requestGet().then(response => {
+        this.user_list = response.results;
+      });
+    },
     handleFilter() {
       this.fetchData();
     },
@@ -285,24 +290,41 @@ export default {
       const title = this.wfdata.name;
       document.title = `${title} - 处理`;
     },
-    handleButton(transition) {
-      const data = Object.assign({}, this.wfdata, {
-        transition: transition.id,
-        state: transition.source_state.id,
-        workflow: this.wfdata.workflow.id,
-        create_user: this.username
-      });
-      this.$refs["dataForm"].validate(valid => {
+    handleButton(dataForm, transition) {
+      const customfield = [];
+      for (var i of this.customfield_list) {
+        customfield.push({
+          ticket: i.ticket.id,
+          customfield: i.customfield.id,
+          field_value: this.temp[i.field_key]
+        });
+      }
+      const data = Object.assign(
+        {},
+        {
+          name: this.wfdata.name,
+          create_user: this.username,
+          workflow: this.wfdata.workflow.id,
+          state: transition.dest_state.id,
+          transition: transition.id,
+          customfield: JSON.stringify(customfield)
+        }
+      );
+      this.$refs[dataForm].validate(valid => {
         if (valid) {
           ticket
-            .requestPut(data.id, data)
+            .requestPut(this.wfdata.id, data)
             .then(response => {
-              this.temp = Object.assign(this.temp, {
-                transition: transition.id,
-                state: transition.source_state.id,
-                participant: this.username
-              });
-              ticketflowlog.requestPost(this.temp).then(response => {
+              data = Object.assign(
+                {},
+                {
+                  ticket: this.wfdata.id,
+                  transition: transition.id,
+                  state: transition.source_state.id,
+                  participant: this.username
+                }
+              );
+              ticketflowlog.requestPost(data).then(response => {
                 this.$notify({
                   title: "成功",
                   message: "更新成功",

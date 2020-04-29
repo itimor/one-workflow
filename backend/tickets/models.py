@@ -52,7 +52,6 @@ class TicketFlowLog(BaseModel):
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='工单')
     transition = models.ForeignKey(Transition, on_delete=models.CASCADE, verbose_name='流转')
-    suggestion = models.TextField('处理意见', default='', blank=True)
     participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0,
                                         verbose_name='处理人类型')
     participant = models.CharField('处理人', max_length=50, default='', blank=True)

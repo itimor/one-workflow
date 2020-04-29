@@ -136,6 +136,7 @@ transition_name = {
     1: '转交下一步',
     2: '驳回',
     3: '撤销',
+    4: '关闭',
 }
 
 transition_type = {

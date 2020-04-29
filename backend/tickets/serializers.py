@@ -7,6 +7,7 @@ from systems.models import User
 from rest_framework import serializers
 from utils.index import gen_time_pid
 import json
+from bulk_update.helper import bulk_update
 
 
 class TicketReadSerializer(serializers.ModelSerializer):
@@ -43,7 +44,6 @@ class TicketSerializer(serializers.ModelSerializer):
         # save customfield
         field_models = []
         for item in json.loads(customfield_list):
-            print(item)
             field_models.append(
                 TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
                                   field_value=item['field_value']))
@@ -71,8 +71,13 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.customfield = validated_data.get('customfield', instance.customfield)
         instance.save()
 
+        # save customfield
+        customfield_list = json.loads(instance.customfield)
+        for item in customfield_list:
+            TicketCustomField.objects.update_or_create(**item)
+
         # save ticketuser
-        if instance.transition.dest_state is None:
+        if instance.transition.dest_state.state_type == 2:
             user2 = None
         else:
             user2 = User.objects.get(username=instance.state.participant)
