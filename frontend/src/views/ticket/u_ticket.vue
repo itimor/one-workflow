@@ -20,22 +20,21 @@
                     v-if="item.field_type === 10"
                     v-model="item.field_value"
                     :placeholder="item.field_name"
-                    :disabled="item.field_attribute"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   />
 
                   <el-input-number
                     v-if="item.field_type === 15"
                     v-model="temp.field_value"
                     :placeholder="item.field_name"
-                    :disabled="item.field_attribute"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-input-number>
 
                   <el-time-picker
                     v-if="item.field_type === 35"
                     v-model="temp.fields[item.field_key]"
                     :placeholder="item.field_name"
-                    :disabled="item.field_attribute"
-
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-time-picker>
 
                   <el-date-picker
@@ -43,7 +42,7 @@
                     v-if="item.field_type === 30"
                     v-model="temp.fields[item.field_key]"
                     :placeholder="item.field_name"
-                    :disabled="item.field_attribute"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-date-picker>
 
                   <el-date-picker
@@ -51,7 +50,7 @@
                     v-if="item.field_type === 40"
                     v-model="item.field_value"
                     :placeholder="item.field_name"
-                    :disabled="item.field_attribute"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-date-picker>
 
                   <el-input
@@ -60,7 +59,7 @@
                     v-if="item.field_type === 65"
                     v-model="item.field_value"
                     :placeholder="item.field_name"
-                    :disabled="item.field_attribute"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-input>
 
                   <el-switch
@@ -68,12 +67,13 @@
                     inactive-color="#ff4949"
                     v-if="item.field_type === 25"
                     v-model="temp.fields[item.field_key]"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-switch>
-                  
+
                   <el-radio-group
                     v-if="item.field_type === 45"
                     v-model="item.field_value"
-                    :placeholder="item.field_name"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-radio
                       v-for="(value, index) in JSON.parse(item.field_choice)"
@@ -84,7 +84,7 @@
                   <el-checkbox-group
                     v-if="item.field_type === 50"
                     v-model="item.field_value"
-                    :placeholder="item.field_name"
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-checkbox
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
@@ -97,6 +97,7 @@
                     v-model="item.field_value"
                     :placeholder="item.field_name"
                     clearable
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
@@ -110,6 +111,7 @@
                     :placeholder="item.field_name"
                     clearable
                     multiple
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
@@ -122,6 +124,7 @@
                     v-model="item.field_value"
                     :placeholder="item.field_name"
                     clearable
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
                   </el-select>
@@ -132,6 +135,7 @@
                     :placeholder="item.field_name"
                     clearable
                     multiple
+                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
                   </el-select>
@@ -142,9 +146,9 @@
               <el-button
                 v-for="item in transition_list"
                 :key="item.id"
-                :type="btn_types[item.attribute_type]"
+                :type="btn_types[item.name]"
                 @click="handleButton(item)"
-              >{{item.name}}</el-button>
+              >{{item.name|TransitionNameFilter}}</el-button>
             </el-form-item>
           </el-card>
         </el-form>
@@ -175,7 +179,7 @@ import {
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
 import Validators from "@/utils/validators";
-import { GenDatetime } from "@/utils";
+import { GenDatetime, objectMerge } from "@/utils";
 
 export default {
   name: "u_ticket",
@@ -202,60 +206,15 @@ export default {
       rules: {},
       btn_types: {
         0: "primary",
-        1: "danger",
-        2: "warning"
-      }
+        1: "success",
+        2: "warning",
+        3: "danger"
+      },
+      match_fields: []
     };
   },
   computed: {
-    ...mapGetters(["username"]),
-
-    FormRules() {
-      let validators = {};
-      this.customfield_list.map(item => {
-        if (item.field_attribute) {
-          if ([10, 45, 55, 65, 70].includes(item.field_type)) {
-            validators[item.field_key] = [
-              { required: true, type: "string", trigger: "blur" }
-            ];
-          } else if ([30, 35, 40].includes(item.field_type)) {
-            validators[item.field_key] = [
-              {
-                validator: Validators.datetime,
-                type: "date",
-                trigger: "change"
-              }
-            ];
-          } else if ([50, 60, 75].includes(item.field_type)) {
-            validators[item.field_key] = [
-              { required: true, type: "array", trigger: "change" }
-            ];
-          } else if ([15, 20].includes(item.field_type)) {
-            validators[item.field_key] = [
-              { required: true, type: "number", trigger: "blur" }
-            ];
-          } else if (item.field_type === 25) {
-            validators[item.field_type] = [
-              { required: true, type: "boolean", trigger: "blur" }
-            ];
-          }
-        }
-      });
-      return validators;
-    },
-    newForm() {
-      let form = {};
-      for (let i = 0; i < this.customfield_list.length; i++) {
-        if ([50, 60, 70].includes(this.customfield_list[i].field_type)) {
-          form[this.customfield_list[i].field_key] = [];
-        } else if ([15, 20].includes(this.customfield_list[i].field_type_id)) {
-          form[this.customfield_list[i].field_key] = 0;
-        } else {
-          form[this.customfield_list[i].field_key] = "";
-        }
-      }
-      return form;
-    }
+    ...mapGetters(["username"])
   },
   created() {
     const id = this.$route.params && this.$route.params.id;
@@ -277,7 +236,7 @@ export default {
         const d = new Date();
         this.temp.name = this.wfdata.name + "-" + GenDatetime(d);
         this.getCustomfieldList();
-        this.getStateList();
+        this.getStateList(id);
       });
     },
     getCustomfieldList() {
@@ -285,15 +244,24 @@ export default {
         this.customfield_list = response.results;
       });
     },
-    getStateList() {
-      state.requestGet(this.temp).then(response => {
+    getStateList(id) {
+      const params = {
+        workflow: id,
+        participant: this.username
+      };
+      state.requestGet(params).then(response => {
         this.state_list = response.results;
-        this.temp.source_state = this.state_list[0].id;
-        this.getTransitionList();
+        this.match_fields = this.state_list[1].fields;
+        console.log(this.match_fields);
+        this.getTransitionList(this.state_list[0].id);
       });
     },
-    getTransitionList() {
-      transition.requestGet(this.temp).then(response => {
+    getTransitionList(source_state) {
+      const params = {
+        workflow: this.temp.workflow,
+        source_state: source_state
+      };
+      transition.requestGet(params).then(response => {
         this.transition_list = response.results;
       });
     },
