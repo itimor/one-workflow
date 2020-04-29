@@ -93,7 +93,6 @@ export default {
       };
       workflow.requestGet(params).then(response => {
         this.wfdata = response.results[0];
-        this.setTagsViewTitle();
         this.setPageTitle();
         this.getCustomfieldList();
         this.getStateList();
@@ -117,13 +116,6 @@ export default {
     },
     handleFilter() {
       this.fetchData();
-    },
-    setTagsViewTitle() {
-      const title = this.wfdata.name;
-      const route = Object.assign({}, this.tempRoute, {
-        title: `${title} - 配置`
-      });
-      this.$store.dispatch("tagsView/updateVisitedView", route);
     },
     setPageTitle() {
       const title = this.wfdata.name;

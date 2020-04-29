@@ -20,10 +20,10 @@ class Ticket(BaseModel):
     工单记录
     """
     name = models.CharField(u'标题', max_length=112, blank=True, default='', help_text="工单的标题")
-    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
     sn = models.CharField(u'流水号', max_length=25, blank=True, help_text="工单的流水号")
-    state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
     create_user = models.CharField('创建者', blank=True, max_length=50)
+    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
+    state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
     transition = models.ForeignKey(Transition, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='进行状态')
     customfield = models.TextField('所有表单数据', default=[])
 

@@ -42,14 +42,15 @@ class TicketSerializer(serializers.ModelSerializer):
 
         # save customfield
         field_models = []
-        for customfield in json.loads(customfield_list):
+        for item in json.loads(customfield_list):
+            print(item)
             field_models.append(
-                TicketCustomField(ticket=ticket, customfield_id=int(customfield['id']),
-                                  field_value=customfield['field_value']))
+                TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
+                                  field_value=item['field_value']))
         TicketCustomField.objects.bulk_create(field_models)
 
         # save
-        if transition.dest_state is None:
+        if transition.dest_state.state_type == 2:
             user2 = None
         else:
             user2 = User.objects.get(username=state.participant)

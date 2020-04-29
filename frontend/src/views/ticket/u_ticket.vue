@@ -2,11 +2,11 @@
   <div class="app-container">
     <div class="ticket">
       <div class="ticket-form" v-if="customfield_list.length>0">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-width="100px">
+        <el-form ref="temp" :rules="rules" :model="temp" label-width="100px">
           <el-card>
             <div slot="header" class="card-solt">
               <el-form-item label="工单标题">
-                <el-input v-model="temp.name" />
+                <el-input v-model="ticket.name" />
               </el-form-item>
             </div>
             <el-row :gutter="20">
@@ -18,21 +18,21 @@
                 <el-form-item :label="item.field_name" :prop="item.field_key">
                   <el-input
                     v-if="item.field_type === 10"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   />
 
                   <el-input-number
                     v-if="item.field_type === 15"
-                    v-model="temp.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-input-number>
 
                   <el-time-picker
                     v-if="item.field_type === 35"
-                    v-model="temp.fields[item.field_key]"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-time-picker>
@@ -40,7 +40,7 @@
                   <el-date-picker
                     type="date"
                     v-if="item.field_type === 30"
-                    v-model="temp.fields[item.field_key]"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-date-picker>
@@ -48,16 +48,16 @@
                   <el-date-picker
                     type="datetime"
                     v-if="item.field_type === 40"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-date-picker>
 
                   <el-input
                     type="textarea"
-                    :autosize="{ minRows: 5, maxRows: 8}"
+                    :autosize="{ minRows: 4, maxRows: 6}"
                     v-if="item.field_type === 65"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-input>
@@ -66,48 +66,48 @@
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                     v-if="item.field_type === 25"
-                    v-model="temp.fields[item.field_key]"
+                    v-model="temp[item.field_key]"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-switch>
 
                   <el-radio-group
                     v-if="item.field_type === 45"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-radio
                       v-for="(value, index) in JSON.parse(item.field_choice)"
-                      :label="value"
+                      :label="index"
                     >{{value}}</el-radio>
                   </el-radio-group>
 
                   <el-checkbox-group
                     v-if="item.field_type === 50"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-checkbox
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
-                      :label="value"
+                      :label="index"
                     >{{value}}</el-checkbox>
                   </el-checkbox-group>
 
                   <el-select
                     v-if="item.field_type === 55"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
-                      :value="value"
+                      :value="index"
                     >{{value}}</el-option>
                   </el-select>
 
                   <el-select
                     v-if="item.field_type === 60"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
                     multiple
@@ -115,13 +115,13 @@
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
-                      :value="value"
+                      :value="index"
                     >{{value}}</el-option>
                   </el-select>
 
                   <el-select
                     v-if="item.field_type === 70"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
@@ -131,7 +131,7 @@
 
                   <el-select
                     v-if="item.field_type === 55"
-                    v-model="item.field_value"
+                    v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
                     multiple
@@ -147,8 +147,10 @@
                 v-for="item in transition_list"
                 :key="item.id"
                 :type="btn_types[item.name]"
-                @click="handleButton(item)"
+                @click="handleButton('temp', item)"
               >{{item.name|TransitionNameFilter}}</el-button>
+
+              <el-button type="warning" style="margin: 0 5px;" @click="reset('temp')">重置</el-button>
             </el-form-item>
           </el-card>
         </el-form>
@@ -199,10 +201,7 @@ export default {
       customfield_list: [],
       state_list: [],
       transition_list: [],
-      temp: {
-        name: "",
-        fields: []
-      },
+      temp: {},
       rules: {},
       btn_types: {
         0: "primary",
@@ -210,7 +209,11 @@ export default {
         2: "warning",
         3: "danger"
       },
-      match_fields: []
+      match_fields: [],
+      ticket: {},
+      workflow_temp: {
+        participant: this.username
+      }
     };
   },
   computed: {
@@ -224,44 +227,35 @@ export default {
   },
   methods: {
     fetchData(id) {
-      this.temp.workflow = id;
+      this.workflow_temp.workflow = id;
       const params = {
         id: id
       };
       workflow.requestGet(params).then(response => {
         this.wfdata = response.results[0];
-        this.setTagsViewTitle();
         this.setPageTitle();
 
         const d = new Date();
-        this.temp.name = this.wfdata.name + "-" + GenDatetime(d);
+        this.ticket.name = this.wfdata.name + "-" + GenDatetime(d);
         this.getCustomfieldList();
-        this.getStateList(id);
+        this.getStateList();
       });
     },
     getCustomfieldList() {
-      customfield.requestGet(this.temp).then(response => {
+      customfield.requestGet(this.workflow_temp).then(response => {
         this.customfield_list = response.results;
       });
     },
     getStateList(id) {
-      const params = {
-        workflow: id,
-        participant: this.username
-      };
-      state.requestGet(params).then(response => {
+      state.requestGet(this.workflow_temp).then(response => {
         this.state_list = response.results;
         this.match_fields = this.state_list[1].fields;
-        console.log(this.match_fields);
         this.getTransitionList(this.state_list[0].id);
       });
     },
     getTransitionList(source_state) {
-      const params = {
-        workflow: this.temp.workflow,
-        source_state: source_state
-      };
-      transition.requestGet(params).then(response => {
+      this.workflow_temp.source_state = source_state;
+      transition.requestGet(this.workflow_temp).then(response => {
         this.transition_list = response.results;
       });
     },
@@ -273,34 +267,45 @@ export default {
     handleFilter() {
       this.fetchData();
     },
-    setTagsViewTitle() {
-      const title = this.wfdata.name;
-      const route = Object.assign({}, this.tempRoute, {
-        title: `${title} - 创建`
-      });
-      this.$store.dispatch("tagsView/updateVisitedView", route);
-    },
     setPageTitle() {
       const title = this.wfdata.name;
       document.title = `${title} - 创建`;
     },
-    handleButton(transition) {
+    reset(formName) {
+      this.$refs[formName].resetFields();
+    },
+    handleButton(dataForm, transition) {
+      const customfield = [];
       for (var i of this.customfield_list) {
-        this.temp.fields.push({ id: i.id, field_value: i.field_value });
+        if (this.temp[i.field_key]) {
+          customfield.push({
+            customfield: i.id,
+            field_value: this.temp[i.field_key]
+          });
+        } else {
+          customfield.push({
+            customfield: i.id,
+            field_value: ""
+          });
+        }
       }
-      this.temp = Object.assign(this.temp, {
-        transition: transition.id,
-        state: transition.dest_state.id,
-        workflow: this.wfdata.id,
-        name: this.wfdata.name,
-        create_user: this.username,
-        customfield: JSON.stringify(this.temp.fields)
-      });
-      this.$refs["dataForm"].validate(valid => {
+      const data = Object.assign(
+        {},
+        {
+          name: this.ticket.name,
+          create_user: this.username,
+          workflow: this.wfdata.id,
+          state: transition.dest_state.id,
+          transition: transition.id,
+          customfield: JSON.stringify(customfield)
+        }
+      );
+
+      this.$refs[dataForm].validate(valid => {
         if (valid) {
           ticket
-            .requestPost(this.temp)
-            .then(response => {
+            .requestPost(data)
+            .then(res => {
               this.$notify({
                 title: "成功",
                 message: "创建成功",
