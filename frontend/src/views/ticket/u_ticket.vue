@@ -242,6 +242,7 @@ export default {
       });
     },
     getCustomfieldList() {
+      console.log(this.workflow_temp)
       customfield.requestGet(this.workflow_temp).then(response => {
         this.customfield_list = response.results;
       });
