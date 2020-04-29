@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'systems',
     'workflows',
     'tickets',
+    'notices',
 ]
 
 MIDDLEWARE = [

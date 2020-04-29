@@ -25,8 +25,8 @@ export default {
     todo_ticket: 'todo_ticket',
     all_ticket: 'all_ticket',
     notice: 'notice',
-    mailbot: 'mail bot',
-    tgbot: 'telegram bot',
+    mail: 'mail',
+    telegram: 'telegram',
     ComponentDemo: 'ComponentDemo',
   },
   navbar: {

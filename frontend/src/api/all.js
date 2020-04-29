@@ -27,3 +27,7 @@ export const ticket = new Request('/ticket/ticket/')
 export const ticketflowlog = new Request('/ticket/ticketflowlog/')
 export const ticketcustomfield = new Request('/ticket/ticketcustomfield/')
 export const ticketuser = new Request('/ticket/ticketuser/')
+
+// notices
+export const mail = new Request('/notice/mail/')
+export const telegram = new Request('/notice/telegram/')

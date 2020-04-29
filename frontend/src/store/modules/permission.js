@@ -189,4 +189,8 @@ export const componentsMap = {
   my_ticket: () => import('@/views/ticket/my_ticket'), // 我创建的
   todo_ticket: () => import('@/views/ticket/todo_ticket'), // 我的待办
   all_ticket: () => import('@/views/ticket/all_ticket'), // 编辑工单
+
+  // notice
+  mail: () => import('@/views/notice/mail'), // mail bot
+  telegram: () => import('@/views/notice/telegram'), // telegram bot
 }

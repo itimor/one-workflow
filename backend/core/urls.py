@@ -16,6 +16,8 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
                   url(r'api/workflow/', include(('workflows.urls', 'workflows'), namespace="workflows")),
                   # 工单管理
                   url(r'api/ticket/', include(('tickets.urls', 'tickets'), namespace="tickets")),
+                  # 通知管理
+                  url(r'api/notice/', include(('notices.urls', 'notices'), namespace="notices")),
               ]
 
 if settings.APP_ENV == 'prod':

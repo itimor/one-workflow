@@ -59,7 +59,6 @@ class TicketFlowLog(BaseModel):
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
     intervene_type = models.CharField(max_length=1, choices=tuple(intervene_type.items()), default=0,
                                       verbose_name='干预类型')
-    ticket_data = models.TextField('工单数据', default='', blank=True, help_text='可以用于记录当前表单数据，json格式')
 
     class Meta:
         verbose_name = '工单流转日志'

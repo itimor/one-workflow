@@ -73,8 +73,6 @@ class State(BaseModel):
                                         verbose_name='参与者类型')
     participant = models.CharField('参与者', default='', blank=True, max_length=100,
                                    help_text='可以为空(无处理人的情况，如结束状态)、username\多个username(以,隔开)\部门id\角色id\变量(creator,creator_tl)\脚本记录的id等，包含子工作流的需要设置处理人为loonrobot')
-    state_field_str = models.TextField('表单字段', default='{}',
-                                       help_text='json格式字典存储,包括读写属性1：只读，2：必填，3：可选. 示例：{"created_at":1,"title":2, "sn":1}, 内置特殊字段participant_info.participant_name:当前处理人信息(部门名称、角色名称)，state.state_name:当前状态的状态名,workflow.workflow_name:工作流名称')  # json格式存储,包括读写属性1：只读，2：必填，3：可选，4：不显示, 字典的字典
 
     def __str__(self):
         return self.name

@@ -25,8 +25,8 @@ export default {
     todo_ticket: '我的待办',
     all_ticket: '所有工单',
     notice: '通知管理',
-    mailbot: 'mail机器人',
-    tgbot: 'tg机器人',
+    mail: 'mail通知',
+    telegram: 'telegram通知',
     ComponentDemo: '组件例子',
   },
   navbar: {
