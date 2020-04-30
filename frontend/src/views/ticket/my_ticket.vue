@@ -30,7 +30,7 @@
       @sort-change="handleSortChange"
     >
       <el-table-column label="名称" prop="name"></el-table-column>
-      <el-table-column label="工单流水号" prop="sn" width="260">
+      <el-table-column label="工单流水号" prop="sn" width="240">
         <template slot-scope="{ row }">
           <router-link :to="'/s_ticket/' + row.id">
             <el-link type="success">{{row.sn}}</el-link>

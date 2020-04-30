@@ -2,14 +2,15 @@
 # author: itimor
 
 from tickets.serializers import *
+from tickets.filters import *
 from common.views import ModelViewSet, FKModelViewSet, JsonResponse, BulkModelMixin
 
 
 class TicketViewSet(BulkModelMixin):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+    filterset_class = TicketFilter
     search_fields = ['name']
-    filter_fields = ['name', 'id', 'create_user__username', 'participant']
     ordering_fields = ['state']
 
     def get_serializer_class(self):

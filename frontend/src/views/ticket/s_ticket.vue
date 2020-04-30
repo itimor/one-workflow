@@ -178,9 +178,9 @@
               <span>{{row.state.name}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作步骤" prop="transition">
+          <el-table-column label="操作类型" prop="transition">
             <template slot-scope="{ row }">
-              <span>{{row.transition.name|TransitionNameFilter}}</span>
+              <span>{{row.transition.attribute_type|AttributeTypeFilter}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作者" prop="participant"></el-table-column>
