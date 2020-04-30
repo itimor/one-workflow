@@ -49,8 +49,8 @@
       <el-table-column label="排序" prop="sequence"></el-table-column>
       <el-table-column label="备注" prop="memo"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }">
-          <el-button-group v-show="row.id !== 1">
+        <template slot-scope="{ row }" v-show="row.id !== 1">
+          <el-button-group>
             <el-button
               v-if="permissionList.update"
               size="small"
@@ -113,19 +113,6 @@
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
         </el-form-item>
-        <el-form-item label="角色" prop="roles">
-          <el-tree
-            ref="tree"
-            :check-strictly="false"
-            :data="treeData"
-            :props="treeProps"
-            show-checkbox
-            accordion
-            default-expand-all
-            node-key="id"
-            class="permission-tree"
-          />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ "取消" }}</el-button>
@@ -162,8 +149,6 @@ export default {
         children: "children",
         placeholder: "父级"
       },
-      propsSelectlist: [],
-      propsSelectlist2: [{ id: 0, parent: -1, name: "顶级" }],
       operationList: [],
       permissionList: {
         add: false,
@@ -194,11 +179,6 @@ export default {
         sequence: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       multipleSelection: [],
-      treeProps: {
-        children: "children",
-        label: "name"
-      },
-      treeData: [],
       allgroup: [],
       allperm: [],
       permprops: {
@@ -221,7 +201,6 @@ export default {
   created() {
     this.getMenuButton();
     this.getList();
-    this.getTreeData();
     this.getAllgroup();
   },
   methods: {
@@ -272,7 +251,6 @@ export default {
         name: "",
         code: "",
         sequence: "",
-        roles: [],
         memo: ""
       };
     },
@@ -316,7 +294,6 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
         this.valueIdSelectTree2 = this.temp.parent;
-        this.$refs.tree.setCheckedKeys(row.roles);
       });
     },
     updateData() {
@@ -324,7 +301,6 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
-          this.temp.roles = this.$refs.tree.getCheckedKeys();
           group
             .requestPut(this.temp.id, this.temp)
             .then(() => {
@@ -403,19 +379,6 @@ export default {
           });
         });
     },
-    getTreeData() {
-      role.requestGet().then(response => {
-        this.treeData = this.optionDataSelectTree(response.results);
-      });
-    },
-    optionDataSelectTree(data) {
-      const cloneData = data;
-      return cloneData.filter(father => {
-        const branchArr = cloneData.filter(child => father.id === child.parent);
-        branchArr.length > 0 ? (father.children = branchArr) : "";
-        return father.parent === data[0].parent;
-      });
-    }
   }
 };
 </script>

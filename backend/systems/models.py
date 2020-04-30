@@ -21,6 +21,7 @@ operate_type = {
     'view': '查看',
 }
 
+
 class Menu(BaseModel):
     parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL, verbose_name='父级菜单')
     name = models.CharField(max_length=32, verbose_name='菜单名称')
@@ -51,6 +52,7 @@ class Role(BaseModel):
     sequence = models.SmallIntegerField(default=0, verbose_name='排序值')
     menus = models.ManyToManyField(Menu, blank=True, verbose_name='菜单')
     model_perms = models.ManyToManyField(Permission, blank=True, verbose_name='model权限')
+    group = models.ForeignKey(Group, verbose_name='group', null=True, blank=True, on_delete=models.SET_NULL, )
 
     def __str__(self):
         return "{parent}{name}".format(name=self.name, parent="%s-->" % self.parent.name if self.parent else '')
@@ -64,13 +66,6 @@ class Group(BaseModel, Group):
     parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL, verbose_name='父级角色')
     code = models.CharField(max_length=32, unique=True, verbose_name='代码')
     sequence = models.SmallIntegerField(default=0, verbose_name='排序值')
-    roles = models.ManyToManyField(
-        Role,
-        verbose_name='roles',
-        blank=True,
-        related_name="group_set",
-        related_query_name="group",
-    )
 
     def __str__(self):
         return "{parent}{name}".format(name=self.name, parent="%s-->" % self.parent.name if self.parent else '')

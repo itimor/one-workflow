@@ -55,16 +55,6 @@
           </el-popover>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="用户组" prop="group">
-        <template slot-scope="{ row }">
-          <el-tag size="medium">{{row.group.name}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="角色" prop="roles">
-        <template slot-scope="{ row }">
-          <el-tag v-for="item in row.roles" :key="item.id" size="medium">{{item.name}}</el-tag>
-        </template>
-      </el-table-column> -->
       <el-table-column label="状态" prop="status" sortable="custom">
         <template slot-scope="{ row }">
           <el-tag v-if="row.status" type="success">启用</el-tag>
@@ -127,7 +117,7 @@
         <el-form-item label="真实姓名" prop="realname">
           <el-input v-model="temp.realname" />
         </el-form-item>
-        <el-form-item label="用户组" prop="realname">
+        <el-form-item label="分组" prop="realname">
           <SelectTree
             v-model.number="temp.group"
             type="number"
@@ -199,7 +189,6 @@ export default {
         placeholder: "父级"
       },
       propsSelectlist: [],
-      propsSelectlist2: [{ id: 0, parent: -1, name: "顶级" }],
       operationList: [],
       permissionList: {
         add: false,

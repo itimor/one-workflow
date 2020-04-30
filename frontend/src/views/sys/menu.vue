@@ -207,10 +207,6 @@
           children: 'children',
           placeholder: '父级'
         },
-        propsSelectlist: [],
-        propsSelectlist2: [
-          {id: 0, parent: -1, name: '顶级'}
-        ],
         operationList: [],
         permissionList: {
           add: false,

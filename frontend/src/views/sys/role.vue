@@ -49,8 +49,8 @@
       <el-table-column label="排序" prop="sequence"></el-table-column>
       <el-table-column label="备注" prop="memo"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }">
-          <el-button-group v-show="row.id !== 1">
+        <template slot-scope="{ row }" v-show="row.id !== 1">
+          <el-button-group>
             <el-button
               v-if="permissionList.update"
               size="small"
@@ -106,6 +106,18 @@
             <el-form-item label="排序值" prop="sequence">
               <el-input v-model="temp.sequence" />
             </el-form-item>
+            <el-form-item label="分组" prop="realname">
+              <SelectTree
+                v-model.number="temp.group"
+                type="number"
+                :props="propsSelectTree"
+                :options="groupoptionDataSelectTree2"
+                :value="groupvalueIdSelectTree2"
+                :clearable="true"
+                :accordion="true"
+                @getValue="getSelectTreeGroupValue($event, 2)"
+              />
+            </el-form-item>
             <el-form-item label="备注" prop="memo">
               <el-input v-model="temp.memo" />
             </el-form-item>
@@ -118,8 +130,8 @@
                 :data="treeData"
                 :props="treeProps"
                 show-checkbox
-                accordion
-                default-expand-all
+                :default-expanded-keys=[1]
+                :accordion="true"
                 node-key="id"
                 class="permission-tree"
               />
@@ -150,7 +162,7 @@
 </template>
 
 <script>
-import { role, menu, perm, auth } from "@/api/all";
+import { role, menu, perm, group, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import SelectTree from "@/components/TreeSelect";
 import {
@@ -167,14 +179,13 @@ export default {
     return {
       valueIdSelectTree: 0,
       valueIdSelectTree2: 0,
+      groupvalueIdSelectTree2: 0,
       propsSelectTree: {
         value: "id",
         label: "name",
         children: "children",
         placeholder: "父级"
       },
-      propsSelectlist: [],
-      propsSelectlist2: [{ id: 0, parent: -1, name: "顶级" }],
       operationList: [],
       permissionList: {
         add: false,
@@ -211,6 +222,7 @@ export default {
       },
       treeData: [],
       allrole: [],
+      allgroup: [],
       allperm: [],
       permprops: {
         key: "id",
@@ -227,6 +239,15 @@ export default {
         return father.parent === this.allrole[0].parent;
       });
       return ha;
+    },
+    groupoptionDataSelectTree2() {
+      const cloneData = this.allgroup;
+      const ha = cloneData.filter(father => {
+        const branchArr = cloneData.filter(child => father.id === child.parent);
+        branchArr.length > 0 ? (father.children = branchArr) : "";
+        return father.parent === this.allgroup[0].parent;
+      });
+      return ha;
     }
   },
   created() {
@@ -235,6 +256,7 @@ export default {
     this.getTreeData();
     this.getAllRole();
     this.getAllPerm();
+    this.getAllGroup();
   },
   methods: {
     checkPermission() {
@@ -271,6 +293,11 @@ export default {
         this.allperm = response.results;
       });
     },
+    getAllGroup() {
+      group.requestGet().then(response => {
+        this.allgroup = response.results;
+      });
+    },
     handleFilter() {
       this.getList();
     },
@@ -289,6 +316,7 @@ export default {
         name: "",
         code: "",
         sequence: "",
+        group: "",
         menus: [],
         model_perms: [],
         memo: ""
@@ -334,6 +362,7 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
         this.valueIdSelectTree2 = this.temp.parent;
+        this.groupvalueIdSelectTree2 = this.temp.group;
         this.$refs.tree.setCheckedKeys(row.menus);
       });
     },
@@ -342,6 +371,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
+          this.temp.group = this.groupvalueIdSelectTree2;
           this.temp.menus = this.$refs.tree.getCheckedKeys();
           role
             .requestPut(this.temp.id, this.temp)
@@ -388,6 +418,14 @@ export default {
         this.handleFilter();
       } else {
         this.valueIdSelectTree2 = value;
+      }
+    },
+    getSelectTreeGroupValue(value, type) {
+      if (type === 1) {
+        this.groupvalueIdSelectTree = value;
+        this.handleFilter();
+      } else {
+        this.groupvalueIdSelectTree2 = value;
       }
     },
     handleSelectionChange(val) {
