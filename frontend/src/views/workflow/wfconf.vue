@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-steps>
-        <el-step v-for="item in state_list" :ken="item.id" :title="item.name"></el-step>
+        <el-step v-for="item in state_list" :ken="item.id" status="finish" :title="item.name"></el-step>
       </el-steps>
     </el-card>
 
