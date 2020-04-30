@@ -55,6 +55,16 @@
           </el-popover>
         </template>
       </el-table-column>
+      <!-- <el-table-column label="用户组" prop="group">
+        <template slot-scope="{ row }">
+          <el-tag size="medium">{{row.group.name}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="角色" prop="roles">
+        <template slot-scope="{ row }">
+          <el-tag v-for="item in row.roles" :key="item.id" size="medium">{{item.name}}</el-tag>
+        </template>
+      </el-table-column> -->
       <el-table-column label="状态" prop="status" sortable="custom">
         <template slot-scope="{ row }">
           <el-tag v-if="row.status" type="success">启用</el-tag>
@@ -63,7 +73,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button-group v-show="!row.is_admin">
+          <el-button-group v-show="row.is_admin">
             <el-button
               v-if="permissionList.update"
               size="small"
@@ -344,7 +354,11 @@ export default {
       });
     },
     handleUpdate(row) {
-      this.temp = row;
+      // this.temp = Object.assign({},row, {
+      //   group: row.group.id,
+      //   roles: row.roles.map(a => a.id),
+      // });
+      this.temp = row
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {

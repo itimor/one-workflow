@@ -39,7 +39,12 @@ class TicketSerializer(serializers.ModelSerializer):
         TicketFlowLog.objects.create(**ticketlog)
 
         # save customfield
-        field_models = []
+        field_models = [
+            TicketCustomField(ticket=ticket, customfield_id=int(item['create_user']), field_value=ticket.create_user),
+            TicketCustomField(ticket=ticket, customfield_id=int(item['create_time']), field_value=ticket.create_time),
+            TicketCustomField(ticket=ticket, customfield_id=int(item['group']), field_value=ticket.create_user.group),
+            TicketCustomField(ticket=ticket, customfield_id=int(item['id']), field_value=ticket.create_user.id),
+        ]
         for item in json.loads(customfield_list):
             field_models.append(
                 TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
@@ -65,7 +70,6 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.save()
 
         # save ticketlog
-        print(instance.transition)
         ticketlog = dict()
         ticketlog["ticket"] = instance
         ticketlog["state"] = instance.transition.source_state

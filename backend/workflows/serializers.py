@@ -33,7 +33,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
                                    field_key="create_time", workflow=obj)
         CustomField.objects.create(field_name="部门", order_id=3, field_attribute=True, field_type=10, field_key="group",
                                    workflow=obj)
-        CustomField.objects.create(field_name="工号", order_id=4, field_attribute=True, field_type=10, field_key="jobid",
+        CustomField.objects.create(field_name="工号", order_id=4, field_attribute=True, field_type=10, field_key="id",
                                    workflow=obj)
 
         return obj
