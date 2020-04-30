@@ -158,8 +158,6 @@
                 :type="btn_types[item.name]"
                 @click="handleButton('temp', item)"
               >{{item.name|TransitionNameFilter}}</el-button>
-
-              <el-button v-if="wfdata.transition.dest_state" type="warning" style="margin: 0 5px;" @click="reset('temp')">重置</el-button>
             </el-form-item>
           </el-card>
         </el-form>
@@ -177,7 +175,6 @@
           </el-table-column>
           <el-table-column label="参与者" prop="participant"></el-table-column>
           <el-table-column label="操作时间" prop="create_time"></el-table-column>
-          <el-table-column label="处理意见" prop="suggestion"></el-table-column>
         </el-table>
       </el-card>
     </div>
@@ -219,7 +216,8 @@ export default {
       },
       match_fields: [],
       workflow_temp: {
-        participant: this.username
+        participant: this.username,
+        is_hidden: false
       },
       stateActive: 0
     };
@@ -294,9 +292,10 @@ export default {
       const customfield = [];
       for (var i of this.customfield_list) {
         customfield.push({
+          id: i.id,
           ticket: i.ticket.id,
           customfield: i.customfield.id,
-          field_value: this.temp[i.field_key]
+          field_value: i.field_value
         });
       }
       const data = Object.assign(

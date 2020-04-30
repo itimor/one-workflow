@@ -28,7 +28,7 @@ class StateViewSet(BulkModelMixin):
     queryset = State.objects.all()
     serializer_class = StateSerializer
     search_fields = ['name']
-    filter_fields = ['workflow']
+    filter_fields = ['workflow', 'is_hidden']
     ordering_fields = ['state_type', 'order_id']
 
 

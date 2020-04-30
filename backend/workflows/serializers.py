@@ -21,9 +21,10 @@ class WorkflowSerializer(serializers.ModelSerializer):
         obj = Workflow.objects.create(**validated_data)
         obj.save()
         # 建立初始和结束状态
-        State.objects.create(name="开始", order_id=1, state_type=1, workflow=obj)
-        State.objects.create(name="结束", order_id=98, state_type=2, workflow=obj)
-        State.objects.create(name="关闭工单", order_id=99, state_type=2, workflow=obj)
+        State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type=0, participant="",
+                             workflow=obj)
+        State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type=0, participant="",
+                             workflow=obj)
 
         # 建立内置字段
         CustomField.objects.create(field_name="申请人", order_id=1, field_attribute=True, field_type=10,

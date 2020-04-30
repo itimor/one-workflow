@@ -7,13 +7,12 @@ from systems.models import User
 from rest_framework import serializers
 from utils.index import gen_time_pid
 import json
-from bulk_update.helper import bulk_update
 
 
 class TicketReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = '__all__'
+        fields = ['id', 'name', 'sn', 'create_user', 'workflow', 'transition', 'state', 'customfield']
         depth = 1
 
 
@@ -74,7 +73,7 @@ class TicketSerializer(serializers.ModelSerializer):
         # save customfield
         customfield_list = json.loads(instance.customfield)
         for item in customfield_list:
-            TicketCustomField.objects.update_or_create(**item)
+            TicketCustomField.objects.filter(id=item["id"]).update(field_value=item["field_value"])
 
         # save ticketuser
         if instance.transition.dest_state.state_type == 2:
@@ -112,13 +111,6 @@ class TicketCustomFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketCustomField
         fields = '__all__'
-
-
-class TicketUserReadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TicketUser
-        fields = '__all__'
-        depth = 2
 
 
 class TicketUserSerializer(serializers.ModelSerializer):

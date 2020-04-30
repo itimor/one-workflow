@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { ticket, ticketuser, auth } from "@/api/all";
+import { ticket, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import {
   checkAuthAdd,
@@ -57,7 +57,14 @@ export default {
       },
       list: [],
       total: 0,
-      listLoading: true
+      listLoading: true,
+      listQuery: {
+        // offset: 1,
+        // limit: 20,
+        search: undefined,
+        ordering: undefined,
+        participant: this.username
+      }
     };
   },
   computed: {
@@ -86,14 +93,8 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      const params = {
-        username__username: this.username,
-        in_process: true
-      };
-      ticketuser.requestGet(params).then(response => {
-        for (var i of response.results) {
-          this.list.push(i.ticket);
-        }
+      ticket.requestGet(this.listQuery).then(response => {
+        this.list = response.results;
         this.listLoading = false;
       });
     },

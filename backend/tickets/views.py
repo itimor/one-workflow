@@ -9,7 +9,7 @@ class TicketViewSet(BulkModelMixin):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     search_fields = ['name']
-    filter_fields = ['name', 'id', 'create_user']
+    filter_fields = ['name', 'id', 'create_user', 'participant']
     ordering_fields = ['state']
 
     def get_serializer_class(self):
@@ -45,9 +45,4 @@ class TicketUserViewSet(BulkModelMixin):
     queryset = TicketUser.objects.all()
     serializer_class = TicketUserSerializer
     search_fields = ['username']
-    filter_fields = ['username__username', 'in_process', 'worked']
-
-    def get_serializer_class(self):
-        if self.action in ['list', 'retrieve'] or self.resultData:
-            return TicketUserReadSerializer
-        return TicketUserSerializer
+    filter_fields = ['in_process', 'worked']
