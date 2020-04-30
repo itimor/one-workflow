@@ -77,6 +77,7 @@
                   >
                     <el-radio
                       v-for="(value, index) in JSON.parse(item.field_choice)"
+                      :key="index"
                       :label="index"
                     >{{value}}</el-radio>
                   </el-radio-group>
@@ -88,6 +89,7 @@
                   >
                     <el-checkbox
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
+                      :key="index"
                       :label="index"
                     >{{value}}</el-checkbox>
                   </el-checkbox-group>
@@ -101,6 +103,7 @@
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
+                      :key="index"
                       :value="index"
                     >{{value}}</el-option>
                   </el-select>
@@ -115,6 +118,7 @@
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.field_choice)"
+                      :key="index"
                       :value="index"
                     >{{value}}</el-option>
                   </el-select>
@@ -126,7 +130,7 @@
                     clearable
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
-                    <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                    <el-option v-for="t in user_list" :key="t.id" :label="t.id">{{t.username}}</el-option>
                   </el-select>
 
                   <el-select
@@ -137,7 +141,7 @@
                     multiple
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
-                    <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                    <el-option v-for="t in user_list" :key="t.id" :label="t.id">{{t.username}}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>

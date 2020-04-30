@@ -6,7 +6,7 @@
           <span class="card-title">流程</span>
         </div>
         <el-steps :active="stateActive" finish-status="success" process-status="finish">
-          <el-step v-for="item in state_list" :ken="item.order_id" :title="item.name"></el-step>
+          <el-step v-for="item in state_list" :key="item.id" :title="item.name"></el-step>
         </el-steps>
       </el-card>
       <div class="ticket-form" v-if="customfield_list.length>0">
@@ -85,6 +85,7 @@
                   >
                     <el-radio
                       v-for="(value, index) in JSON.parse(item.customfield.field_choice)"
+                      :key="index"
                       :label="index"
                     >{{value}}</el-radio>
                   </el-radio-group>
@@ -96,6 +97,7 @@
                   >
                     <el-checkbox
                       v-for="(value, index)  in JSON.parse(item.customfield.field_choice)"
+                      :key="index"
                       :label="index"
                     >{{value}}</el-checkbox>
                   </el-checkbox-group>
@@ -109,6 +111,7 @@
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.customfield.field_choice)"
+                      :key="index"
                       :value="index"
                     >{{value}}</el-option>
                   </el-select>
@@ -123,6 +126,7 @@
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.customfield.field_choice)"
+                      :key="index"
                       :value="index"
                     >{{value}}</el-option>
                   </el-select>
@@ -134,7 +138,7 @@
                     clearable
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
-                    <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                    <el-option v-for="t in user_list" :key="t.id" :label="t.id">{{t.username}}</el-option>
                   </el-select>
 
                   <el-select
@@ -145,7 +149,7 @@
                     multiple
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
-                    <el-option v-for="t in user_list" :label="t.value">{{t.label}}</el-option>
+                    <el-option v-for="t in user_list" :key="t.id" :label="t.id">{{t.username}}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
