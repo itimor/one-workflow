@@ -52,15 +52,18 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = '__all__'
-
-
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
+        fields = '__all__'
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    user_set = UserSerializer(many=True, read_only=True)
+    role_set = RoleSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Group
         fields = '__all__'
 
 

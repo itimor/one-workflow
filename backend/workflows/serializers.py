@@ -39,12 +39,12 @@ class WorkflowSerializer(serializers.ModelSerializer):
         return obj
 
 
-class WorkflowTypeSerializer(serializers.HyperlinkedModelSerializer):
-    workflow_set = WorkflowSerializer(read_only=True, many=True)
+class WorkflowTypeSerializer(serializers.ModelSerializer):
+    workflow_set = WorkflowSerializer(many=True, read_only=True)
 
     class Meta:
         model = WorkflowType
-        fields = ['id', 'name', 'code', 'order_id', 'workflow_set']
+        fields = '__all__'
 
 
 class StateReadSerializer(serializers.ModelSerializer):

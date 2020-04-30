@@ -168,8 +168,8 @@ function generateRouter(item, isParent) {
 export const componentsMap = {
   // sys
   menu: () => import('@/views/sys/menu'), // 菜单
-  user: () => import('@/views/sys/user'), // 用户
   group: () => import('@/views/sys/group'), // 用户组
+  user: () => import('@/views/sys/user'), // 用户
   role: () => import('@/views/sys/role'), // 角色
   icon: () => import('@/views/icons/index'), // 图标管理
 

@@ -47,9 +47,18 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="排序" prop="sequence"></el-table-column>
-      <el-table-column label="备注" prop="memo"></el-table-column>
+      <el-table-column label="包含用户" prop="user_set">
+        <template slot-scope="{ row }">
+          <el-tag v-for="item in row.user_set" :key="item.id">{{item.username}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="包含角色" prop="user_set">
+        <template slot-scope="{ row }">
+          <el-tag v-for="item in row.role_set" :key="item.id">{{item.name}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }" v-show="row.id !== 1">
+        <template slot-scope="{ row }" v-if="row.id !== 1">
           <el-button-group>
             <el-button
               v-if="permissionList.update"

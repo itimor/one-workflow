@@ -188,7 +188,6 @@ export default {
         children: "children",
         placeholder: "父级"
       },
-      propsSelectlist: [],
       operationList: [],
       permissionList: {
         add: false,

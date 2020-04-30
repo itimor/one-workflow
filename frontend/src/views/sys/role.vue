@@ -49,7 +49,7 @@
       <el-table-column label="排序" prop="sequence"></el-table-column>
       <el-table-column label="备注" prop="memo"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }" v-show="row.id !== 1">
+        <template slot-scope="{ row }" v-if="row.id !== 1">
           <el-button-group>
             <el-button
               v-if="permissionList.update"
