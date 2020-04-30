@@ -3,7 +3,6 @@
 
 from tickets.models import *
 from workflows.models import *
-from systems.models import User
 from rest_framework import serializers
 from utils.index import gen_time_pid
 import json
@@ -12,7 +11,7 @@ import json
 class TicketReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = ['id', 'name', 'sn', 'create_user', 'workflow', 'transition', 'state', 'customfield']
+        fields = '__all__'
         depth = 1
 
 
@@ -34,10 +33,9 @@ class TicketSerializer(serializers.ModelSerializer):
         # save ticketlog
         ticketlog = dict()
         ticketlog["ticket"] = ticket
-        ticketlog["state"] = state
+        ticketlog["state"] = transition.source_state
         ticketlog["transition"] = transition
         ticketlog["participant"] = state.participant
-        ticketlog["participant_type"] = state.participant_type
         TicketFlowLog.objects.create(**ticketlog)
 
         # save customfield
@@ -48,13 +46,9 @@ class TicketSerializer(serializers.ModelSerializer):
                                   field_value=item['field_value']))
         TicketCustomField.objects.bulk_create(field_models)
 
-        # save
-        if transition.dest_state.state_type == 2:
-            user2 = None
-        else:
-            user2 = User.objects.get(username=state.participant)
-
-        user1 = User.objects.get(username=validated_data["create_user"])
+        # save ticketuser
+        user1 = validated_data["create_user"]
+        user2 = state.participant
         TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
         TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
 
@@ -70,18 +64,23 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.customfield = validated_data.get('customfield', instance.customfield)
         instance.save()
 
+        # save ticketlog
+        print(instance.transition)
+        ticketlog = dict()
+        ticketlog["ticket"] = instance
+        ticketlog["state"] = instance.transition.source_state
+        ticketlog["transition"] = instance.transition
+        ticketlog["participant"] = instance.participant
+        TicketFlowLog.objects.create(**ticketlog)
+
         # save customfield
         customfield_list = json.loads(instance.customfield)
         for item in customfield_list:
             TicketCustomField.objects.filter(id=item["id"]).update(field_value=item["field_value"])
 
         # save ticketuser
-        if instance.transition.dest_state.state_type == 2:
-            user2 = None
-        else:
-            user2 = User.objects.get(username=instance.state.participant)
-
-        user1 = User.objects.get(username=validated_data["create_user"])
+        user1 = instance.transition.source_state.participant
+        user2 = instance.state.participant
         TicketUser.objects.create(ticket=instance, username=user1, worked=True)
         TicketUser.objects.create(ticket=instance, username=user2, in_process=True)
         return instance
@@ -91,7 +90,7 @@ class TicketFlowLogReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketFlowLog
         fields = '__all__'
-        depth = 1
+        depth = 2
 
 
 class TicketFlowLogSerializer(serializers.ModelSerializer):

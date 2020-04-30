@@ -160,6 +160,7 @@
                 v-for="item in transition_list"
                 :key="item.id"
                 :type="btn_types[item.name]"
+                v-if="item.dest_state"
                 @click="handleButton('temp', item)"
               >{{item.name|TransitionNameFilter}}</el-button>
             </el-form-item>
@@ -172,12 +173,17 @@
           <span class="card-title">操作日志</span>
         </div>
         <el-table :data="ticketlog_list" border style="width: 100%" highlight-current-row>
-          <el-table-column label="节点" prop="state">
+          <el-table-column label="操作节点" prop="state">
             <template slot-scope="{ row }">
               <span>{{row.state.name}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="参与者" prop="participant"></el-table-column>
+          <el-table-column label="操作步骤" prop="transition">
+            <template slot-scope="{ row }">
+              <span>{{row.transition.name|TransitionNameFilter}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作者" prop="participant"></el-table-column>
           <el-table-column label="操作时间" prop="create_time"></el-table-column>
         </el-table>
       </el-card>
@@ -261,10 +267,12 @@ export default {
     },
     getStateList() {
       state.requestGet(this.workflow_temp).then(response => {
-        this.state_list = response.results;
+        this.state_list = response.results
         for (var i in this.state_list) {
-          if (this.state_list[i].id == this.wfdata.state.id) {
+          if (this.state_list[i].id == this.wfdata.state.id && this.wfdata.state.state_type <2) {
             this.stateActive = parseInt(i);
+          } else {
+            this.stateActive = this.state_list.length + 1
           }
         }
         this.getTransitionList();
@@ -318,16 +326,6 @@ export default {
           ticket
             .requestPut(this.wfdata.id, data)
             .then(response => {
-              data = Object.assign(
-                {},
-                {
-                  ticket: this.wfdata.id,
-                  transition: transition.id,
-                  state: transition.source_state.id,
-                  participant: this.username
-                }
-              );
-              ticketflowlog.requestPost(data).then(response => {
                 this.$notify({
                   title: "成功",
                   message: "更新成功",
@@ -335,7 +333,6 @@ export default {
                   duration: 2000
                 });
                 this.$router.push({ path: "/todo_ticket" });
-              });
             })
             .catch(() => {});
         }

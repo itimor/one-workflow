@@ -4,15 +4,6 @@
 from django.db import models
 from common.models import BaseModel
 from workflows.models import *
-from systems.models import User
-
-participant_type = {
-    0: '无处理人',
-    1: '个人',
-    2: '多人',
-    3: '部门',
-    4: '角色',
-}
 
 
 class Ticket(BaseModel):
@@ -53,8 +44,6 @@ class TicketFlowLog(BaseModel):
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='工单')
     transition = models.ForeignKey(Transition, on_delete=models.CASCADE, verbose_name='流转')
-    participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0,
-                                        verbose_name='处理人类型')
     participant = models.CharField('处理人', max_length=50, default='', blank=True)
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
     intervene_type = models.CharField(max_length=1, choices=tuple(intervene_type.items()), default=0,
@@ -101,7 +90,7 @@ class TicketUser(BaseModel):
     工单关系人, 用于加速待办工单及关联工单列表查询
     """
     ticket = models.ForeignKey(Ticket, null=True, blank=True, on_delete=models.SET_NULL)
-    username = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    username = models.CharField('关系人', max_length=100)
     in_process = models.BooleanField('待处理中', default=False)
     worked = models.BooleanField('处理过', default=False)
 
