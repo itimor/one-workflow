@@ -361,5 +361,6 @@ export function GenDatetime(date) {
   const h = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
   const m = date.getMinutes() + 1 < 10 ? '0' + date.getMinutes() : date.getMinutes()
   const s = date.getSeconds() + 1 < 10 ? '0' + date.getSeconds() : date.getSeconds()
-  return Y + '-' + M + '-' + D + '-' + h + '-' + m + '-' + s
+  const ms = date.getMilliseconds().toString().length < 3 ? '0' + date.getMilliseconds() : date.getMilliseconds()
+  return Y + '-' + M + '-' + D + '-' + h + '-' + m + '-' + s + '-' + ms
 }

@@ -15,7 +15,7 @@
                 v-for="item in customfield_list"
                 :key="item.id"
               >
-                <el-form-item :label="item.field_name" :prop="item.field_key">
+                <el-form-item v-show="!item.field_attribute" :label="item.field_name" :prop="item.field_key">
                   <el-input
                     v-if="item.field_type === 10"
                     v-model="temp[item.field_key]"
@@ -222,7 +222,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["username"])
+    ...mapGetters(["user_id"])
   },
   created() {
     const id = this.$route.params && this.$route.params.id;
@@ -247,7 +247,6 @@ export default {
       });
     },
     getCustomfieldList() {
-      console.log(this.workflow_temp)
       customfield.requestGet(this.workflow_temp).then(response => {
         this.customfield_list = response.results;
       });
@@ -286,11 +285,13 @@ export default {
         if (this.temp[i.field_key]) {
           customfield.push({
             customfield: i.id,
+            field_key: i.field_key,
             field_value: this.temp[i.field_key]
           });
         } else {
           customfield.push({
             customfield: i.id,
+            field_key: i.field_key,
             field_value: ""
           });
         }
@@ -299,7 +300,7 @@ export default {
         {},
         {
           name: this.ticket.name,
-          create_user: this.username,
+          create_user: this.user_id,
           workflow: this.wfdata.id,
           state: transition.dest_state.id,
           transition: transition.id,

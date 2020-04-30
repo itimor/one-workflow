@@ -56,7 +56,11 @@
           <span>{{row.transition.attribute_type|AttributeTypeFilter}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建者" prop="create_user"></el-table-column>
+      <el-table-column label="创建者" prop="create_user">
+        <template slot-scope="{ row }">
+          <span>{{row.create_user.username}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">

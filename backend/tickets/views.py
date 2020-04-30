@@ -9,7 +9,7 @@ class TicketViewSet(BulkModelMixin):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     search_fields = ['name']
-    filter_fields = ['name', 'id', 'create_user', 'participant']
+    filter_fields = ['name', 'id', 'create_user__username', 'participant']
     ordering_fields = ['state']
 
     def get_serializer_class(self):

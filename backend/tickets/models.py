@@ -4,15 +4,16 @@
 from django.db import models
 from common.models import BaseModel
 from workflows.models import *
+from systems.models import User
 
 
 class Ticket(BaseModel):
     """
     工单记录
     """
-    name = models.CharField(u'标题', max_length=112, blank=True, default='', help_text="工单的标题")
+    name = models.CharField(u'标题', max_length=112, blank=True, default='')
     sn = models.CharField(u'流水号', max_length=25, blank=True, help_text="工单的流水号")
-    create_user = models.CharField('创建者', blank=True, max_length=50)
+    create_user = models.ForeignKey(User, verbose_name='创建者', blank=True, null=True, on_delete=models.SET_NULL)
     participant = models.CharField('当前处理人', max_length=50, default='', blank=True)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')

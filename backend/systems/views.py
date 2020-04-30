@@ -81,7 +81,7 @@ class AuthViewSet(ModelViewSet):
             ip = request.META.get('REMOTE_ADDR', "")
 
         data = {'menus': menus, 'username': user_obj.username, 'avatar': user_obj.avatar, 'memo': user_obj.memo,
-                'ip': ip}
+                'ip': ip, 'user_id': user_obj.id}
         return JsonResponse(OrderedDict([
             ('results', data)
         ], code=status.HTTP_200_OK))

@@ -271,6 +271,7 @@ export default {
         for (var i in this.state_list) {
           if (this.state_list[i].id == this.wfdata.state.id && this.wfdata.state.state_type <2) {
             this.stateActive = parseInt(i);
+            break
           } else {
             this.stateActive = this.state_list.length + 1
           }
@@ -311,10 +312,9 @@ export default {
         });
       }
       const data = Object.assign(
-        {},
+        {},this.wfdata,
         {
-          name: this.wfdata.name,
-          create_user: this.username,
+          create_user: this.wfdata.create_user.id,
           workflow: this.wfdata.workflow.id,
           state: transition.dest_state.id,
           transition: transition.id,

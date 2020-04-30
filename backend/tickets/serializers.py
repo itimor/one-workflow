@@ -39,16 +39,32 @@ class TicketSerializer(serializers.ModelSerializer):
         TicketFlowLog.objects.create(**ticketlog)
 
         # save customfield
-        field_models = [
-            TicketCustomField(ticket=ticket, customfield_id=int(item['create_user']), field_value=ticket.create_user),
-            TicketCustomField(ticket=ticket, customfield_id=int(item['create_time']), field_value=ticket.create_time),
-            TicketCustomField(ticket=ticket, customfield_id=int(item['group']), field_value=ticket.create_user.group),
-            TicketCustomField(ticket=ticket, customfield_id=int(item['id']), field_value=ticket.create_user.id),
-        ]
+        field_models = []
         for item in json.loads(customfield_list):
-            field_models.append(
-                TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
-                                  field_value=item['field_value']))
+            if item['field_key'] == "create_user":
+                field_models.append(
+                    TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
+                                      field_value=ticket.create_user),
+                )
+            elif item['field_key'] == "create_time":
+                field_models.append(
+                    TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
+                                      field_value=ticket.create_time),
+                )
+            elif item['field_key'] == "group":
+                field_models.append(
+                    TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
+                                      field_value=ticket.create_user.group),
+                )
+            elif item['field_key'] == "id":
+                field_models.append(
+                    TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']), field_value=ticket.create_user.id),
+                )
+            else:
+                field_models.append(
+                    TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
+                                      field_value=item['field_value'])
+                )
         TicketCustomField.objects.bulk_create(field_models)
 
         # save ticketuser
