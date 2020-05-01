@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # author: itimor
 
-from django_filters import rest_framework as filters
 from tickets.models import *
+from django_filters import rest_framework as filters
 
 
 class TicketFilter(filters.FilterSet):

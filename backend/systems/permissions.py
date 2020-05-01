@@ -31,10 +31,9 @@ def check_permission(request, perm):
         return True
 
     user_roles = user.roles.all()
-    group_roles = user.group.roles.all()
-
-    all_roles = sorted(chain(user_roles, group_roles), key=lambda t: t.id, reverse=True)
-    perms = Permission.objects.filter(role__in=all_roles)
+    # group_roles = user.group.roles.all()
+    # all_roles = sorted(chain(user_roles, group_roles), key=lambda t: t.id, reverse=True)
+    perms = Permission.objects.filter(role__in=user_roles)
     for i in perms:
         if i.codename == perm:
             return True

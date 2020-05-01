@@ -18,6 +18,13 @@ class TicketViewSet(BulkModelMixin):
             return TicketReadSerializer
         return TicketSerializer
 
+    def get_queryset(self):
+        user = User.objects.get(username=self.request.user)
+        if user.is_admin:
+            return Ticket.objects.all()
+        else:
+            return Ticket.objects.all().filter(ticketuser__username=self.request.user)
+
 
 class TicketFlowLogViewSet(BulkModelMixin):
     queryset = TicketFlowLog.objects.all()
@@ -46,4 +53,4 @@ class TicketUserViewSet(BulkModelMixin):
     queryset = TicketUser.objects.all()
     serializer_class = TicketUserSerializer
     search_fields = ['username']
-    filter_fields = ['in_process', 'worked']
+    filter_fields = ['username', 'in_process', 'worked']

@@ -80,12 +80,12 @@ export default {
     };
     return {
       loginForm: {
-        username: "admin",
-        password: "qwert@12345"
+        username: "",
+        password: ""
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername }
+          { required: true, trigger: "blur"}
         ],
         password: [
           { required: true, trigger: "blur", validator: validatePassword }

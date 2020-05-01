@@ -58,7 +58,8 @@ class TicketSerializer(serializers.ModelSerializer):
                 )
             elif item['field_key'] == "id":
                 field_models.append(
-                    TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']), field_value=ticket.create_user.id),
+                    TicketCustomField(ticket=ticket, customfield_id=int(item['customfield']),
+                                      field_value=ticket.create_user.id),
                 )
             else:
                 field_models.append(

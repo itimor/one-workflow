@@ -277,7 +277,6 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
-          this.temp.roles = this.$refs.tree.getCheckedKeys();
           group
             .requestPost(this.temp)
             .then(response => {

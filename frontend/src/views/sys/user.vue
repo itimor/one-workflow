@@ -63,7 +63,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button-group v-show="row.is_admin">
+          <el-button-group v-show="!row.is_admin">
             <el-button
               v-if="permissionList.update"
               size="small"

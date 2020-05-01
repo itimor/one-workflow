@@ -13,11 +13,11 @@ def get_menus_by_user(user):
         menus = Menu.objects.all()
     else:
         user_roles = user_obj.roles.all()
-        group_roles = user_obj.group.roles.all()
-        all_roles = sorted(chain(user_roles, group_roles), key=lambda t: t.id, reverse=True)
-        print("用户拥有角色: %s" % all_roles)
+        # group_roles = user_obj.group.roles.all()
+        # all_roles = sorted(chain(user_roles, group_roles), key=lambda t: t.id, reverse=True)
+        # print("用户拥有角色: %s" % all_roles)
 
-        menu_list = [item.menus.all() for item in all_roles if item.menus.all()][0]
+        menu_list = [item.menus.all() for item in user_roles if item.menus.all()][0]
 
         menuMap = dict()
         for item in menu_list:
