@@ -17,7 +17,7 @@ class UserViewSet(BulkModelMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     search_fields = ['username']
-    filter_fields = ['username']
+    filter_fields = ['username', 'group', 'roles']
     ordering_fields = ['username', 'status']
 
     # def get_serializer_class(self):

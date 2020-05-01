@@ -146,15 +146,30 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item>
-              <el-button
-                v-for="item in transition_list"
-                :key="item.id"
-                :type="btn_types[item.name]"
-                @click="handleButton('temp', item)"
-              >{{item.name|TransitionNameFilter}}</el-button>
-
-              <el-button type="warning" style="margin: 0 5px;" @click="reset('temp')">重置</el-button>
+            <el-form-item >
+              <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
+                  <el-popover  v-if="item.name===1" placement="top" title="选择转交人" width="160" v-model="visible">
+                    <el-select v-model="ticket.participant" placeholder="请选择">
+                      <el-option
+                        v-for="item in choice_user_list"
+                        :key="item.username"
+                        :label="item.username"
+                        :value="item.username">
+                      </el-option>
+                    </el-select>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="handleButton('temp', item)">确定</el-button>
+                    </div>
+                  <el-button slot="reference" v-if="item.name===1" :type="btn_types[item.name]" @click="selectUser('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
+                </el-popover>
+                <el-button v-if="item.name!==1" :type="btn_types[item.name]" @click="handleButton('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
+              </span>
+              <!-- <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
+                <el-button v-if="item.name===1" :type="btn_types[item.name]" @click="selectUser('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
+                <el-button v-else :type="btn_types[item.name]" @click="handleButton('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
+              </span> -->
+              <el-button type="warning" @click="reset('temp')">重置</el-button>
             </el-form-item>
           </el-card>
         </el-form>
@@ -218,7 +233,8 @@ export default {
       ticket: {},
       workflow_temp: {
         participant: this.username
-      }
+      },
+      choice_user_list: []
     };
   },
   computed: {
@@ -279,6 +295,32 @@ export default {
     reset(formName) {
       this.$refs[formName].resetFields();
     },
+    selectUser(dataForm,row) {
+      const state = row.dest_state
+      this.choice_user_list = []
+      if (state.participant_type ===1 || state.participant_type ===2) {
+        const data = state.participant.split(',')
+        for (var i in data) {
+          this.choice_user_list.push({id: i, username:data[i]})
+        }
+      } else if  (state.participant_type ===2 ) {
+        const params = {
+          group: state.participant
+        }
+        user.requestGet(params).then(response => {
+          this.choice_user_list = response.results;
+        });
+      } else if  (state.participant_type ===3 ) {
+        const params = {
+          roles: state.participant
+        }
+        user.requestGet(params).then(response => {
+          this.choice_user_list = response.results;
+        });
+      } else {
+        this.choice_user_list = []
+      }
+    },
     handleButton(dataForm, transition) {
       const customfield = [];
       for (var i of this.customfield_list) {
@@ -300,6 +342,7 @@ export default {
         {},
         {
           name: this.ticket.name,
+          participant: this.ticket.participant,
           create_user: this.user_id,
           workflow: this.wfdata.id,
           state: transition.dest_state.id,
@@ -328,9 +371,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.card-solt {
-  width: 450px;
-}
-</style>

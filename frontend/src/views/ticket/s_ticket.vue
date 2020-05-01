@@ -156,13 +156,24 @@
             </el-row>
 
             <el-form-item>
-              <el-button
-                v-for="item in transition_list"
-                :key="item.id"
-                :type="btn_types[item.name]"
-                v-if="item.dest_state"
-                @click="handleButton('temp', item)"
-              >{{item.name|TransitionNameFilter}}</el-button>
+              <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
+                  <el-popover  v-if="item.name===1" placement="top" title="选择转交人" width="160" v-model="visible">
+                    <el-select v-model="wfdata.participant" placeholder="请选择">
+                      <el-option
+                        v-for="item in choice_user_list"
+                        :key="item.username"
+                        :label="item.username"
+                        :value="item.username">
+                      </el-option>
+                    </el-select>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="handleButton('temp', item)">确定</el-button>
+                    </div>
+                  <el-button slot="reference" v-if="item.name===1" :type="btn_types[item.name]" @click="selectUser('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
+                </el-popover>
+                <el-button v-if="item.name!==1" :type="btn_types[item.name]" @click="handleButton('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
+              </span>
             </el-form-item>
           </el-card>
         </el-form>
@@ -209,6 +220,7 @@ export default {
   components: {},
   data() {
     return {
+      visible: false,
       tempRoute: {},
       wfdata: {},
       customfield_list: [],
@@ -229,7 +241,8 @@ export default {
         participant: this.username,
         is_hidden: false
       },
-      stateActive: 0
+      stateActive: 999,
+      choice_user_list: [],
     };
   },
   computed: {
@@ -272,8 +285,6 @@ export default {
           if (this.state_list[i].id == this.wfdata.state.id && this.wfdata.state.state_type <2) {
             this.stateActive = parseInt(i);
             break
-          } else {
-            this.stateActive = this.state_list.length + 1
           }
         }
         this.getTransitionList();
@@ -300,6 +311,32 @@ export default {
     setPageTitle() {
       const title = this.wfdata.name;
       document.title = `${title} - 处理`;
+    },
+    selectUser(dataForm,row) {
+      const state = row.dest_state
+      this.choice_user_list = []
+      if (state.participant_type ===1 || state.participant_type ===2) {
+        const data = state.participant.split(',')
+        for (var i in data) {
+          this.choice_user_list.push({id: i, username:data[i]})
+        }
+      } else if  (state.participant_type ===2 ) {
+        const params = {
+          group: state.participant
+        }
+        user.requestGet(params).then(response => {
+          this.choice_user_list = response.results;
+        });
+      } else if  (state.participant_type ===3 ) {
+        const params = {
+          roles: state.participant
+        }
+        user.requestGet(params).then(response => {
+          this.choice_user_list = response.results;
+        });
+      } else {
+        this.choice_user_list = []
+      }
     },
     handleButton(dataForm, transition) {
       const customfield = [];

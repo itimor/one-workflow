@@ -82,7 +82,7 @@
           <a class="tips">允许工单创建人在此状态直接撤回工单到初始状态</a>
         </el-form-item>
         <el-form-item label="参与者类型" prop="participant_type">
-          <el-select v-model="temp.participant_type" clearable placeholder="请选择">
+          <el-select v-model="temp.participant_type" placeholder="请选择" @change="selectUser(temp)">
             <el-option
               v-for="(label, value) in participant_types"
               :key="value"
@@ -92,7 +92,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="参与者" prop="participant">
-          <el-input v-model="temp.participant" />
+          <el-select v-model="temp.participant" multiple filterable placeholder="请选择">
+            <el-option
+              v-for="item in choice_user_list"
+              :key="item.username"
+              :label="item.username"
+              :value="item.username">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item  label="可編輯字段" prop="fields">
           <el-transfer
@@ -119,7 +126,7 @@
 </template>
 
 <script>
-import { state, auth } from "@/api/all";
+import { state, user, group, role, auth } from "@/api/all";
 import {
   checkAuthAdd,
   checkAuthDel,
@@ -180,7 +187,8 @@ export default {
         key: "id",
         label: "field_name",
         disabled: "field_attribute"
-      }
+      },
+      choice_user_list: [],
     };
   },
   computed: {},
@@ -213,11 +221,30 @@ export default {
         order_id: undefined,
         state_type: 0,
         enable_retreat: false,
-        participant_type: 1,
-        participant: "admin",
+        participant_type: undefined,
+        participant: [],
         fields: [],
         workflow: this.wfdata.id
       };
+    },
+    selectUser(row) {
+      const state = row
+      this.choice_user_list = []
+      if (state.participant_type ===1 || state.participant_type ===2) {
+        user.requestGet().then(response => {
+          this.choice_user_list = response.results;
+        });
+      } else if  (state.participant_type ===2 ) {
+        group.requestGet().then(response => {
+          this.choice_user_list = response.results;
+        });
+      } else if  (state.participant_type ===3 ) {
+        role.requestGet().then(response => {
+          this.choice_user_list = response.results;
+        });
+      } else {
+        this.choice_user_list = []
+      }
     },
     handleCreate() {
       this.resetTemp();

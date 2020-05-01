@@ -21,6 +21,8 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        cur_user = self.context['request'].user
+
         workflow = validated_data["workflow"]
         transition = validated_data["transition"]
         state = validated_data["state"]
@@ -35,7 +37,7 @@ class TicketSerializer(serializers.ModelSerializer):
         ticketlog["ticket"] = ticket
         ticketlog["state"] = transition.source_state
         ticketlog["transition"] = transition
-        ticketlog["participant"] = state.participant
+        ticketlog["participant"] = cur_user
         TicketFlowLog.objects.create(**ticketlog)
 
         # save customfield
@@ -69,19 +71,20 @@ class TicketSerializer(serializers.ModelSerializer):
         TicketCustomField.objects.bulk_create(field_models)
 
         # save ticketuser
-        user1 = validated_data["create_user"]
         user2 = state.participant
-        TicketUser.objects.create(ticket=ticket, username=user1, worked=True)
+        TicketUser.objects.create(ticket=ticket, username=cur_user, worked=True)
         TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
 
         return ticket
 
     def update(self, instance, validated_data):
+        cur_user = self.context['request'].user
         instance.name = validated_data.get('name', instance.name)
         instance.workflow = validated_data.get('workflow', instance.workflow)
         instance.sn = validated_data.get('sn', instance.sn)
         instance.state = validated_data.get('state', instance.state)
         instance.create_user = validated_data.get('create_user', instance.create_user)
+        instance.participant = validated_data.get('participant', instance.participant)
         instance.transition = validated_data.get('transition', instance.transition)
         instance.customfield = validated_data.get('customfield', instance.customfield)
         instance.save()
@@ -91,7 +94,7 @@ class TicketSerializer(serializers.ModelSerializer):
         ticketlog["ticket"] = instance
         ticketlog["state"] = instance.transition.source_state
         ticketlog["transition"] = instance.transition
-        ticketlog["participant"] = instance.participant
+        ticketlog["participant"] = cur_user
         TicketFlowLog.objects.create(**ticketlog)
 
         # save customfield
@@ -100,9 +103,8 @@ class TicketSerializer(serializers.ModelSerializer):
             TicketCustomField.objects.filter(id=item["id"]).update(field_value=item["field_value"])
 
         # save ticketuser
-        user1 = instance.transition.source_state.participant
         user2 = instance.state.participant
-        TicketUser.objects.create(ticket=instance, username=user1, worked=True)
+        TicketUser.objects.create(ticket=instance, username=cur_user, worked=True)
         TicketUser.objects.create(ticket=instance, username=user2, in_process=True)
         return instance
 
