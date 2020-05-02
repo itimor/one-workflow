@@ -76,7 +76,6 @@ export default {
       transition_list: [],
       temp: {
         workflow: undefined,
-        is_hidden: false
       },
     };
   },

@@ -1,18 +1,37 @@
-# django + vue 前后端分离的后台管理系统模板
+# django + vue 工作流管理系统
 包含 `用户`、`角色`、`菜单`、`权限` 管理， 这是一般后台系统一般都会有的功能， 后续其他功能都可以在这个基础上进行扩展。
 
 
 ## 开发环境
 ### 后端
+安装依赖
 ```bash
 cd backend
 pip install -r dev_requirements.txt
+```
+
+初始化系统
+- 生成管理员账号 `admin 123456`
+```bash
 python manage.py migrate
 python manage.py init_sys
+```
+
+生成工作流
+- 用户 `ops`,`ops_tl`,`dev`,`dev_tl`,`hr`,`hr_tl`
+- 密码 `123456`
+
+```bash
 python manage.py init_wf
 python manage.py init_ticket
+python manage.py init_leave
+```
+
+运行
+```bash
 python manage.py runserver
 ```
+
 ### 前端
 ```bash
 cd frontend
@@ -20,18 +39,10 @@ npm install
 npm run dev
 ```
 
-## 相关权限菜单设置截图
-
-### 新建 test 用户，并设置角色
-![user](gifs/user.png)
-
-### 编辑 test 角色，并关联菜单
+## 开始使用
+使用 `admin` 登录
+### 给所有角色分配工作流权限
 ![role](gifs/role.png)
 
-### 登录 test 用户，查看权限
-![menu](gifs/menu.png)
-
-
-## 计划加个工作流系统
-1. 模块权限未做验证，不能真正控制增删改查权限
-2. 。。。
+### 分配菜单 和 数据 权限
+![role_edit](gifs/role_edit.png)
