@@ -71,9 +71,8 @@ class TicketSerializer(serializers.ModelSerializer):
         TicketCustomField.objects.bulk_create(field_models)
 
         # save ticketuser
-        user2 = state.participant
         TicketUser.objects.create(ticket=ticket, username=cur_user, worked=True)
-        TicketUser.objects.create(ticket=ticket, username=user2, in_process=True)
+        TicketUser.objects.create(ticket=ticket, username=ticket.participant, in_process=True)
 
         return ticket
 
@@ -103,9 +102,8 @@ class TicketSerializer(serializers.ModelSerializer):
             TicketCustomField.objects.filter(id=item["id"]).update(field_value=item["field_value"])
 
         # save ticketuser
-        user2 = instance.state.participant
         TicketUser.objects.create(ticket=instance, username=cur_user, worked=True)
-        TicketUser.objects.create(ticket=instance, username=user2, in_process=True)
+        TicketUser.objects.create(ticket=instance, username=instance.participant, in_process=True)
         return instance
 
 

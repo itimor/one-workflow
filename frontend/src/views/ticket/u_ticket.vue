@@ -15,7 +15,11 @@
                 v-for="item in customfield_list"
                 :key="item.id"
               >
-                <el-form-item v-show="!item.field_attribute" :label="item.field_name" :prop="item.field_key">
+                <el-form-item
+                  v-show="!item.field_attribute"
+                  :label="item.field_name"
+                  :prop="item.field_key"
+                >
                   <el-input
                     v-if="item.field_type === 10"
                     v-model="temp[item.field_key]"
@@ -146,29 +150,19 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item >
+            <el-form-item>
               <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
-                  <el-popover  v-if="item.name===1" placement="top" title="选择转交人" width="160" v-model="visible">
-                    <el-select v-model="ticket.participant" placeholder="请选择">
-                      <el-option
-                        v-for="item in choice_user_list"
-                        :key="item.username"
-                        :label="item.username"
-                        :value="item.username">
-                      </el-option>
-                    </el-select>
-                    <div style="text-align: right; margin: 0">
-                      <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-                      <el-button type="primary" size="mini" @click="handleButton('temp', item)">确定</el-button>
-                    </div>
-                  <el-button slot="reference" v-if="item.name===1" :type="btn_types[item.name]" @click="selectUser('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
-                </el-popover>
-                <el-button v-if="item.name!==1" :type="btn_types[item.name]" @click="handleButton('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
+                <el-button
+                  v-if="item.name===1"
+                  :type="btn_types[item.name]"
+                  @click="selectUser('temp', item)"
+                >{{item.name|TransitionNameFilter}}</el-button>
+                <el-button
+                  v-else
+                  :type="btn_types[item.name]"
+                  @click="handleButton('temp', item)"
+                >{{item.name|TransitionNameFilter}}</el-button>
               </span>
-              <!-- <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
-                <el-button v-if="item.name===1" :type="btn_types[item.name]" @click="selectUser('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
-                <el-button v-else :type="btn_types[item.name]" @click="handleButton('temp', item)">{{item.name|TransitionNameFilter}}</el-button>
-              </span> -->
               <el-button type="warning" @click="reset('temp')">重置</el-button>
             </el-form-item>
           </el-card>
@@ -178,6 +172,57 @@
         <h1 style="text-align: center;">没有设置工作流字段</h1>
       </div>
     </div>
+
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible">
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <el-collapse v-model="activeName" accordion @change="selectType">
+            <el-collapse-item title="用户" name="1"></el-collapse-item>
+            <el-collapse-item title="部门" name="2">
+              <div v-if="group_role_list.length>0">
+                <li
+                  v-for="item in group_role_list"
+                  :key="item.id"
+                  @click="checkGroupUser(item.id)"
+                >{{item.name}}</li>
+              </div>
+              <div v-else>没有可选部门</div>
+            </el-collapse-item>
+            <el-collapse-item title="角色" name="3">
+              <div v-if="group_role_list.length>0">
+                <li
+                  v-for="item in group_role_list"
+                  :key="item.id"
+                  @click="checkRoleUser(item.id)"
+                >{{item.name}}</li>
+              </div>
+              <div v-else>没有可选角色</div>
+            </el-collapse-item>
+          </el-collapse>
+        </el-col>
+        <el-col :span="16">
+          <el-table :data="choice_user_list" @row-click="checkTableUser" style="width: 100%">
+            <el-table-column prop="username" label="用户" width="180"></el-table-column>
+            <el-table-column prop="realname" label="姓名"></el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-input :disabled="true" v-model="ticket.participant">
+          <template slot="prepend">选择用户</template>
+        </el-input>
+      </el-row>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          :disabled="ticket.participant?false:true"
+          type="primary"
+          @click="handleButton('temp', choice_transition)"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -199,7 +244,6 @@ import {
   checkAuthUpdate
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
-import Validators from "@/utils/validators";
 import { GenDatetime, objectMerge } from "@/utils";
 
 export default {
@@ -230,11 +274,26 @@ export default {
         3: "danger"
       },
       match_fields: [],
-      ticket: {},
+      ticket: {
+        name: "",
+        participant: ""
+      },
       workflow_temp: {
         participant: this.username
       },
-      choice_user_list: []
+      choice_user_list: [],
+      dialogTitle: "",
+      dialogVisible: false,
+      activeName: "1",
+      participant_list: [],
+      choice_transition: {},
+      group_role_list: [],
+      participant_type: {
+        0: "无处理人",
+        1: "个人",
+        2: "部门",
+        3: "角色"
+      }
     };
   },
   computed: {
@@ -295,33 +354,47 @@ export default {
     reset(formName) {
       this.$refs[formName].resetFields();
     },
-    selectUser(dataForm,row) {
-      const state = row.dest_state
-      this.choice_user_list = []
-      if (state.participant_type ===1 || state.participant_type ===2) {
-        const data = state.participant.split(',')
-        for (var i in data) {
-          this.choice_user_list.push({id: i, username:data[i]})
-        }
-      } else if  (state.participant_type ===2 ) {
-        const params = {
-          group: state.participant
-        }
-        user.requestGet(params).then(response => {
-          this.choice_user_list = response.results;
-        });
-      } else if  (state.participant_type ===3 ) {
-        const params = {
-          roles: state.participant
-        }
-        user.requestGet(params).then(response => {
-          this.choice_user_list = response.results;
-        });
+    selectUser(dataForm, row) {
+      this.dialogVisible = true;
+      this.choice_transition = row;
+      this.dialogTitle =
+        "选择" + this.participant_type[row.dest_state.participant_type];
+    },
+    selectType(val) {
+      this.ticket.participant = "";
+      this.choice_user_list = [];
+
+      if (val === 1) {
+        this.choice_user_list = this.choice_transition.dest_state.user_participant;
+      } else if (val == 2) {
+        this.group_role_list = this.choice_transition.dest_state.group_participant;
+      } else if (val == 3) {
+        this.group_role_list = this.choice_transition.dest_state.role_participant;
       } else {
-        this.choice_user_list = []
+        this.group_role_list = [];
       }
     },
+    checkGroupUser(id) {
+      const params = {
+        group: id
+      };
+      user.requestGet(params).then(response => {
+        this.choice_user_list = response.results;
+      });
+    },
+    checkRoleUser(id) {
+      const params = {
+        roles: id
+      };
+      user.requestGet(params).then(response => {
+        this.choice_user_list = response.results;
+      });
+    },
+    checkTableUser(row) {
+      this.ticket.participant = row.username;
+    },
     handleButton(dataForm, transition) {
+      this.dialogVisible = false;
       const customfield = [];
       for (var i of this.customfield_list) {
         if (this.temp[i.field_key]) {

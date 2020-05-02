@@ -64,7 +64,7 @@ class TransitionReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transition
         fields = '__all__'
-        depth = 1
+        depth = 2
 
 
 class TransitionSerializer(serializers.ModelSerializer):

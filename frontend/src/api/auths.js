@@ -30,3 +30,19 @@ export function changepwd(data) {
     data
   })
 }
+
+export function getuser_by_group(data) {
+  return request({
+    url: '/sys/user/getuser_by_group/',
+    method: 'post',
+    data
+  })
+}
+
+export function getuser_by_roles(data) {
+  return request({
+    url: '/sys/user/getuser_by_roles/',
+    method: 'post',
+    data
+  })
+}

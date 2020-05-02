@@ -82,7 +82,7 @@
           <a class="tips">允许工单创建人在此状态直接撤回工单到初始状态</a>
         </el-form-item>
         <el-form-item label="参与者类型" prop="participant_type">
-          <el-select v-model="temp.participant_type" placeholder="请选择" @change="selectUser(temp)">
+          <el-select v-model="temp.participant_type" placeholder="请选择">
             <el-option
               v-for="(label, value) in participant_types"
               :key="value"
@@ -91,17 +91,37 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="参与者" prop="participant">
-          <el-select v-model="temp.participant" multiple filterable placeholder="请选择">
+        <el-form-item v-if="temp.participant_type == 1" label="参与用户" prop="participant">
+          <el-select v-model="temp.user_participant" multiple filterable placeholder="请选择">
             <el-option
               v-for="item in choice_user_list"
-              :key="item.username"
+              :key="item.id"
               :label="item.username"
-              :value="item.username">
-            </el-option>
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item  label="可編輯字段" prop="fields">
+        <el-form-item v-if="temp.participant_type == 2" label="参与部门" prop="participant">
+          <el-select v-model="temp.group_participant" multiple filterable placeholder="请选择">
+            <el-option
+              v-for="item in choice_group_list"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="temp.participant_type == 3" label="参与角色" prop="participant">
+          <el-select v-model="temp.role_participant" multiple filterable placeholder="请选择">
+            <el-option
+              v-for="item in choice_role_list"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="可編輯字段" prop="fields">
           <el-transfer
             v-model="temp.fields"
             filterable
@@ -179,9 +199,8 @@ export default {
       participant_types: {
         0: "无处理人",
         1: "个人",
-        2: "多人",
-        3: "部门",
-        4: "角色"
+        2: "部门",
+        3: "角色"
       },
       permprops: {
         key: "id",
@@ -189,11 +208,14 @@ export default {
         disabled: "field_attribute"
       },
       choice_user_list: [],
+      choice_group_list: [],
+      choice_role_list: []
     };
   },
   computed: {},
   created() {
     this.getMenuButton();
+    this.selectParticipant();
   },
   methods: {
     checkPermission() {
@@ -221,30 +243,24 @@ export default {
         order_id: undefined,
         state_type: 0,
         enable_retreat: false,
-        participant_type: undefined,
-        participant: [],
+        participant_type: 0,
+        user_participant: [],
+        group_participant: [],
+        role_participant: [],
         fields: [],
         workflow: this.wfdata.id
       };
     },
-    selectUser(row) {
-      const state = row
-      this.choice_user_list = []
-      if (state.participant_type ===1 || state.participant_type ===2) {
-        user.requestGet().then(response => {
-          this.choice_user_list = response.results;
-        });
-      } else if  (state.participant_type ===2 ) {
-        group.requestGet().then(response => {
-          this.choice_user_list = response.results;
-        });
-      } else if  (state.participant_type ===3 ) {
-        role.requestGet().then(response => {
-          this.choice_user_list = response.results;
-        });
-      } else {
-        this.choice_user_list = []
-      }
+    selectParticipant() {
+      user.requestGet().then(response => {
+        this.choice_user_list = response.results;
+      });
+      group.requestGet().then(response => {
+        this.choice_group_list = response.results;
+      });
+      role.requestGet().then(response => {
+        this.choice_role_list = response.results;
+      });
     },
     handleCreate() {
       this.resetTemp();

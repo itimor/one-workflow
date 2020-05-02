@@ -20,11 +20,6 @@ class UserViewSet(BulkModelMixin):
     filter_fields = ['username', 'group', 'roles']
     ordering_fields = ['username', 'status']
 
-    # def get_serializer_class(self):
-    #     if self.action in ['list', 'retrieve'] or self.resultData:
-    #         return UserReadSerializer
-    #     return UserSerializer
-
 
 class GroupViewSet(BulkModelMixin):
     queryset = Group.objects.all()

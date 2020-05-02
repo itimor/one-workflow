@@ -3,6 +3,7 @@
 
 from django.db import models
 from common.models import BaseModel
+from systems.models import *
 
 
 class WorkflowType(BaseModel):
@@ -99,9 +100,8 @@ state_type = {
 participant_type = {
     0: '无处理人',
     1: '个人',
-    2: '多人',
-    3: '部门',
-    4: '角色',
+    2: '部门',
+    3: '角色',
 }
 
 
@@ -117,9 +117,9 @@ class State(BaseModel):
     enable_retreat = models.BooleanField('允许撤回', default=False, help_text='开启后允许工单创建人在此状态直接撤回工单到初始状态')
     participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0,
                                         verbose_name='参与者类型')
-    participant = models.CharField('参与者', default='', blank=True, max_length=100,
-                                   help_text='可以为空(无处理人的情况，如结束状态)、username\多个username(以,隔开)\部门id\角色id\变量(creator,creator_tl)\脚本记录的id等，包含子工作流的需要设置处理人为loonrobot')
-    # 为当前步骤人可以编辑的字段
+    user_participant = models.ManyToManyField(User, blank=True, verbose_name='参与用户')
+    group_participant = models.ManyToManyField(Group, blank=True, verbose_name='参与组')
+    role_participant = models.ManyToManyField(Role, blank=True, verbose_name='参与角色')
     fields = models.ManyToManyField(CustomField, blank=True, verbose_name='可编辑字段')
 
     def __str__(self):
