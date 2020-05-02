@@ -1,5 +1,5 @@
 # django + vue 工作流管理系统
-包含 `用户`、`角色`、`菜单`、`权限` 管理， 这是一般后台系统一般都会有的功能， 后续其他功能都可以在这个基础上进行扩展。
+包含 `用户`、`角色`、`菜单`、`权限` 管理， 这是基础的工作流系统，初始化会生成请假工作流， 也可以自行配置其他工作流比如，发布工单等。
 
 - 后端model参考: [loonflow](https://github.com/blackholll/loonflow), 非常不错的一个项目
 - 前端设计参考: [花裤衩 vue-element-admin](https://github.com/PanJiaChen/vue-element-admin), 大神作品没得说
