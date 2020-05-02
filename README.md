@@ -46,3 +46,15 @@ npm run dev
 
 ### 分配菜单 和 数据 权限
 ![role_edit](gifs/role_edit.png)
+
+### 配置假期工作流
+![role](gifs/leave.png)
+
+### 新建工单
+![role](gifs/new.png)
+
+### 编辑工单
+![role](gifs/edit.png)
+
+### 所有工单
+![role](gifs/all.png)
