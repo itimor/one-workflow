@@ -85,19 +85,17 @@
           <el-input v-model="temp.default_value" />
           <a class="tips">前端展示时，可以将此内容作为表单中的该字段的默认值</a>
         </el-form-item>
-        <el-form-item label="文本域模板" prop="field_template">
+        <el-form-item label="文本域模板" prop="field_template" v-if="temp.field_type===9">
           <el-input v-model="temp.field_template" />
           <a class="tips">文本域类型字段前端显示时可以将此内容作为字段的placeholder</a>
         </el-form-item>
-        <el-form-item label="布尔类型显示名" prop="boolean_field_display">
+        <el-form-item label="布尔类型显示名" prop="boolean_field_display" v-if="temp.field_type===4">
           <el-input v-model="temp.boolean_field_display" />
           <a class="tips">当为布尔类型时候，可以支持自定义显示形式。{"1":"是","0":"否"}或{"1":"需要","0":"不需要"}，注意数字也需要引号</a>
         </el-form-item>
-        <el-form-item label="多选值" prop="field_choice">
+        <el-form-item label="多选值" prop="field_choice" v-if="[10,11].includes(temp.field_type)">
           <el-input v-model="temp.field_choice" />
-          <a
-            class="tips"
-          >radio,checkbox,select,multiselect类型可供选择的选项，格式为list如:["中国", "美国"],注意数字也需要引号</a>
+          <a class="tips">radio,select:{"1":"中国", "2":"美国"},注意数字也需要引号</a>
         </el-form-item>
         <el-form-item label="标签" prop="label">
           <el-input v-model="temp.label" />
@@ -160,20 +158,20 @@ export default {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }]
       },
       field_types: {
-        10: "字符串",
-        15: "整形",
-        20: "浮点型",
-        25: "布尔",
-        30: "日期",
-        35: "时间",
-        40: "日期时间",
-        45: "单选框",
-        50: "多选框",
-        55: "下拉列表",
-        60: "多选下拉列表",
-        65: "文本域",
-        70: "用户名",
-        75: "多选的用户名"
+        1: "字符串",
+        2: "整形",
+        3: "浮点型",
+        4: "布尔",
+        5: "日期",
+        6: "日期时间",
+        7: "范围日期",
+        8: "文本域",
+        9: "单选框",
+        10: "下拉列表",
+        11: "用户名",
+        12: "多选框",
+        13: "多选下拉",
+        14: "多选用户名"
       }
     };
   },
@@ -202,7 +200,7 @@ export default {
     resetTemp() {
       this.temp = {
         memo: "",
-        field_type: 10,
+        field_type: 1,
         field_key: "",
         field_name: "",
         order_id: 10,

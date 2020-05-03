@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="ticket">
       <div class="ticket-form" v-if="customfield_list.length>0">
-        <el-form ref="temp" :rules="rules" :model="temp" label-width="100px">
+        <el-form ref="temp" :model="temp" label-width="100px">
           <el-card>
             <div slot="header" class="card-solt">
               <el-form-item label="工单标题">
@@ -11,7 +11,7 @@
             </div>
             <el-row :gutter="20">
               <el-col
-                :md="{span: item.field_type === 65 ? 22 : 11}"
+                :md="{span: [7, 8].includes(item.field_type)? 22 : 11}"
                 v-for="item in customfield_list"
                 :key="item.id"
               >
@@ -19,31 +19,26 @@
                   v-show="!item.field_attribute"
                   :label="item.field_name"
                   :prop="item.field_key"
+                  :rules="match_fields.includes(item.id)?
+                  [{ required: true, message: '请输入' + item.field_name, trigger: 'blur' },]:[]"
                 >
                   <el-input
-                    v-if="item.field_type === 10"
+                    v-if="item.field_type === 1"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   />
 
                   <el-input-number
-                    v-if="item.field_type === 15"
+                    v-if="item.field_type === 2"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-input-number>
 
-                  <el-time-picker
-                    v-if="item.field_type === 35"
-                    v-model="temp[item.field_key]"
-                    :placeholder="item.field_name"
-                    :disabled="item.field_attribute ||! match_fields.includes(item.id)"
-                  ></el-time-picker>
-
                   <el-date-picker
                     type="date"
-                    v-if="item.field_type === 30"
+                    v-if="item.field_type === 5"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
@@ -51,7 +46,7 @@
 
                   <el-date-picker
                     type="datetime"
-                    v-if="item.field_type === 40"
+                    v-if="item.field_type === 6"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
@@ -60,7 +55,7 @@
                   <el-input
                     type="textarea"
                     :autosize="{ minRows: 4, maxRows: 6}"
-                    v-if="item.field_type === 65"
+                    v-if="item.field_type === 8"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
@@ -69,13 +64,13 @@
                   <el-switch
                     active-color="#13ce66"
                     inactive-color="#ff4949"
-                    v-if="item.field_type === 25"
+                    v-if="item.field_type === 4"
                     v-model="temp[item.field_key]"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   ></el-switch>
 
                   <el-radio-group
-                    v-if="item.field_type === 45"
+                    v-if="item.field_type === 9"
                     v-model="temp[item.field_key]"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
@@ -87,7 +82,7 @@
                   </el-radio-group>
 
                   <el-checkbox-group
-                    v-if="item.field_type === 50"
+                    v-if="item.field_type === 12"
                     v-model="temp[item.field_key]"
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
@@ -99,7 +94,7 @@
                   </el-checkbox-group>
 
                   <el-select
-                    v-if="item.field_type === 55"
+                    v-if="item.field_type === 10"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
@@ -113,7 +108,7 @@
                   </el-select>
 
                   <el-select
-                    v-if="item.field_type === 60"
+                    v-if="item.field_type === 13"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
@@ -127,8 +122,19 @@
                     >{{value}}</el-option>
                   </el-select>
 
+                  <el-date-picker
+                    v-if="item.field_type === 7"
+                    v-model="temp[item.field_key]"
+                    format="yyyy 年 MM 月 dd 日"
+                    value-format="yyyy-MM-dd"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  ></el-date-picker>
+
                   <el-select
-                    v-if="item.field_type === 70"
+                    v-if="item.field_type === 11"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
@@ -138,7 +144,7 @@
                   </el-select>
 
                   <el-select
-                    v-if="item.field_type === 55"
+                    v-if="item.field_type === 14"
                     v-model="temp[item.field_key]"
                     :placeholder="item.field_name"
                     clearable
@@ -244,7 +250,7 @@ import {
   checkAuthUpdate
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
-import { GenDatetime, objectMerge } from "@/utils";
+import { GenDatetime } from "@/utils";
 
 export default {
   name: "u_ticket",

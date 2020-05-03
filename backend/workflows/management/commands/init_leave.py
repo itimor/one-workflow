@@ -50,32 +50,30 @@ class Command(BaseCommand):
 
         ## 工作流字段
         # 建立内置字段
-        CustomField.objects.create(field_name="申请人", order_id=1, field_attribute=True, field_type=10, field_key="create_user", workflow=leave_wf)
-        CustomField.objects.create(field_name="申请时间", order_id=2, field_attribute=True, field_type=40, field_key="create_time", workflow=leave_wf)
-        CustomField.objects.create(field_name="部门", order_id=3, field_attribute=True, field_type=10, field_key="group", workflow=leave_wf)
-        CustomField.objects.create(field_name="工号", order_id=4, field_attribute=True, field_type=10, field_key="id", workflow=leave_wf)
+        CustomField.objects.create(field_name="申请人", order_id=1, field_attribute=True, field_type=1, field_key="create_user", workflow=leave_wf)
+        CustomField.objects.create(field_name="申请时间", order_id=2, field_attribute=True, field_type=6, field_key="create_time", workflow=leave_wf)
+        CustomField.objects.create(field_name="部门", order_id=3, field_attribute=True, field_type=1, field_key="group", workflow=leave_wf)
+        CustomField.objects.create(field_name="工号", order_id=4, field_attribute=True, field_type=2, field_key="id", workflow=leave_wf)
         # 建立扩展字段
-        c1 = CustomField.objects.create(field_name="开始时间", order_id=10, field_type=40, field_key="start_time", workflow=leave_wf)
-        c2 = CustomField.objects.create(field_name="结束时间", order_id=20, field_type=40, field_key="end_time", workflow=leave_wf)
-        c3 = CustomField.objects.create(field_name="请假类型", order_id=30, field_type=45, field_key="type", field_choice='{"1":"病假", "2":"产假"}', workflow=leave_wf)
-        c4 = CustomField.objects.create(field_name="请假总天数", order_id=40, field_type=15, field_key="days", workflow=leave_wf)
-        c5 = CustomField.objects.create(field_name="事由说明", order_id=50, field_type=65, field_key="memo", workflow=leave_wf)
-        c6 = CustomField.objects.create(field_name="领导审批", order_id=60, field_type=45, field_key="leader_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
-        c7 = CustomField.objects.create(field_name="领导意见", order_id=70, field_type=65, field_key="leader_issue", workflow=leave_wf)
-        c8 = CustomField.objects.create(field_name="人事审批", order_id=80, field_type=45, field_key="hr_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
-        c9 = CustomField.objects.create(field_name="人事意见", order_id=90, field_type=65, field_key="hr_issue", workflow=leave_wf)
+        c1 = CustomField.objects.create(field_name="请假时间", order_id=10, field_type=7, field_key="start_end_time", workflow=leave_wf)
+        c2 = CustomField.objects.create(field_name="请假类型", order_id=30, field_type=9, field_key="type", field_choice='{"1":"病假", "2":"产假"}', workflow=leave_wf)
+        c3 = CustomField.objects.create(field_name="事由说明", order_id=50, field_type=8, field_key="memo", workflow=leave_wf)
+        c4 = CustomField.objects.create(field_name="领导审批", order_id=60, field_type=9, field_key="leader_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
+        c5 = CustomField.objects.create(field_name="领导意见", order_id=70, field_type=8, field_key="leader_issue", workflow=leave_wf)
+        c6 = CustomField.objects.create(field_name="人事审批", order_id=80, field_type=9, field_key="hr_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
+        c7 = CustomField.objects.create(field_name="人事意见", order_id=90, field_type=8, field_key="hr_issue", workflow=leave_wf)
 
         # 建立初始和结束状态
         s1 = State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type=0, workflow=leave_wf)
         s2 = State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type=0, workflow=leave_wf)
         # 建立流转状态
         s3 = State.objects.create(name="申请人-编辑中", order_id=2, participant_type=0, workflow=leave_wf)
-        s3.fields.add(c1, c2, c3, c4, c5)
+        s3.fields.add(c1, c2, c3)
         s4 = State.objects.create(name="领导-审批中", order_id=3, participant_type=3, workflow=leave_wf)
-        s4.fields.add(c6, c7)
+        s4.fields.add(c4, c5)
         s4.role_participant.add(role_ops_tl, role_dev_tl, role_hr_tl)
         s5 = State.objects.create(name="人事-审批中", order_id=4, participant_type=2, workflow=leave_wf)
-        s5.fields.add(c8, c9)
+        s5.fields.add(c6, c7)
         s5.group_participant.add(group_hr)
         s6 = State.objects.create(name="结束", order_id=98, state_type=2, participant_type=0, workflow=leave_wf)
 

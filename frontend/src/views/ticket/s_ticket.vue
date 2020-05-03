@@ -19,35 +19,33 @@
             </div>
             <el-row :gutter="20">
               <el-col
-                :md="{span: item.customfield.field_type === 65 ? 22 : 11}"
+                :md="{span: [7, 8].includes(item.customfield.field_type)? 22 : 11}"
                 v-for="item in customfield_list"
                 :key="item.id"
               >
-                <el-form-item :label="item.customfield.field_name" :prop="item.field_key">
+                <el-form-item
+                  :label="item.customfield.field_name"
+                  :prop="item.field_key"
+                  :rules="match_fields.includes(item.customfield.id)?
+                  [{ required: true, message: '请输入' + item.customfield.field_name, trigger: 'blur' },]:[]"
+                >
                   <el-input
-                    v-if="item.customfield.field_type === 10"
+                    v-if="item.customfield.field_type === 1"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   />
 
                   <el-input-number
-                    v-if="item.customfield.field_type === 15"
+                    v-if="item.customfield.field_type === 2"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   ></el-input-number>
 
-                  <el-time-picker
-                    v-if="item.customfield.field_type === 35"
-                    v-model="item.field_value"
-                    :placeholder="item.customfield.field_name"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
-                  ></el-time-picker>
-
                   <el-date-picker
                     type="date"
-                    v-if="item.customfield.field_type === 30"
+                    v-if="item.customfield.field_type === 5"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
@@ -55,7 +53,7 @@
 
                   <el-date-picker
                     type="datetime"
-                    v-if="item.customfield.field_type === 40"
+                    v-if="item.customfield.field_type === 6"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
@@ -64,7 +62,7 @@
                   <el-input
                     type="textarea"
                     :autosize="{ minRows: 4, maxRows: 6}"
-                    v-if="item.customfield.field_type === 65"
+                    v-if="item.customfield.field_type === 8"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
@@ -73,13 +71,13 @@
                   <el-switch
                     active-color="#13ce66"
                     inactive-color="#ff4949"
-                    v-if="item.customfield.field_type === 25"
+                    v-if="item.customfield.field_type === 4"
                     v-model="item.field_value"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   ></el-switch>
 
                   <el-radio-group
-                    v-if="item.customfield.field_type === 45"
+                    v-if="item.customfield.field_type === 9"
                     v-model="item.field_value"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
@@ -91,7 +89,7 @@
                   </el-radio-group>
 
                   <el-checkbox-group
-                    v-if="item.customfield.field_type === 50"
+                    v-if="item.customfield.field_type === 12"
                     v-model="item.field_value"
                     :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
@@ -103,7 +101,7 @@
                   </el-checkbox-group>
 
                   <el-select
-                    v-if="item.customfield.field_type === 55"
+                    v-if="item.customfield.field_type === 10"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     clearable
@@ -117,7 +115,7 @@
                   </el-select>
 
                   <el-select
-                    v-if="item.customfield.field_type === 60"
+                    v-if="item.customfield.field_type === 13"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     clearable
@@ -131,8 +129,25 @@
                     >{{value}}</el-option>
                   </el-select>
 
+                  <span v-if="item.customfield.field_type === 7">
+                    <el-date-picker
+                      v-if="item.field_value.length>0"
+                      type="datetimerange"
+                      :value="formatDate(item.field_value)"
+                      :placeholder="item.customfield.field_name"
+                      :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    ></el-date-picker>
+                    <el-date-picker
+                      v-else
+                      type="datetimerange"
+                      :value="formatDate(item.field_value)"
+                      :placeholder="item.customfield.field_name"
+                      :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    ></el-date-picker>
+                  </span>
+
                   <el-select
-                    v-if="item.customfield.field_type === 70"
+                    v-if="item.customfield.field_type === 11"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     clearable
@@ -142,7 +157,7 @@
                   </el-select>
 
                   <el-select
-                    v-if="item.customfield.field_type === 55"
+                    v-if="item.customfield.field_type === 14"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     clearable
@@ -279,7 +294,8 @@ export default {
         0: "primary",
         1: "success",
         2: "warning",
-        3: "danger"
+        3: "danger",
+        4: "danger",
       },
       match_fields: [],
       workflow_temp: {
@@ -303,7 +319,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["username"])
+    ...mapGetters(["username"]),
+    formatDate() {
+      return function(date) {
+        const d = eval("(" + date + ")");
+        return d;
+      };
+    }
   },
   created() {
     const id = this.$route.params && this.$route.params.id;
