@@ -179,7 +179,12 @@
       </div>
     </div>
 
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible">
+      <div slot="title">
+        当前下一步处理对象是：
+        <a style="color: red; font-width:700;">{{dialogTitle}}</a>
+        请点击下方对应类，并选择转交用户
+      </div>
       <el-row :gutter="20">
         <el-col :span="8">
           <el-collapse v-model="activeName" accordion @change="selectType">
@@ -215,7 +220,7 @@
       </el-row>
 
       <el-row>
-        <el-input :disabled="true" v-model="ticket.participant">
+        <el-input readonly v-model="ticket.participant">
           <template slot="prepend">选择用户</template>
         </el-input>
       </el-row>
@@ -361,10 +366,15 @@ export default {
       this.$refs[formName].resetFields();
     },
     selectUser(dataForm, row) {
-      this.dialogVisible = true;
-      this.choice_transition = row;
-      this.dialogTitle =
-        "选择" + this.participant_type[row.dest_state.participant_type];
+      this.$refs[dataForm].validate(valid => {
+        if (valid) {
+          this.dialogVisible = true;
+          this.choice_transition = row;
+          this.dialogTitle = this.participant_type[
+            row.dest_state.participant_type
+          ];
+        }
+      });
     },
     selectType(val) {
       this.ticket.participant = "";
