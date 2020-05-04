@@ -119,6 +119,7 @@ class State(BaseModel):
     group_participant = models.ManyToManyField(Group, blank=True, verbose_name='参与组')
     role_participant = models.ManyToManyField(Role, blank=True, verbose_name='参与角色')
     fields = models.ManyToManyField(CustomField, blank=True, verbose_name='可编辑字段')
+
     def __str__(self):
         return self.name
 

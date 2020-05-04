@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-steps>
-        <el-step v-for="item in state_list" :keys="item.id" status="finish" :title="item.name" v-if="!item.is_hidden"></el-step>
+        <el-step v-for="item in state_list" :key="item.id" status="finish" :title="item.name" v-if="!item.is_hidden"></el-step>
       </el-steps>
     </el-card>
 

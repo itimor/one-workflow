@@ -33,7 +33,7 @@ class RoleViewSet(BulkModelMixin):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
     search_fields = ['name']
-    filter_fields = ['name', 'group']
+    filter_fields = ['name']
     ordering_fields = ['parent_id', 'sequence']
 
 

@@ -27,6 +27,7 @@
         >{{ "添加" }}</el-button>
         <el-button
           v-if="permissionList.del"
+          :disabled="multipleSelection.length<1"
           class="filter-item"
           type="danger"
           icon="el-icon-delete"
@@ -70,12 +71,14 @@
               type="primary"
               @click="handleUpdate(row)"
             >{{ "编辑" }}</el-button>
-            <el-button
-              v-if="permissionList.del"
-              size="small"
-              type="danger"
-              @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
+            <el-popconfirm title="你确定要删除吗" @onConfirm="handleDelete(row)">
+              <el-button
+                slot="reference"
+                v-if="permissionList.del"
+                size="small"
+                type="danger"
+              >{{ "删除" }}</el-button>
+            </el-popconfirm>
           </el-button-group>
         </template>
       </el-table-column>
@@ -322,7 +325,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.group = this.valueIdSelectTree2;
-          this.temp.roles = this.$refs.tree.getCheckedKeys();
+          this.temp.roles = this.$refs.tree.getCheckedKeys(true);
           user
             .requestPost(this.temp)
             .then(response => {
@@ -346,7 +349,7 @@ export default {
       //   group: row.group.id,
       //   roles: row.roles.map(a => a.id),
       // });
-      this.temp = row
+      this.temp = row;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -360,7 +363,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.group = this.valueIdSelectTree2;
-          this.temp.roles = this.$refs.tree.getCheckedKeys();
+          this.temp.roles = this.$refs.tree.getCheckedKeys(true);
           user
             .requestPut(this.temp.id, this.temp)
             .then(() => {
@@ -379,26 +382,13 @@ export default {
       });
     },
     handleDelete(row) {
-      this.$confirm("是否确定删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          user.requestDelete(row.id).then(() => {
-            this.$message({
-              message: "删除成功",
-              type: "success"
-            });
-            this.getList();
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
+      user.requestDelete(row.id).then(() => {
+        this.$message({
+          message: "删除成功",
+          type: "success"
         });
+        this.getList();
+      });
     },
     getSelectTreeValue(value, type) {
       if (type === 1) {
@@ -412,14 +402,6 @@ export default {
       this.multipleSelection = val;
     },
     handleBatchDel() {
-      if (this.multipleSelection.length === 0) {
-        this.$message({
-          message: "未选中任何行",
-          type: "warning",
-          duration: 2000
-        });
-        return;
-      }
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

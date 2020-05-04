@@ -27,6 +27,7 @@
         >{{ "添加" }}</el-button>
         <el-button
           v-if="permissionList.del"
+          :disabled="multipleSelection.length<1"
           class="filter-item"
           type="danger"
           icon="el-icon-delete"
@@ -52,13 +53,8 @@
           <el-tag v-for="item in row.user_set" :key="item.id">{{item.username}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="包含角色" prop="user_set">
-        <template slot-scope="{ row }">
-          <el-tag v-for="item in row.role_set" :key="item.id">{{item.name}}</el-tag>
-        </template>
-      </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }" v-if="row.id !== 1">
+        <template slot-scope="{ row }">
           <el-button-group>
             <el-button
               v-if="permissionList.update"
@@ -66,12 +62,14 @@
               type="primary"
               @click="handleUpdate(row)"
             >{{ "编辑" }}</el-button>
-            <el-button
-              v-if="permissionList.del"
-              size="small"
-              type="danger"
-              @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
+            <el-popconfirm title="你确定要删除吗" @onConfirm="handleDelete(row)">
+              <el-button
+                slot="reference"
+                v-if="permissionList.del"
+                size="small"
+                type="danger"
+              >{{ "删除" }}</el-button>
+            </el-popconfirm>
           </el-button-group>
         </template>
       </el-table-column>
@@ -119,6 +117,19 @@
         <el-form-item label="排序值" prop="sequence">
           <el-input v-model="temp.sequence" />
         </el-form-item>
+        <el-form-item label="角色" prop="roles">
+          <el-tree
+            ref="tree"
+            :check-strictly="false"
+            :data="treeData"
+            :props="treeProps"
+            show-checkbox
+            accordion
+            default-expand-all
+            node-key="id"
+            class="permission-tree"
+          />
+        </el-form-item>
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
         </el-form-item>
@@ -150,8 +161,8 @@ export default {
   components: { Pagination, SelectTree },
   data() {
     return {
-      valueIdSelectTree: 0,
-      valueIdSelectTree2: 0,
+      valueIdSelectTree: null,
+      valueIdSelectTree2: null,
       propsSelectTree: {
         value: "id",
         label: "name",
@@ -189,11 +200,11 @@ export default {
       },
       multipleSelection: [],
       allgroup: [],
-      allperm: [],
-      permprops: {
-        key: "id",
+      treeProps: {
+        children: "children",
         label: "name"
-      }
+      },
+      treeData: []
     };
   },
   computed: {
@@ -201,7 +212,7 @@ export default {
       const cloneData = this.allgroup;
       const ha = cloneData.filter(father => {
         const branchArr = cloneData.filter(child => father.id === child.parent);
-        branchArr.length > 0 ? (father.children = branchArr) : "";
+        branchArr.length > 0 ? (father.children = branchArr) : null;
         return father.parent === this.allgroup[0].parent;
       });
       return ha;
@@ -211,6 +222,7 @@ export default {
     this.getMenuButton();
     this.getList();
     this.getAllgroup();
+    this.getTreeData();
   },
   methods: {
     checkPermission() {
@@ -257,9 +269,11 @@ export default {
     },
     resetTemp() {
       this.temp = {
+        parent: null,
         name: "",
         code: "",
         sequence: "",
+        roles: [],
         memo: ""
       };
     },
@@ -277,6 +291,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
+          this.temp.roles = this.$refs.tree.getCheckedKeys(true);
           group
             .requestPost(this.temp)
             .then(response => {
@@ -302,6 +317,7 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
         this.valueIdSelectTree2 = this.temp.parent;
+        this.$refs.tree.setCheckedKeys(row.roles);
       });
     },
     updateData() {
@@ -309,6 +325,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
+          this.temp.roles = this.$refs.tree.getCheckedKeys(true);
           group
             .requestPut(this.temp.id, this.temp)
             .then(() => {
@@ -327,26 +344,13 @@ export default {
       });
     },
     handleDelete(row) {
-      this.$confirm("是否确定删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          group.requestDelete(row.id).then(() => {
-            this.$message({
-              message: "删除成功",
-              type: "success"
-            });
-            this.getList();
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
+      group.requestDelete(row.id).then(() => {
+        this.$message({
+          message: "删除成功",
+          type: "success"
         });
+        this.getList();
+      });
     },
     getSelectTreeValue(value, type) {
       if (type === 1) {
@@ -360,14 +364,6 @@ export default {
       this.multipleSelection = val;
     },
     handleBatchDel() {
-      if (this.multipleSelection.length === 0) {
-        this.$message({
-          message: "未选中任何行",
-          type: "warning",
-          duration: 2000
-        });
-        return;
-      }
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -387,6 +383,19 @@ export default {
           });
         });
     },
+    getTreeData() {
+      role.requestGet().then(response => {
+        this.treeData = this.optionDataSelectTree(response.results);
+      });
+    },
+    optionDataSelectTree(data) {
+      const cloneData = data;
+      return cloneData.filter(father => {
+        const branchArr = cloneData.filter(child => father.id === child.parent);
+        branchArr.length > 0 ? (father.children = branchArr) : "";
+        return father.parent === data[0].parent;
+      });
+    }
   }
 };
 </script>
