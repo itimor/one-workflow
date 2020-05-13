@@ -11,7 +11,7 @@
             </div>
             <el-row :gutter="20">
               <el-col
-                :md="{span: [7, 8].includes(item.field_type)? 22 : 11}"
+                :md="{span: [7, 8, 9, 12].includes(item.field_type)? 22 : 11}"
                 v-for="item in customfield_list"
                 :key="item.id"
               >

@@ -44,6 +44,7 @@ class TicketFlowLog(BaseModel):
     工单流转日志
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='工单')
+    suggestion = models.CharField('审批意见', max_length=140, blank=True)
     transition = models.ForeignKey(Transition, on_delete=models.CASCADE, verbose_name='流转')
     participant = models.CharField('处理人', max_length=50, default='', blank=True)
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')

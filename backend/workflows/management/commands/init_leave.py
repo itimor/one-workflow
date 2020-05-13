@@ -59,9 +59,7 @@ class Command(BaseCommand):
         c2 = CustomField.objects.create(field_name="请假类型", order_id=30, field_type=9, field_key="type", field_choice='{"1":"病假", "2":"产假"}', workflow=leave_wf)
         c3 = CustomField.objects.create(field_name="事由说明", order_id=50, field_type=8, field_key="memo", workflow=leave_wf)
         c4 = CustomField.objects.create(field_name="领导审批", order_id=60, field_type=9, field_key="leader_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
-        c5 = CustomField.objects.create(field_name="领导意见", order_id=70, field_type=8, field_key="leader_issue", workflow=leave_wf)
-        c6 = CustomField.objects.create(field_name="人事审批", order_id=80, field_type=9, field_key="hr_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
-        c7 = CustomField.objects.create(field_name="人事意见", order_id=90, field_type=8, field_key="hr_issue", workflow=leave_wf)
+        c5 = CustomField.objects.create(field_name="人事审批", order_id=80, field_type=9, field_key="hr_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
 
         # 建立初始和结束状态
         s1 = State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type=0, workflow=leave_wf)
@@ -70,10 +68,10 @@ class Command(BaseCommand):
         s3 = State.objects.create(name="申请人-编辑中", order_id=2, participant_type=0, workflow=leave_wf)
         s3.fields.add(c1, c2, c3)
         s4 = State.objects.create(name="领导-审批中", order_id=3, participant_type=3, workflow=leave_wf)
-        s4.fields.add(c4, c5)
+        s4.fields.add(c4)
         s4.role_participant.add(role_ops_tl, role_dev_tl, role_hr_tl)
         s5 = State.objects.create(name="人事-审批中", order_id=4, participant_type=2, workflow=leave_wf)
-        s5.fields.add(c6, c7)
+        s5.fields.add(c5)
         s5.group_participant.add(group_hr)
         s6 = State.objects.create(name="结束", order_id=98, state_type=2, participant_type=0, workflow=leave_wf)
 
@@ -112,9 +110,7 @@ class Command(BaseCommand):
         c2 = CustomField.objects.create(field_name="发布项目", order_id=30, field_type=9, field_key="type", field_choice='{"1":"前端", "2":"后端"}', workflow=deploy_wf)
         c3 = CustomField.objects.create(field_name="发布内容", order_id=50, field_type=8, field_key="memo", workflow=deploy_wf)
         c4 = CustomField.objects.create(field_name="领导审批", order_id=60, field_type=9, field_key="leader_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=deploy_wf)
-        c5 = CustomField.objects.create(field_name="领导意见", order_id=70, field_type=8, field_key="leader_issue", workflow=deploy_wf)
-        c6 = CustomField.objects.create(field_name="运维执行", order_id=80, field_type=9, field_key="ops_radio", field_choice='{"1":"已执行", "2":"未执行"}', workflow=deploy_wf)
-        c7 = CustomField.objects.create(field_name="执行反馈", order_id=90, field_type=8, field_key="ops_issue", workflow=deploy_wf)
+        c5 = CustomField.objects.create(field_name="运维执行", order_id=80, field_type=9, field_key="ops_radio", field_choice='{"1":"已执行", "2":"未执行"}', workflow=deploy_wf)
 
         # 建立初始和结束状态
         s1 = State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type=0, workflow=deploy_wf)
@@ -123,10 +119,10 @@ class Command(BaseCommand):
         s3 = State.objects.create(name="申请人-编辑中", order_id=2, participant_type=0, workflow=deploy_wf)
         s3.fields.add(c1, c2, c3)
         s4 = State.objects.create(name="领导-审批中", order_id=3, participant_type=3, workflow=deploy_wf)
-        s4.fields.add(c4, c5)
+        s4.fields.add(c4)
         s4.role_participant.add(role_ops_tl, role_dev_tl, role_hr_tl)
         s5 = State.objects.create(name="运维-执行中", order_id=4, participant_type=2, workflow=deploy_wf)
-        s5.fields.add(c6, c7)
+        s5.fields.add(c5)
         s5.group_participant.add(group_hr)
         s6 = State.objects.create(name="结束", order_id=98, state_type=2, participant_type=0, workflow=deploy_wf)
 

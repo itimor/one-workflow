@@ -25,7 +25,6 @@ class TicketSerializer(serializers.ModelSerializer):
 
         workflow = validated_data["workflow"]
         transition = validated_data["transition"]
-        state = validated_data["state"]
         customfield_list = validated_data["customfield"]
 
         # save ticket
@@ -35,6 +34,7 @@ class TicketSerializer(serializers.ModelSerializer):
         # save ticketlog
         ticketlog = dict()
         ticketlog["ticket"] = ticket
+        ticketlog["suggestion"] = "没啥意见"
         ticketlog["state"] = transition.source_state
         ticketlog["transition"] = transition
         ticketlog["participant"] = cur_user
@@ -86,11 +86,13 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.participant = validated_data.get('participant', instance.participant)
         instance.transition = validated_data.get('transition', instance.transition)
         instance.customfield = validated_data.get('customfield', instance.customfield)
+        instance.memo = validated_data.get('memo', instance.memo)
         instance.save()
 
         # save ticketlog
         ticketlog = dict()
         ticketlog["ticket"] = instance
+        ticketlog["suggestion"] = instance.memo
         ticketlog["state"] = instance.transition.source_state
         ticketlog["transition"] = instance.transition
         ticketlog["participant"] = cur_user

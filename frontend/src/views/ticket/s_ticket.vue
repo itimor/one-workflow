@@ -19,7 +19,7 @@
             </div>
             <el-row :gutter="20">
               <el-col
-                :md="{span: [7, 8].includes(item.customfield.field_type)? 22 : 11}"
+                :md="{span: [7, 8, 9, 12].includes(item.customfield.field_type)? 22 : 11}"
                 v-for="item in customfield_list"
                 :key="item.id"
               >
@@ -170,6 +170,15 @@
               </el-col>
             </el-row>
 
+            <el-form-item label="审批意见" v-if="stateActive<999">
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 4, maxRows: 6}"
+                v-model="wfdata.memo"
+                placeholder="说些啥吧"
+              ></el-input>
+            </el-form-item>
+
             <el-form-item>
               <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
                 <el-button
@@ -193,18 +202,14 @@
           <span class="card-title">操作日志</span>
         </div>
         <el-table :data="ticketlog_list" border style="width: 100%" highlight-current-row>
-          <el-table-column label="操作节点" prop="state">
+          <el-table-column label="操作节点" prop="transition" width="150">
             <template slot-scope="{ row }">
               <span>{{row.state.name}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作类型" prop="transition">
-            <template slot-scope="{ row }">
-              <span>{{row.transition.attribute_type|AttributeTypeFilter}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作者" prop="participant"></el-table-column>
-          <el-table-column label="操作时间" prop="create_time"></el-table-column>
+          <el-table-column label="操作者" prop="participant" width="100"></el-table-column>
+          <el-table-column label="审批意见" prop="suggestion"></el-table-column>
+          <el-table-column label="操作时间" prop="create_time" width="200"></el-table-column>
         </el-table>
       </el-card>
     </div>
@@ -346,6 +351,7 @@ export default {
       };
       ticket.requestGet(params).then(response => {
         this.wfdata = response.results[0];
+        this.wfdata.memo = ""
         this.setPageTitle();
 
         this.workflow_temp.workflow = this.wfdata.workflow.id;
