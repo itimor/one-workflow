@@ -169,7 +169,6 @@
                   @click="handleButton('temp', item)"
                 >{{item.name|TransitionNameFilter}}</el-button>
               </span>
-              <el-button type="warning" @click="reset('temp')">重置</el-button>
             </el-form-item>
           </el-card>
         </el-form>
@@ -361,9 +360,6 @@ export default {
     setPageTitle() {
       const title = this.wfdata.name;
       document.title = `${title} - 创建`;
-    },
-    reset(formName) {
-      this.$refs[formName].resetFields();
     },
     selectUser(dataForm, row) {
       this.$refs[dataForm].validate(valid => {
