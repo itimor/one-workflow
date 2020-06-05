@@ -199,18 +199,31 @@
 
       <el-card>
         <div slot="header" class="clearfix">
-          <span class="card-title">操作日志</span>
+          <span class="card-title">审批历史</span>
         </div>
-        <el-table :data="ticketlog_list" border style="width: 100%" highlight-current-row>
-          <el-table-column label="操作节点" prop="transition" width="150">
-            <template slot-scope="{ row }">
-              <span>{{row.state.name}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作者" prop="participant" width="100"></el-table-column>
-          <el-table-column label="审批意见" prop="suggestion"></el-table-column>
-          <el-table-column label="操作时间" prop="create_time" width="200"></el-table-column>
-        </el-table>
+        <el-timeline>
+          <el-timeline-item
+            v-for="item in ticketlog_list"
+            :key="item.id"
+            :timestamp="item.create_time"
+            icon="el-icon-s-help"
+            size="large"
+            color="#0bbd87"
+            placement="top"
+          >
+            <el-card>
+              <h4 style="color:#0bbd87;">{{item.state.name}}</h4>
+              <el-form label-position="left">
+                <el-form-item label="执行人">
+                  <span>{{ item.participant }}</span>
+                </el-form-item>
+                <el-form-item label="审批意见">
+                  <span>{{ item.suggestion }}</span>
+                </el-form-item>
+              </el-form>
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
       </el-card>
     </div>
 
@@ -351,7 +364,7 @@ export default {
       };
       ticket.requestGet(params).then(response => {
         this.wfdata = response.results[0];
-        this.wfdata.memo = ""
+        this.wfdata.memo = "";
         this.setPageTitle();
 
         this.workflow_temp.workflow = this.wfdata.workflow.id;
