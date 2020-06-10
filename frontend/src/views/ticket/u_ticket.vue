@@ -140,7 +140,7 @@
                     clearable
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
-                    <el-option v-for="t in user_list" :key="t.id" :label="t.id">{{t.username}}</el-option>
+                    <el-option v-for="t in user_list" :key="t.id" :label="t.username" :value="t.username"></el-option>
                   </el-select>
 
                   <el-select
@@ -151,7 +151,7 @@
                     multiple
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
-                    <el-option v-for="t in user_list" :key="t.id" :label="t.id">{{t.username}}</el-option>
+                    <el-option v-for="t in user_list" :key="t.id" :label="t.username" :value="t.username"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
