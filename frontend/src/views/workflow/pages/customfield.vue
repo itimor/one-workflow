@@ -31,7 +31,7 @@
       <el-table-column label="标签" prop="label"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button-group v-if="!row.field_attribute">
+          <el-button-group v-if="row.field_attribute">
             <el-button
               v-if="permissionList.update"
               size="small"

@@ -25,13 +25,13 @@ class WorkflowSerializer(serializers.ModelSerializer):
         State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type=0, workflow=obj)
 
         # 建立内置字段
-        CustomField.objects.create(field_name="申请人", order_id=1, field_attribute=True, field_type=10,
+        CustomField.objects.create(field_name="申请人", order_id=1, field_attribute=True, field_type=1,
                                    field_key="create_user", workflow=obj)
-        CustomField.objects.create(field_name="申请时间", order_id=2, field_attribute=True, field_type=40,
+        CustomField.objects.create(field_name="申请时间", order_id=2, field_attribute=True, field_type=6,
                                    field_key="create_time", workflow=obj)
-        CustomField.objects.create(field_name="部门", order_id=3, field_attribute=True, field_type=10, field_key="group",
+        CustomField.objects.create(field_name="部门", order_id=3, field_attribute=True, field_type=1, field_key="group",
                                    workflow=obj)
-        CustomField.objects.create(field_name="工号", order_id=4, field_attribute=True, field_type=10, field_key="id",
+        CustomField.objects.create(field_name="工号", order_id=4, field_attribute=True, field_type=1, field_key="id",
                                    workflow=obj)
 
         return obj

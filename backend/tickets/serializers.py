@@ -41,6 +41,7 @@ class TicketSerializer(serializers.ModelSerializer):
         TicketFlowLog.objects.create(**ticketlog)
 
         # save customfield
+        print(ticket.create_time)
         field_models = []
         for item in json.loads(customfield_list):
             if item['field_key'] == "create_user":

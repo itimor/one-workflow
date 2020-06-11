@@ -29,10 +29,10 @@ if settings.APP_ENV == 'prod':
         # 静态模板
         url(r'', TemplateView.as_view(template_name="index.html")),
     ]
-# else:
-#     from django.contrib import admin
-#
-#     urlpatterns += [
-#         # 管理后台
-#         url(r'^admin/', admin.site.urls),
-#     ]
+else:
+    from django.contrib import admin
+
+    urlpatterns += [
+        # 管理后台
+        url(r'^admin/', admin.site.urls),
+    ]
