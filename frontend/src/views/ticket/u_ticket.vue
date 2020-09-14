@@ -289,7 +289,7 @@ export default {
         participant: ""
       },
       workflow_temp: {
-        participant: this.username
+        participant: this.user_id
       },
       choice_user_list: [],
       dialogTitle: "",

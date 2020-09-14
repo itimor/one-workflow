@@ -93,7 +93,7 @@
           <el-input v-model="temp.boolean_field_display" />
           <a class="tips">当为布尔类型时候，可以支持自定义显示形式。{"1":"是","0":"否"}或{"1":"需要","0":"不需要"}，注意数字也需要引号</a>
         </el-form-item>
-        <el-form-item label="多选值" prop="field_choice" v-if="[10,11].includes(temp.field_type)">
+        <el-form-item label="多选值" prop="field_choice" v-if="[9,10,12,13].includes(temp.field_type)">
           <el-input v-model="temp.field_choice" />
           <a class="tips">radio,select:{"1":"中国", "2":"美国"},注意数字也需要引号</a>
         </el-form-item>
