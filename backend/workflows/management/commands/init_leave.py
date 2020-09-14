@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = '假期工作流'
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS('############ 初始化分组 ###########'))
+        self.stdout.write(self.style.SUCCESS('############ 配置工作流用户角色 ###########'))
         topgroup = Group.objects.get(name='top', code='top')
 
         group_ops = Group.objects.create(name='运维', code='ops', sequence=1, parent=topgroup)
