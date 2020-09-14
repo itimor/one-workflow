@@ -21,11 +21,11 @@ class Command(BaseCommand):
         toprole = Role.objects.get(name='top', code='top')
 
         role_ops_tl = Role.objects.create(name='运维经理', code='ops_tl', sequence=1, group=group_ops, parent=toprole)
-        role_ops = Role.objects.create(name='运维', code='ops', sequence=1, group=group_ops, parent=role_ops_tl)
+        role_ops = Role.objects.create(name='运维', code='ops', sequence=1, group=group_ops, parent=toprole)
         role_dev_tl = Role.objects.create(name='开发经理', code='dev_tl', sequence=2, group=group_dev, parent=toprole)
-        role_dev = Role.objects.create(name='开发', code='dev', sequence=2, group=group_dev, parent=role_dev_tl)
+        role_dev = Role.objects.create(name='开发', code='dev', sequence=2, group=group_dev, parent=toprole)
         role_hr_tl = Role.objects.create(name='人事经理', code='hr_tl', sequence=3, group=group_hr, parent=toprole)
-        role_hr = Role.objects.create(name='人事', code='hr', sequence=3, group=group_hr, parent=role_hr_tl)
+        role_hr = Role.objects.create(name='人事', code='hr', sequence=3, group=group_hr, parent=toprole)
 
         self.stdout.write(self.style.SUCCESS('############ 初始化用户 ###########'))
         ops_tl = User.objects.create(username='ops_tl', password=make_password("123456"), realname="青龙", group=group_ops)
