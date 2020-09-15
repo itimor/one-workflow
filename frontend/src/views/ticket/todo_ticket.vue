@@ -98,6 +98,7 @@ export default {
     },
     getList() {
       this.listLoading = true;
+      this.listQuery.participant =  this.username
       ticket.requestGet(this.listQuery).then(response => {
         this.list = response.results;
         this.listLoading = false;

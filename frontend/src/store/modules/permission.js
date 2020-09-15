@@ -184,6 +184,8 @@ export const componentsMap = {
 
   // tickets
   new_ticket: () => import('@/views/ticket/new_ticket'), // 新建工单
+  c_ticket: () => import('@/views/ticket/c_ticket'), // 查看工单
+  u_ticket: () => import('@/views/ticket/u_ticket'), // 编辑工单
   u_ticket: () => import('@/views/ticket/u_ticket'), // 编辑工单
   s_ticket: () => import('@/views/ticket/s_ticket'), // 处理工单
   my_ticket: () => import('@/views/ticket/my_ticket'), // 我创建的

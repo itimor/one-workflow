@@ -435,7 +435,6 @@ export default {
           customfield: JSON.stringify(customfield)
         }
       );
-
       this.$refs[dataForm].validate(valid => {
         if (valid) {
           ticket

@@ -32,4 +32,7 @@ class Command(BaseCommand):
         menumodel = Menu.objects.create(name='所有工单', code='all_ticket', curl='/all_ticket', icon='all_ticket', sequence=90, type=2,
                                         no_cache=True, parent_id=ticketmenu.id)
         init_menu(menumodel)
+        menumodel = Menu.objects.create(name='查看工单', code='c_ticket', curl='/c_ticket/:id', icon='list', sequence=100, type=2,
+                                        hidden=True, active_menu='/my_ticket', parent_id=ticketmenu.id)
+        init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

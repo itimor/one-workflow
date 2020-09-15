@@ -32,7 +32,7 @@
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="工单流水号" prop="sn" width="240">
         <template slot-scope="{ row }">
-          <router-link :to="'/s_ticket/' + row.id">
+          <router-link :to="'/c_ticket/' + row.id">
             <el-link type="success">{{row.sn}}</el-link>
           </router-link>
         </template>
@@ -144,6 +144,7 @@ export default {
     },
     getList() {
       this.listLoading = true;
+      this.listQuery.create_user__username =  this.username
       ticket.requestGet(this.listQuery).then(response => {
         this.list = response.results;
         this.total = response.count;
