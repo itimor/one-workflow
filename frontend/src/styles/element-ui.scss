@@ -96,3 +96,13 @@
   font-weight: 900;
   font-size: 1.8em;
 }
+
+.el-card {
+  margin-bottom: 10px;
+  .card-title {
+    font-weight: 700;
+  }
+  .el-card__body{
+    padding: 0 20px;
+  }
+}
