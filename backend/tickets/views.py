@@ -23,7 +23,7 @@ class TicketViewSet(BulkModelMixin):
         if user.is_admin:
             return Ticket.objects.all()
         else:
-            return Ticket.objects.all().filter(ticketuser__username=self.request.user)
+            return Ticket.objects.all().filter(ticketuser__username=self.request.user).distinct()
 
 
 class TicketFlowLogViewSet(BulkModelMixin):
