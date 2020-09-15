@@ -21,6 +21,7 @@ export default {
     new_ticket: 'new_ticket',
     u_ticket: 'u_ticket',
     s_ticket: 's_ticket',
+    c_ticket: 'c_ticket',
     my_ticket: 'my_ticket',
     todo_ticket: 'todo_ticket',
     all_ticket: 'all_ticket',
