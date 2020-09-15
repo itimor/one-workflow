@@ -46,7 +46,7 @@ class Workflow(BaseModel):
 
 field_type = {
     1: '字符串',
-    2: '整形',
+    2: '整型',
     3: '浮点型',
     4: '布尔',
     5: '日期',
