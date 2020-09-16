@@ -20,7 +20,7 @@ class Command(BaseCommand):
         menumodel = Menu.objects.create(name='编辑工单', code='u_ticket', curl='/u_ticket/:id', icon='u_ticket', sequence=10, type=2,
                                         hidden=True, active_menu='/new_ticket', parent_id=ticketmenu.id)
         init_menu(menumodel)
-        menumodel = Menu.objects.create(name='审核工单', code='s_ticket', curl='/s_ticket/:id', icon='s_ticket', sequence=10, type=2,
+        menumodel = Menu.objects.create(name='审批工单', code='s_ticket', curl='/s_ticket/:id', icon='s_ticket', sequence=10, type=2,
                                         hidden=True, active_menu='/todo_ticket', parent_id=ticketmenu.id)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='我的工单', code='my_ticket', curl='/my_ticket', icon='my_ticket', sequence=30, type=2,
@@ -31,8 +31,5 @@ class Command(BaseCommand):
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='所有工单', code='all_ticket', curl='/all_ticket', icon='all_ticket', sequence=90, type=2,
                                         no_cache=True, parent_id=ticketmenu.id)
-        init_menu(menumodel)
-        menumodel = Menu.objects.create(name='查看工单', code='c_ticket', curl='/c_ticket/:id', icon='list', sequence=100, type=2,
-                                        hidden=True, active_menu='/my_ticket', parent_id=ticketmenu.id)
         init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

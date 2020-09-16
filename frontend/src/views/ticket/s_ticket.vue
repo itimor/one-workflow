@@ -33,14 +33,14 @@
                     v-if="item.customfield.field_type === 1"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   />
 
                   <el-input-number
                     v-if="item.customfield.field_type === 2"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   ></el-input-number>
 
                   <el-date-picker
@@ -48,7 +48,7 @@
                     v-if="item.customfield.field_type === 5"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   ></el-date-picker>
 
                   <el-date-picker
@@ -56,7 +56,7 @@
                     v-if="item.customfield.field_type === 6"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   ></el-date-picker>
 
                   <el-input
@@ -65,7 +65,7 @@
                     v-if="item.customfield.field_type === 8"
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   ></el-input>
 
                   <el-switch
@@ -73,13 +73,13 @@
                     inactive-color="#ff4949"
                     v-if="item.customfield.field_type === 4"
                     v-model="item.field_value"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   ></el-switch>
 
                   <el-radio-group
                     v-if="item.customfield.field_type === 9"
                     v-model="item.field_value"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
                     <el-radio
                       v-for="(value, index) in JSON.parse(item.customfield.field_choice)"
@@ -91,7 +91,7 @@
                   <el-checkbox-group
                     v-if="item.customfield.field_type === 12"
                     v-model="item.field_value"
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
                     <el-checkbox
                       v-for="(value, index)  in JSON.parse(item.customfield.field_choice)"
@@ -105,7 +105,7 @@
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     clearable
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.customfield.field_choice)"
@@ -120,7 +120,7 @@
                     :placeholder="item.customfield.field_name"
                     clearable
                     multiple
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
                     <el-option
                       v-for="(value, index)  in JSON.parse(item.customfield.field_choice)"
@@ -135,14 +135,14 @@
                       type="datetimerange"
                       :value="formatDate(item.field_value)"
                       :placeholder="item.customfield.field_name"
-                      :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                      :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                     ></el-date-picker>
                     <el-date-picker
                       v-else
                       type="datetimerange"
                       :value="formatDate(item.field_value)"
                       :placeholder="item.customfield.field_name"
-                      :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                      :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                     ></el-date-picker>
                   </span>
 
@@ -151,7 +151,7 @@
                     v-model="item.field_value"
                     :placeholder="item.customfield.field_name"
                     clearable
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
                     <el-option v-for="t in user_list" :key="t.id" :label="t.username"></el-option>
                   </el-select>
@@ -162,37 +162,38 @@
                     :placeholder="item.customfield.field_name"
                     clearable
                     multiple
-                    :disabled="item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
+                    :disabled="deny_check || item.participant == username || item.customfield.field_attribute ||! match_fields.includes(item.customfield.id)"
                   >
                     <el-option v-for="t in user_list" :key="t.id" :label="t.username"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
+            <div v-if="!deny_check">
+              <el-form-item label="审批意见" v-if="stateActive<999">
+                <el-input
+                  type="textarea"
+                  :autosize="{ minRows: 4, maxRows: 6}"
+                  v-model="wfdata.memo"
+                  placeholder="说些啥吧"
+                ></el-input>
+              </el-form-item>
 
-            <el-form-item label="审批意见" v-if="stateActive<999">
-              <el-input
-                type="textarea"
-                :autosize="{ minRows: 4, maxRows: 6}"
-                v-model="wfdata.memo"
-                placeholder="说些啥吧"
-              ></el-input>
-            </el-form-item>
-
-            <el-form-item>
-              <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
-                <el-button
-                  v-if="item.name===1"
-                  :type="btn_types[item.name]"
-                  @click="selectUser('temp', item)"
-                >{{item.name|TransitionNameFilter}}</el-button>
-                <el-button
-                  v-else
-                  :type="btn_types[item.name]"
-                  @click="handleButton('temp', item)"
-                >{{item.name|TransitionNameFilter}}</el-button>
-              </span>
-            </el-form-item>
+              <el-form-item>
+                <span style="margin: 0 5px;" v-for="item in transition_list" :key="item.id">
+                  <el-button
+                    v-if="item.name===1"
+                    :type="btn_types[item.name]"
+                    @click="selectUser('temp', item)"
+                  >{{item.name|TransitionNameFilter}}</el-button>
+                  <el-button
+                    v-else
+                    :type="btn_types[item.name]"
+                    @click="handleButton('temp', item)"
+                  >{{item.name|TransitionNameFilter}}</el-button>
+                </span>
+              </el-form-item>
+            </div>
           </el-card>
         </el-form>
       </div>
@@ -211,10 +212,16 @@
             color="#0bbd87"
             placement="top"
           >
-            <el-card>
-              <h4 style="color:#0bbd87;">{{item.state.name}}</h4>
+            <el-card class="check_history">
+              <div class="check_history_title">
+                节点：<a class="state">{{item.state.name}}</a>
+                |
+                状态：<a
+                  class="transition"
+                >{{item.transition.attribute_type|AttributeTypeFilter}}</a>
+              </div>
               <el-form label-position="left">
-                <el-form-item label="执行人">
+                <el-form-item label="处理人">
                   <span>{{ item.participant }}</span>
                 </el-form-item>
                 <el-form-item label="审批意见">
@@ -293,7 +300,7 @@ import {
   ticket,
   ticketflowlog,
   user,
-  auth
+  auth,
 } from "@/api/all";
 import { mapGetters } from "vuex";
 
@@ -318,12 +325,12 @@ export default {
         1: "success",
         2: "warning",
         3: "danger",
-        4: "danger"
+        4: "danger",
       },
       match_fields: [],
       workflow_temp: {
         participant: this.username,
-        is_hidden: false
+        is_hidden: false,
       },
       stateActive: 999,
       choice_user_list: [],
@@ -337,18 +344,19 @@ export default {
         0: "无处理人",
         1: "个人",
         2: "部门",
-        3: "角色"
-      }
+        3: "角色",
+      },
+      deny_check: false, // 允许审核
     };
   },
   computed: {
     ...mapGetters(["username"]),
     formatDate() {
-      return function(date) {
+      return function (date) {
         const d = eval("(" + date + ")");
         return d;
       };
-    }
+    },
   },
   created() {
     const id = this.$route.params && this.$route.params.id;
@@ -360,10 +368,13 @@ export default {
     fetchData(id) {
       this.workflow_temp.ticket = id;
       const params = {
-        id: id
+        id: id,
       };
-      ticket.requestGet(params).then(response => {
+      ticket.requestGet(params).then((response) => {
         this.wfdata = response.results[0];
+        if (this.wfdata.participant !== this.username) {
+          this.deny_check = true;
+        }
         this.wfdata.memo = "";
         this.setPageTitle();
 
@@ -377,12 +388,12 @@ export default {
       });
     },
     getCustomfieldList() {
-      ticketcustomfield.requestGet(this.workflow_temp).then(response => {
+      ticketcustomfield.requestGet(this.workflow_temp).then((response) => {
         this.customfield_list = response.results;
       });
     },
     getStateList() {
-      state.requestGet(this.workflow_temp).then(response => {
+      state.requestGet(this.workflow_temp).then((response) => {
         this.state_list = response.results;
         for (var i in this.state_list) {
           if (
@@ -397,17 +408,17 @@ export default {
       });
     },
     getTransitionList() {
-      transition.requestGet(this.workflow_temp).then(response => {
+      transition.requestGet(this.workflow_temp).then((response) => {
         this.transition_list = response.results;
       });
     },
     getTicketlogList() {
-      ticketflowlog.requestGet(this.workflow_temp).then(response => {
+      ticketflowlog.requestGet(this.workflow_temp).then((response) => {
         this.ticketlog_list = response.results;
       });
     },
     getUserList() {
-      user.requestGet().then(response => {
+      user.requestGet().then((response) => {
         this.user_list = response.results;
       });
     },
@@ -416,10 +427,10 @@ export default {
     },
     setPageTitle() {
       const title = this.wfdata.name;
-      document.title = `${title} - 处理`;
+      document.title = `${title} - 审批`;
     },
     selectUser(dataForm, row) {
-      this.$refs[dataForm].validate(valid => {
+      this.$refs[dataForm].validate((valid) => {
         if (valid) {
           this.dialogVisible = true;
           this.choice_transition = row;
@@ -445,17 +456,17 @@ export default {
     },
     checkGroupUser(id) {
       const params = {
-        group: id
+        group: id,
       };
-      user.requestGet(params).then(response => {
+      user.requestGet(params).then((response) => {
         this.choice_user_list = response.results;
       });
     },
     checkRoleUser(id) {
       const params = {
-        roles: id
+        roles: id,
       };
-      user.requestGet(params).then(response => {
+      user.requestGet(params).then((response) => {
         this.choice_user_list = response.results;
       });
     },
@@ -469,33 +480,59 @@ export default {
           id: i.id,
           ticket: i.ticket.id,
           customfield: i.customfield.id,
-          field_value: i.field_value
+          field_value: i.field_value,
         });
       }
       const data = Object.assign({}, this.wfdata, {
         create_user: this.wfdata.create_user.id,
         workflow: this.wfdata.workflow.id,
+        participant: this.wfdata.participant,
         state: transition.dest_state.id,
         transition: transition.id,
-        customfield: JSON.stringify(customfield)
+        customfield: JSON.stringify(customfield),
+        relation: this.username,
       });
-      this.$refs[dataForm].validate(valid => {
+      if (transition.name == 1) {
+        data.participant = this.wfdata.participant;
+        data.relation = this.wfdata.participant;
+      } else {
+        data.participant = this.ticketlog_list[this.ticketlog_list.length-1].participant;
+      }
+      this.$refs[dataForm].validate((valid) => {
         if (valid) {
           ticket
             .requestPut(this.wfdata.id, data)
-            .then(response => {
+            .then((response) => {
               this.$notify({
                 title: "成功",
                 message: "更新成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
               this.$router.push({ path: "/todo_ticket" });
             })
             .catch(() => {});
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
+
+<style scoped lang="scss">
+.check_history {
+  .check_history_title {
+    font-weight: 700;
+    margin: 10px 0;
+    .state {
+      color: #0bbd87;
+    }
+    .transition {
+      color: #f1bd5f;
+    }
+  }
+  .el-form-item {
+    margin-bottom: 5px;
+  }
+}
+</style>

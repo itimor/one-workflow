@@ -16,7 +16,7 @@ class WorkflowType(BaseModel):
 
     class Meta:
         ordering = ['order_id']
-        verbose_name = '类型'
+        verbose_name = '工作流类型'
         verbose_name_plural = verbose_name
 
 

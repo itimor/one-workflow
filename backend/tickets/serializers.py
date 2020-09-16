@@ -88,6 +88,11 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.transition = validated_data.get('transition', instance.transition)
         instance.customfield = validated_data.get('customfield', instance.customfield)
         instance.memo = validated_data.get('memo', instance.memo)
+
+        # update relation
+        relation = instance.relation.split(',')
+        relation.append(validated_data['relation'])
+        instance.relation = ','.join(set(relation))
         instance.save()
 
         # save ticketlog

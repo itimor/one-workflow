@@ -18,6 +18,7 @@ ignore_path = [
     '/api/sys/auth/jwt-token-auth/',
     '/api/sys/auth/getuserinfo/',
     '/api/sys/auth/getmenubutons/',
+    '/api/sys/user/',
 ]
 
 
@@ -42,8 +43,9 @@ def check_permission(request, perm):
 class IsOwnerRoles(BasePermission):
 
     def has_permission(self, request, view):
-        app = view.get_view_name().split()[0].lower()
-        perm = 'view_' + app
+        app = view.get_view_name().split()
+        object = ''.join(app[:-1]).lower()
+        perm = 'view_{}'.format(object)
         return check_permission(request, perm)
 
     def has_object_permission(self, request, view, obj):

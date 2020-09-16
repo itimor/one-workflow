@@ -32,7 +32,7 @@
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="工单流水号" prop="sn" width="240">
         <template slot-scope="{ row }">
-          <router-link :to="'/c_ticket/' + row.id">
+          <router-link :to="'/s_ticket/' + row.id">
             <el-link type="success">{{row.sn}}</el-link>
           </router-link>
         </template>
@@ -55,9 +55,6 @@
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button-group>
-            <el-button v-if="permissionList.update && row.state.order_id < 3" size="small" type="success">{{ "编辑" }}</el-button>
-          </el-button-group>
           <el-button-group>
             <el-button
               v-if="permissionList.del && row.state.order_id < 3"

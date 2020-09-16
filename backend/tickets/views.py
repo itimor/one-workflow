@@ -19,11 +19,14 @@ class TicketViewSet(BulkModelMixin):
         return TicketSerializer
 
     def get_queryset(self):
-        user = User.objects.get(username=self.request.user)
-        if user.is_admin:
+        try:
+            user = User.objects.get(username=self.request.user)
+            if user.is_admin:
+                return Ticket.objects.all()
+            else:
+                return Ticket.objects.all().filter(relation__icontains=self.request.user).distinct()
+        except:
             return Ticket.objects.all()
-        else:
-            return Ticket.objects.all().filter(ticketuser__username=self.request.user).distinct()
 
 
 class TicketFlowLogViewSet(BulkModelMixin):

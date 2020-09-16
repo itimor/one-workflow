@@ -19,6 +19,8 @@ class Ticket(BaseModel):
     state = models.ForeignKey(State, on_delete=models.CASCADE, verbose_name='当前状态')
     transition = models.ForeignKey(Transition, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='进行状态')
     customfield = models.TextField('所有表单数据', default=[])
+    relation = models.TextField('工单关联人', default='', blank=True, help_text='创建人、处理人，用于查询')
+
 
     def __str__(self):
         return self.name

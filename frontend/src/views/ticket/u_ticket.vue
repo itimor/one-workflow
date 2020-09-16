@@ -140,7 +140,12 @@
                     clearable
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
-                    <el-option v-for="t in user_list" :key="t.id" :label="t.username" :value="t.username"></el-option>
+                    <el-option
+                      v-for="t in user_list"
+                      :key="t.id"
+                      :label="t.username"
+                      :value="t.username"
+                    ></el-option>
                   </el-select>
 
                   <el-select
@@ -151,7 +156,12 @@
                     multiple
                     :disabled="item.field_attribute ||! match_fields.includes(item.id)"
                   >
-                    <el-option v-for="t in user_list" :key="t.id" :label="t.username" :value="t.username"></el-option>
+                    <el-option
+                      v-for="t in user_list"
+                      :key="t.id"
+                      :label="t.username"
+                      :value="t.username"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -166,7 +176,7 @@
                 <el-button
                   v-else
                   :type="btn_types[item.name]"
-                  @click="handleButton('temp', item)"
+                  @click="handleSave('temp', item)"
                 >{{item.name|TransitionNameFilter}}</el-button>
               </span>
             </el-form-item>
@@ -244,14 +254,14 @@ import {
   transition,
   ticket,
   user,
-  auth
+  auth,
 } from "@/api/all";
 
 import {
   checkAuthAdd,
   checkAuthDel,
   checkAuthView,
-  checkAuthUpdate
+  checkAuthUpdate,
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
 import { GenDatetime } from "@/utils";
@@ -267,7 +277,7 @@ export default {
         add: false,
         del: false,
         view: false,
-        update: false
+        update: false,
       },
       tempRoute: {},
       wfdata: {},
@@ -281,15 +291,15 @@ export default {
         0: "primary",
         1: "success",
         2: "warning",
-        3: "danger"
+        3: "danger",
       },
       match_fields: [],
       ticket: {
         name: "",
-        participant: ""
+        participant: "",
       },
       workflow_temp: {
-        participant: this.user_id
+        participant: this.user_id,
       },
       choice_user_list: [],
       dialogTitle: "",
@@ -302,12 +312,12 @@ export default {
         0: "无处理人",
         1: "个人",
         2: "部门",
-        3: "角色"
-      }
+        3: "角色",
+      },
     };
   },
   computed: {
-    ...mapGetters(["user_id"])
+    ...mapGetters(["username", "user_id"]),
   },
   created() {
     const id = this.$route.params && this.$route.params.id;
@@ -319,9 +329,9 @@ export default {
     fetchData(id) {
       this.workflow_temp.workflow = id;
       const params = {
-        id: id
+        id: id,
       };
-      workflow.requestGet(params).then(response => {
+      workflow.requestGet(params).then((response) => {
         this.wfdata = response.results[0];
         this.setPageTitle();
 
@@ -332,12 +342,12 @@ export default {
       });
     },
     getCustomfieldList() {
-      customfield.requestGet(this.workflow_temp).then(response => {
+      customfield.requestGet(this.workflow_temp).then((response) => {
         this.customfield_list = response.results;
       });
     },
     getStateList(id) {
-      state.requestGet(this.workflow_temp).then(response => {
+      state.requestGet(this.workflow_temp).then((response) => {
         this.state_list = response.results;
         this.match_fields = this.state_list[1].fields;
         this.getTransitionList(this.state_list[0].id);
@@ -345,12 +355,12 @@ export default {
     },
     getTransitionList(source_state) {
       this.workflow_temp.source_state = source_state;
-      transition.requestGet(this.workflow_temp).then(response => {
+      transition.requestGet(this.workflow_temp).then((response) => {
         this.transition_list = response.results;
       });
     },
     getUserList() {
-      user.requestGet().then(response => {
+      user.requestGet().then((response) => {
         this.user_list = response.results;
       });
     },
@@ -362,7 +372,7 @@ export default {
       document.title = `${title} - 创建`;
     },
     selectUser(dataForm, row) {
-      this.$refs[dataForm].validate(valid => {
+      this.$refs[dataForm].validate((valid) => {
         if (valid) {
           this.dialogVisible = true;
           this.choice_transition = row;
@@ -388,22 +398,26 @@ export default {
     },
     checkGroupUser(id) {
       const params = {
-        group: id
+        group: id,
       };
-      user.requestGet(params).then(response => {
+      user.requestGet(params).then((response) => {
         this.choice_user_list = response.results;
       });
     },
     checkRoleUser(id) {
       const params = {
-        roles: id
+        roles: id,
       };
-      user.requestGet(params).then(response => {
+      user.requestGet(params).then((response) => {
         this.choice_user_list = response.results;
       });
     },
     checkTableUser(row) {
       this.ticket.participant = row.username;
+    },
+    handleSave(dataForm, transition) {
+      this.ticket.participant = this.username;
+      this.handleButton(dataForm, transition);
     },
     handleButton(dataForm, transition) {
       this.dialogVisible = false;
@@ -413,13 +427,13 @@ export default {
           customfield.push({
             customfield: i.id,
             field_key: i.field_key,
-            field_value: this.temp[i.field_key]
+            field_value: this.temp[i.field_key],
           });
         } else {
           customfield.push({
             customfield: i.id,
             field_key: i.field_key,
-            field_value: ""
+            field_value: "",
           });
         }
       }
@@ -432,26 +446,28 @@ export default {
           workflow: this.wfdata.id,
           state: transition.dest_state.id,
           transition: transition.id,
-          customfield: JSON.stringify(customfield)
+          customfield: JSON.stringify(customfield),
+          relation: this.ticket.participant,
         }
       );
-      this.$refs[dataForm].validate(valid => {
+      console.log(data)
+      this.$refs[dataForm].validate((valid) => {
         if (valid) {
           ticket
             .requestPost(data)
-            .then(res => {
+            .then((res) => {
               this.$notify({
                 title: "成功",
                 message: "创建成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
               this.$router.push({ path: "/my_ticket" });
             })
             .catch(() => {});
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
