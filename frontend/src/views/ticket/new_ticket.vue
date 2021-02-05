@@ -6,8 +6,12 @@
       </div>
       <el-row :gutter="20">
         <el-col :span="4" v-for="w in item.workflow_set" :key="w.id">
-          <div style="height:50px;">
-            <router-link :class="'pan-btn ' + wf_color[key]" :to="'/u_ticket/' + w.id">{{w.name}}</router-link>
+          <div v-if="w.status" style="height:50px;">
+            <router-link v-if="key < 4" :class="'pan-btn ' + wf_color[key]" :to="'/u_ticket/' + w.id">{{w.name}}</router-link>
+            <router-link v-else :class="'pan-btn ' + wf_color[999]" :to="'/u_ticket/' + w.id">{{w.name}}</router-link>
+          </div>
+          <div v-else style="height:50px;">
+            <a :class="'pan-btn ' + wf_color[999]" style="color:red; font-size: 1.1rem;">无可用工单</a>
           </div>
         </el-col>
       </el-row>
@@ -42,7 +46,7 @@ export default {
         1: "pink-btn",
         2: "green-btn",
         3: "yellow-btn",
-        4: "tiffany-btn"
+        999: "tiffany-btn"
       }
     };
   },

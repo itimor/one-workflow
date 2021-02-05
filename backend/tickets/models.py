@@ -21,7 +21,6 @@ class Ticket(BaseModel):
     customfield = models.TextField('所有表单数据', default=[])
     relation = models.TextField('工单关联人', default='', blank=True, help_text='创建人、处理人，用于查询')
 
-
     def __str__(self):
         return self.name
 
