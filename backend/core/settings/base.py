@@ -118,8 +118,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'common.pagination.StandardResultsSetPagination',
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
-        # 'rest_framework.permissions.IsAuthenticated',
-        # 'systems.permissions.IsOwnerRoles',
+        'rest_framework.permissions.IsAuthenticated',
+        'systems.permissions.IsOwnerRoles',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
