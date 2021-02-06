@@ -29,6 +29,8 @@
       </el-button-group>
       <el-radio-group
         class="filter-item"
+        text-color="#db5a6b"
+        fill="#ffc773"
         v-model="listQuery.transition__attribute_type"
         @change="getList"
       >
