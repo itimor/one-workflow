@@ -98,10 +98,10 @@ state_type = {
 }
 
 participant_type = {
-    0: '无处理人',
-    1: '个人',
-    2: '部门',
-    3: '角色',
+    'none': '无处理人',
+    'user': '个人',
+    'group': '部门',
+    'role': '角色',
 }
 
 
@@ -115,7 +115,7 @@ class State(BaseModel):
     order_id = models.IntegerField('状态顺序', default=1)
     state_type = models.CharField(max_length=1, choices=tuple(state_type.items()), default=0, verbose_name='状态类型')
     enable_retreat = models.BooleanField('允许撤回', default=False, help_text='开启后允许工单创建人在此状态直接撤回工单到初始状态')
-    participant_type = models.CharField(max_length=1, choices=tuple(participant_type.items()), default=0, verbose_name='参与者类型')
+    participant_type = models.CharField(max_length=5, choices=tuple(participant_type.items()), default='none', verbose_name='参与者类型')
     user_participant = models.ManyToManyField(User, blank=True, verbose_name='参与用户')
     group_participant = models.ManyToManyField(Group, blank=True, verbose_name='参与组')
     role_participant = models.ManyToManyField(Role, blank=True, verbose_name='参与角色')

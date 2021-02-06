@@ -62,18 +62,18 @@ class Command(BaseCommand):
         c5 = CustomField.objects.create(field_name="人事审批", order_id=80, field_type=9, field_key="hr_radio", field_choice='{"1":"同意", "2":"不同意"}', workflow=leave_wf)
 
         # 建立初始和结束状态
-        s1 = State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type=0, workflow=leave_wf)
-        s2 = State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type=0, workflow=leave_wf)
+        s1 = State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type='none', workflow=leave_wf)
+        s2 = State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type='none', workflow=leave_wf)
         # 建立流转状态
-        s3 = State.objects.create(name="申请人-编辑中", order_id=2, participant_type=0, workflow=leave_wf)
+        s3 = State.objects.create(name="申请人-编辑中", order_id=2, participant_type='none', workflow=leave_wf)
         s3.fields.add(c1, c2, c3)
-        s4 = State.objects.create(name="领导-审批中", order_id=3, participant_type=3, workflow=leave_wf)
+        s4 = State.objects.create(name="领导-审批中", order_id=3, participant_type='role', workflow=leave_wf)
         s4.fields.add(c4)
         s4.role_participant.add(role_ops_tl, role_dev_tl, role_hr_tl)
-        s5 = State.objects.create(name="人事-审批中", order_id=4, participant_type=2, workflow=leave_wf)
+        s5 = State.objects.create(name="人事-审批中", order_id=4, participant_type='group', workflow=leave_wf)
         s5.fields.add(c5)
         s5.group_participant.add(group_hr)
-        s6 = State.objects.create(name="结束", order_id=98, state_type=2, participant_type=0, workflow=leave_wf)
+        s6 = State.objects.create(name="结束", order_id=98, state_type=2, participant_type='none', workflow=leave_wf)
 
         # 建立工作流步骤
         Transition.objects.create(name=0, source_state=s1, dest_state=s3, attribute_type=0, workflow=leave_wf)
@@ -113,18 +113,18 @@ class Command(BaseCommand):
         c5 = CustomField.objects.create(field_name="运维执行", order_id=80, field_type=9, field_key="ops_radio", field_choice='{"1":"已执行", "2":"未执行"}', workflow=deploy_wf)
 
         # 建立初始和结束状态
-        s1 = State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type=0, workflow=deploy_wf)
-        s2 = State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type=0, workflow=deploy_wf)
+        s1 = State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type='none', workflow=deploy_wf)
+        s2 = State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type='none', workflow=deploy_wf)
         # 建立流转状态
-        s3 = State.objects.create(name="申请人-编辑中", order_id=2, participant_type=0, workflow=deploy_wf)
+        s3 = State.objects.create(name="申请人-编辑中", order_id=2, participant_type='none', workflow=deploy_wf)
         s3.fields.add(c1, c2, c3)
-        s4 = State.objects.create(name="领导-审批中", order_id=3, participant_type=3, workflow=deploy_wf)
+        s4 = State.objects.create(name="领导-审批中", order_id=3, participant_type='role', workflow=deploy_wf)
         s4.fields.add(c4)
         s4.role_participant.add(role_ops_tl, role_dev_tl, role_hr_tl)
-        s5 = State.objects.create(name="运维-执行中", order_id=4, participant_type=2, workflow=deploy_wf)
+        s5 = State.objects.create(name="运维-执行中", order_id=4, participant_type='group', workflow=deploy_wf)
         s5.fields.add(c5)
         s5.group_participant.add(group_hr)
-        s6 = State.objects.create(name="结束", order_id=98, state_type=2, participant_type=0, workflow=deploy_wf)
+        s6 = State.objects.create(name="结束", order_id=98, state_type=2, participant_type='none', workflow=deploy_wf)
 
         # 建立工作流步骤
         Transition.objects.create(name=0, source_state=s1, dest_state=s3, attribute_type=0, workflow=deploy_wf)

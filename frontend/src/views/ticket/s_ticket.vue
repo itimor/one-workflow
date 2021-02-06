@@ -240,32 +240,48 @@
     <el-dialog :visible.sync="dialogVisible">
       <div slot="title">
         当前下一步处理对象是：
-        <a style="color: red; font-width:700;">{{dialogTitle}}</a>
-        请点击下方对应类，并选择转交用户
+        <a style="color: red; font-size: 24px">{{
+          participant_type[dialogChooiceType]
+        }}</a>
+        请点击下方处理对象，选择转交用户
       </div>
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-collapse v-model="activeName" accordion @change="selectType">
-            <el-collapse-item title="用户" name="1"></el-collapse-item>
-            <el-collapse-item title="部门" name="2">
-              <div v-if="group_role_list.length>0">
-                <li
-                  v-for="item in group_role_list"
-                  :key="item.id"
-                  @click="checkGroupUser(item.id)"
-                >{{item.name}}</li>
+          <el-collapse v-model="dialogChooiceType" accordion @change="selectType">
+            <el-collapse-item title="用户" name="user" disabled></el-collapse-item>
+            <el-collapse-item title="部门" name="group" disabled>
+              <div v-if="group_role_list.length > 0">
+                <li v-for="item in group_role_list" :key="item.id">
+                  <el-button
+                    style="margin: 2px"
+                    size="mini"
+                    plain
+                    @click="checkGroupUser(item.id)"
+                  >
+                    {{ item.name }}
+                  </el-button>
+                </li>
               </div>
-              <div v-else>没有可选部门</div>
+              <div v-else>
+                没有可选{{ participant_type[dialogChooiceType] }}
+              </div>
             </el-collapse-item>
-            <el-collapse-item title="角色" name="3">
-              <div v-if="group_role_list.length>0">
-                <li
-                  v-for="item in group_role_list"
-                  :key="item.id"
-                  @click="checkRoleUser(item.id)"
-                >{{item.name}}</li>
+            <el-collapse-item title="角色" name="role" disabled>
+              <div v-if="group_role_list.length > 0">
+                <li v-for="item in group_role_list" :key="item.id">
+                  <el-button
+                    style="margin: 2px"
+                    size="mini"
+                    plain
+                    @click="checkRoleUser(item.id)"
+                  >
+                    {{ item.name }}
+                  </el-button>
+                </li>
               </div>
-              <div v-else>没有可选角色</div>
+              <div v-else>
+                没有可选{{ participant_type[dialogChooiceType] }}
+              </div>
             </el-collapse-item>
           </el-collapse>
         </el-col>
@@ -338,16 +354,15 @@ export default {
       stateActive: 999,
       choice_user_list: [],
       dialogVisible: false,
-      dialogTitle: "",
-      activeName: "1",
+      dialogChooiceType: "none",
       participant_list: [],
       choice_transition: {},
       group_role_list: [],
       participant_type: {
-        0: "无处理人",
-        1: "个人",
-        2: "部门",
-        3: "角色",
+        "none": "无处理人",
+        "user": "个人",
+        "group": "部门",
+        "role": "角色",
       },
       deny_check: false, // 允许审核
     };
@@ -437,21 +452,19 @@ export default {
         if (valid) {
           this.dialogVisible = true;
           this.choice_transition = row;
-          this.dialogTitle = this.participant_type[
-            row.dest_state.participant_type
-          ];
+          this.dialogChooiceType = row.dest_state.participant_type;
+          this.selectType(this.dialogChooiceType);
         }
       });
     },
     selectType(val) {
-      this.wfdata.participant = "";
-      this.choice_user_list = [];
-
-      if (val === 1) {
+      // this.wfdata.participant = "";
+      // this.choice_user_list = [];
+      if (val === 'none') {
         this.choice_user_list = this.choice_transition.dest_state.user_participant;
-      } else if (val == 2) {
+      } else if (val == 'group') {
         this.group_role_list = this.choice_transition.dest_state.group_participant;
-      } else if (val == 3) {
+      } else if (val == 'role') {
         this.group_role_list = this.choice_transition.dest_state.role_participant;
       } else {
         this.group_role_list = [];
