@@ -224,6 +224,9 @@
                 <el-form-item label="处理人">
                   <span>{{ item.participant }}</span>
                 </el-form-item>
+                <el-form-item label="操作">
+                  <span>{{item.transition.name|TransitionNameFilter}}</span>
+                </el-form-item>
                 <el-form-item label="审批意见">
                   <span>{{ item.suggestion }}</span>
                 </el-form-item>
