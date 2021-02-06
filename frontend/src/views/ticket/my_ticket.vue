@@ -37,19 +37,24 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="当前状态" prop="state">
+      <el-table-column label="申请人" prop="create_user">
+        <template slot-scope="{ row }">
+          <span>{{row.create_user.username}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="当前环节" prop="state">
         <template slot-scope="{ row }">
           <span>{{row.state.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="进行状态" prop="transition">
+      <el-table-column label="当前状态" prop="transition">
         <template slot-scope="{ row }">
           <span>{{row.transition.attribute_type|AttributeTypeFilter}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建者" prop="create_user">
+      <el-table-column label="当前处理人" prop="participant">
         <template slot-scope="{ row }">
-          <span>{{row.create_user.username}}</span>
+          <span>{{row.participant}}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>

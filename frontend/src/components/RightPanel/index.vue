@@ -106,9 +106,9 @@ export default {
   transition: all .25s cubic-bezier(.7, .3, .1, 1);
   transform: translate(100%);
   z-index: 30000;
-  background-image: url('http://img1.bcoderss.com/wp-content/uploads/vip/江南烧酒4k手机壁纸2160x3840.jpg');
-  background-size:cover;
-  background-position: center;
+  background-image: url('https://pbs.twimg.com/media/D1DLizJVsAAMgGX?format=jpg');
+  // background-size:cover;
+  // background-position: center;
 }
 
 .show {

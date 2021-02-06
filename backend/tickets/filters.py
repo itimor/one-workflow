@@ -14,5 +14,5 @@ class TicketFilter(filters.FilterSet):
             'name': ['exact'],
             'participant': ['exact'],
             'create_user__username': ['exact'],
-            "transition__attribute_type": ["lt"],
+            "transition__attribute_type": ['exact', "lt"],
         }

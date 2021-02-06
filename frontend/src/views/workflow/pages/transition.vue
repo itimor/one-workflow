@@ -8,39 +8,45 @@
           type="success"
           icon="el-icon-edit"
           @click="handleCreate"
-        >{{ "添加" }}</el-button>
+          >{{ "添加" }}</el-button
+        >
       </el-button-group>
     </div>
 
     <el-table :data="list" border style="width: 100%" highlight-current-row>
       <el-table-column label="名称" prop="name">
         <template slot-scope="{ row }">
-          <span>{{row.name|TransitionNameFilter}}</span>
+          <span>{{ row.name | TransitionNameFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column label="类型" prop="transition_type">
         <template slot-scope="{ row }">
-          <span>{{row.transition_type|TransitionTypeFilter}}</span>
+          <span>{{ row.transition_type | TransitionTypeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上一个节点" prop="source_state">
         <template slot-scope="{ row }">
-          <span v-if="row.source_state">{{row.source_state.name}}</span>
+          <span v-if="row.source_state">{{ row.source_state.name }}</span>
           <span v-else>None</span>
         </template>
       </el-table-column>
       <el-table-column label="下一个节点" prop="dest_state">
         <template slot-scope="{ row }">
-          <span v-if="row.dest_state">{{row.dest_state.name}}</span>
+          <span v-if="row.dest_state">{{ row.dest_state.name }}</span>
           <span v-else>None</span>
         </template>
       </el-table-column>
       <el-table-column label="属性类型" prop="attribute_type">
         <template slot-scope="{ row }">
-          <span>{{row.attribute_type|AttributeTypeFilter}}</span>
+          <span>{{ row.attribute_type | AttributeTypeFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="260"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="{ row }">
           <el-button-group>
             <el-button
@@ -48,13 +54,15 @@
               size="small"
               type="primary"
               @click="handleUpdate(row)"
-            >{{ "编辑" }}</el-button>
+              >{{ "编辑" }}</el-button
+            >
             <el-button
               v-if="permissionList.del"
               size="small"
               type="danger"
               @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
+              >{{ "删除" }}</el-button
+            >
           </el-button-group>
         </template>
       </el-table-column>
@@ -70,7 +78,7 @@
         :model="temp"
         label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left:50px;"
+        style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="名称" prop="name">
           <el-select v-model="temp.name" clearable placeholder="请选择">
@@ -83,7 +91,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="类型" prop="transition_type">
-          <el-select v-model="temp.transition_type" clearable placeholder="请选择">
+          <el-select
+            v-model="temp.transition_type"
+            clearable
+            placeholder="请选择"
+          >
             <el-option
               v-for="(label, value) in transition_types"
               :key="value"
@@ -94,10 +106,16 @@
         </el-form-item>
         <el-form-item label="定时器" prop="timer">
           <el-input v-model="temp.timer" />‘
-          <a class="tips">流转类型设置为定时器流转时生效,单位秒。处于源状态X秒后如果状态都没有过变化则自动流转到目标状态</a>
+          <a class="tips"
+            >流转类型设置为定时器流转时生效,单位秒。处于源状态X秒后如果状态都没有过变化则自动流转到目标状态</a
+          >
         </el-form-item>
         <el-form-item label="属性类型" prop="attribute_type">
-          <el-select v-model="temp.attribute_type" clearable placeholder="请选择">
+          <el-select
+            v-model="temp.attribute_type"
+            clearable
+            placeholder="请选择"
+          >
             <el-option
               v-for="(label, value) in attribute_types"
               :key="value"
@@ -130,7 +148,11 @@
           <el-input v-model="temp.condition_expression" />
         </el-form-item>
         <el-form-item label="点击弹窗提示" prop="alert_enable">
-          <el-switch v-model="temp.alert_enable" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            v-model="temp.alert_enable"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="弹窗内容" prop="alert_text">
           <el-input v-model="temp.alert_text" />
@@ -141,7 +163,8 @@
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
-        >{{ "确定" }}</el-button>
+          >{{ "确定" }}</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -153,7 +176,7 @@ import {
   checkAuthAdd,
   checkAuthDel,
   checkAuthView,
-  checkAuthUpdate
+  checkAuthUpdate,
 } from "@/utils/permission";
 
 export default {
@@ -161,16 +184,16 @@ export default {
   props: {
     wfdata: {
       type: Object,
-      default: {}
+      default: {},
     },
     statedata: {
       type: Array,
-      default: []
+      default: [],
     },
     list: {
       type: Array,
-      default: []
-    }
+      default: [],
+    },
   },
   components: {},
   data() {
@@ -181,37 +204,37 @@ export default {
         add: false,
         del: false,
         view: false,
-        update: false
+        update: false,
       },
       temp: {},
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "添加"
+        create: "添加",
       },
       rules: {
-        name: [{ required: true, message: "请输入名称", trigger: "blur" }]
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
       },
       transition_types: {
         0: "常规流转",
-        1: "定时器流转"
+        1: "定时器流转",
       },
       attribute_types: {
-        0: "草稿中",
-        1: "进行中",
-        2: "被退回",
-        3: "被撤销",
-        4: "已完成",
-        5: "已关闭"
+        0: "草稿",
+        1: "待审",
+        2: "驳回",
+        3: "撤销",
+        4: "结束",
+        5: "已关闭",
       },
       transition_names: {
         0: "保存",
         1: "转交下一步",
         2: "驳回",
         3: "撤销",
-        4: "关闭"
-      }
+        4: "关闭",
+      },
     };
   },
   computed: {},
@@ -228,7 +251,7 @@ export default {
     getMenuButton() {
       auth
         .requestMenuButton("transition")
-        .then(response => {
+        .then((response) => {
           this.operationList = response.results;
         })
         .then(() => {
@@ -248,7 +271,7 @@ export default {
         alert_text: "",
         source_state: undefined,
         dest_state: undefined,
-        workflow: this.wfdata.id
+        workflow: this.wfdata.id,
       };
     },
     handleCreate() {
@@ -260,18 +283,18 @@ export default {
       });
     },
     createData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.temp.workflow = this.wfdata.id;
           transition
             .requestPost(this.temp)
-            .then(response => {
+            .then((response) => {
               this.dialogFormVisible = false;
               this.$notify({
                 title: "成功",
                 message: "创建成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
               this.$emit("checkdata");
             })
@@ -283,7 +306,7 @@ export default {
       this.temp = Object.assign({}, row, {
         source_state: row.source_state.id,
         dest_state: row.dest_state.id,
-        workflow: this.wfdata.id
+        workflow: this.wfdata.id,
       });
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
@@ -292,7 +315,7 @@ export default {
       });
     },
     updateData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           transition
             .requestPut(this.temp.id, this.temp)
@@ -302,7 +325,7 @@ export default {
                 title: "成功",
                 message: "更新成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
               this.$emit("checkdata");
             })
@@ -314,13 +337,13 @@ export default {
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           transition.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
-              type: "success"
+              type: "success",
             });
             this.$emit("checkdata");
           });
@@ -328,10 +351,10 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>

@@ -121,11 +121,11 @@ export function TransitionTypeFilter(val) {
 // 属性类型
 export function AttributeTypeFilter(val) {
   const Map = {
-    0: '草稿中',
-    1: '进行中',
-    2: '被退回',
-    3: '被撤销',
-    4: '已完成',
+    0: '草稿',
+    1: '待审',
+    2: '驳回',
+    3: '撤销',
+    4: '结束',
     5: '已关闭',
   }
   return Map[val]

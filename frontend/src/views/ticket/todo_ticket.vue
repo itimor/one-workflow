@@ -11,23 +11,28 @@
       <el-table-column label="工单流水号" prop="sn" width="240">
         <template slot-scope="{ row }">
           <router-link :to="'/s_ticket/' + row.id">
-            <el-link type="success">{{row.sn}}</el-link>
+            <el-link type="success">{{ row.sn }}</el-link>
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="当前状态" prop="state">
+      <el-table-column label="申请人" prop="create_user">
         <template slot-scope="{ row }">
-          <span>{{row.state.name}}</span>
+          <span>{{ row.create_user.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="进行状态" prop="transition">
+      <el-table-column label="当前环节" prop="state">
         <template slot-scope="{ row }">
-          <span>{{row.transition.attribute_type|AttributeTypeFilter}}</span>
+          <span>{{ row.state.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建者" prop="create_user">
+      <el-table-column label="当前状态" prop="transition">
         <template slot-scope="{ row }">
-          <span>{{row.create_user.username}}</span>
+          <span>{{ row.transition.attribute_type | AttributeTypeFilter }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="申请人" prop="create_user">
+        <template slot-scope="{ row }">
+          <span>{{ row.create_user.username }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
@@ -42,7 +47,7 @@ import {
   checkAuthAdd,
   checkAuthDel,
   checkAuthView,
-  checkAuthUpdate
+  checkAuthUpdate,
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
 
@@ -57,7 +62,7 @@ export default {
         add: false,
         del: false,
         view: false,
-        update: false
+        update: false,
       },
       list: [],
       total: 0,
@@ -69,11 +74,11 @@ export default {
         ordering: undefined,
         participant: this.username,
         transition__attribute_type__lt: 4,
-      }
+      },
     };
   },
   computed: {
-    ...mapGetters(["username"])
+    ...mapGetters(["username"]),
   },
   created() {
     this.getMenuButton();
@@ -89,7 +94,7 @@ export default {
     getMenuButton() {
       auth
         .requestMenuButton("todo_ticket")
-        .then(response => {
+        .then((response) => {
           this.operationList = response.results;
         })
         .then(() => {
@@ -98,8 +103,8 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      this.listQuery.participant =  this.username
-      ticket.requestGet(this.listQuery).then(response => {
+      this.listQuery.participant = this.username;
+      ticket.requestGet(this.listQuery).then((response) => {
         this.list = response.results;
         this.listLoading = false;
       });
@@ -121,13 +126,13 @@ export default {
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           ticket.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
-              type: "success"
+              type: "success",
             });
             this.getList();
           });
@@ -135,10 +140,10 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>

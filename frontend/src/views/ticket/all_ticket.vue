@@ -6,7 +6,7 @@
         placeholder="请输入内容"
         clearable
         prefix-icon="el-icon-search"
-        style="width: 200px;"
+        style="width: 200px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
@@ -17,15 +17,27 @@
           type="primary"
           icon="el-icon-search"
           @click="handleFilter"
-        >{{ "搜索" }}</el-button>
-        <el-button
-          v-if="permissionList.del & username === 'admin'"
-          class="filter-item"
+          >{{ "搜索" }}</el-button
+        >
+        <!-- <el-button
+          v-if="permissionList.del & (username === 'admin')"
           type="danger"
           icon="el-icon-delete"
           @click="handleBatchDel"
-        >{{ "删除" }}</el-button>
+          >{{ "删除" }}</el-button
+        > -->
       </el-button-group>
+      <el-radio-group
+        class="filter-item"
+        v-model="listQuery.transition__attribute_type"
+        @change="getList"
+      >
+        <el-radio-button
+          v-for="(item, index) in attribute_types"
+          :key="index"
+          :label="index"
+        >{{item}}</el-radio-button>
+      </el-radio-group>
     </div>
 
     <el-table
@@ -37,40 +49,54 @@
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column v-if="username === 'admin'" type="selection" width="55" />
+      <el-table-column
+        v-if="username === 'admin'"
+        type="selection"
+        width="55"
+      />
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="工单流水号" prop="sn" width="240">
         <template slot-scope="{ row }">
           <router-link :to="'/s_ticket/' + row.id">
-            <el-link type="success">{{row.sn}}</el-link>
+            <el-link type="success">{{ row.sn }}</el-link>
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="当前状态" prop="state">
+      <el-table-column label="申请人" prop="create_user">
         <template slot-scope="{ row }">
-          <span>{{row.state.name}}</span>
+          <span>{{ row.create_user.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="进行状态" prop="transition">
+      <el-table-column label="当前环节" prop="state">
         <template slot-scope="{ row }">
-          <span>{{row.transition.attribute_type|AttributeTypeFilter}}</span>
+          <span>{{ row.state.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建者" prop="create_user">
+      <el-table-column label="当前状态" prop="transition">
         <template slot-scope="{ row }">
-          <span>{{row.create_user.username}}</span>
+          <span>{{ row.transition.attribute_type | AttributeTypeFilter }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="当前处理人" prop="participant">
+        <template slot-scope="{ row }">
+          <span>{{ row.participant }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="{ row }">
           <el-button-group>
             <el-button
-              v-if="permissionList.del & username === 'admin'"
+              v-if="permissionList.del & (username === 'admin')"
               size="small"
               type="danger"
               @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
+              >{{ "删除" }}</el-button
+            >
           </el-button-group>
         </template>
       </el-table-column>
@@ -94,7 +120,7 @@ import {
   checkAuthAdd,
   checkAuthDel,
   checkAuthView,
-  checkAuthUpdate
+  checkAuthUpdate,
 } from "@/utils/permission";
 import { mapGetters } from "vuex";
 
@@ -109,7 +135,7 @@ export default {
         add: false,
         del: false,
         view: false,
-        update: false
+        update: false,
       },
       list: [],
       total: 0,
@@ -119,13 +145,23 @@ export default {
         page: 1,
         limit: 20,
         search: undefined,
-        ordering: undefined
+        ordering: undefined,
+        transition__attribute_type: "",
       },
-      multipleSelection: []
+      multipleSelection: [],
+      attribute_types: {
+        '': "全部",
+        0: "草稿",
+        1: "待审",
+        2: "驳回",
+        3: "撤销",
+        4: "结束",
+        5: "已关闭",
+      },
     };
   },
   computed: {
-    ...mapGetters(["username"])
+    ...mapGetters(["username"]),
   },
   created() {
     this.getMenuButton();
@@ -141,7 +177,7 @@ export default {
     getMenuButton() {
       auth
         .requestMenuButton("all_ticket")
-        .then(response => {
+        .then((response) => {
           this.operationList = response.results;
         })
         .then(() => {
@@ -150,7 +186,7 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      ticket.requestGet(this.listQuery).then(response => {
+      ticket.requestGet(this.listQuery).then((response) => {
         this.list = response.results;
         this.total = response.count;
         this.listLoading = false;
@@ -173,13 +209,13 @@ export default {
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           ticket.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
-              type: "success"
+              type: "success",
             });
             this.getList();
           });
@@ -187,7 +223,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
@@ -199,18 +235,18 @@ export default {
         this.$message({
           message: "未选中任何行",
           type: "warning",
-          duration: 2000
+          duration: 2000,
         });
         return;
       }
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
-          const ids = this.multipleSelection.map(x => x.id);
-          ticket.requestBulkDelete(ids).then(response => {
+          const ids = this.multipleSelection.map((x) => x.id);
+          ticket.requestBulkDelete(ids).then((response) => {
             console.log(response.results);
             this.getList();
           });
@@ -218,10 +254,10 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>
