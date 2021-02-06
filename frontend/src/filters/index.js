@@ -136,7 +136,7 @@ export function AttributeTypeFilter(val) {
 export function TransitionNameFilter(val) {
   const Map = {
     0: '保存',
-    1: '通过',
+    1: '转交下一步',
     2: '驳回',
     3: '撤销',
     4: '关闭',

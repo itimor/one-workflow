@@ -132,7 +132,7 @@ class State(BaseModel):
 
 transition_name = {
     0: '保存',
-    1: '通过',
+    1: '转交下一步',
     2: '驳回',
     3: '撤销',
     4: '关闭',
