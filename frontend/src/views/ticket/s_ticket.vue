@@ -216,16 +216,13 @@
               <div class="check_history_title">
                 节点：<a class="state">{{item.state.name}}</a>
                 |
-                状态：<a
-                  class="transition"
-                >{{item.transition.attribute_type|AttributeTypeFilter}}</a>
+                操作：<a
+                  class="transition-name"
+                >{{item.transition.name|TransitionNameFilter}}</a>
               </div>
               <el-form label-position="left">
                 <el-form-item label="处理人">
                   <span>{{ item.participant }}</span>
-                </el-form-item>
-                <el-form-item label="操作">
-                  <span>{{item.transition.name|TransitionNameFilter}}</span>
                 </el-form-item>
                 <el-form-item label="审批意见">
                   <span>{{ item.suggestion }}</span>
@@ -543,8 +540,11 @@ export default {
     .state {
       color: #0bbd87;
     }
-    .transition {
+    .transition-status {
       color: #f1bd5f;
+    }
+    .transition-name {
+      color: #f32db1;
     }
   }
   .el-form-item {
