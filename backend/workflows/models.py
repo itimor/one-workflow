@@ -8,6 +8,7 @@ from systems.models import *
 
 class WorkflowType(BaseModel):
     name = models.CharField('名称', max_length=50)
+    status = models.BooleanField(default=True)
     code = models.CharField(max_length=32, unique=True, verbose_name='代码')
     order_id = models.IntegerField('状态顺序', default=1)
 

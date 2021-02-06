@@ -1,17 +1,14 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card" v-for="(item, key) in list" :key="item.id">
+    <el-card class="box-card" v-if="item.workflow_list.length>0" v-for="(item, key) in list" :key="item.id">
       <div slot="header">
         <span class="card-title">{{item.name}}</span>
       </div>
       <el-row :gutter="20">
-        <el-col :span="4" v-for="w in item.workflow_set" :key="w.id">
-          <div v-if="w.status" style="height:50px;">
+        <el-col :span="4" v-for="w in item.workflow_list" :key="w.id">
+          <div style="height:50px;">
             <router-link v-if="key < 4" :class="'pan-btn ' + wf_color[key]" :to="'/u_ticket/' + w.id">{{w.name}}</router-link>
             <router-link v-else :class="'pan-btn ' + wf_color[999]" :to="'/u_ticket/' + w.id">{{w.name}}</router-link>
-          </div>
-          <div v-else style="height:50px;">
-            <a :class="'pan-btn ' + wf_color[999]" style="color:red; font-size: 1.1rem;">无可用工单</a>
           </div>
         </el-col>
       </el-row>
@@ -47,6 +44,9 @@ export default {
         2: "green-btn",
         3: "yellow-btn",
         999: "tiffany-btn"
+      },
+      listQuery: {
+        status: true
       }
     };
   },
@@ -73,7 +73,7 @@ export default {
         });
     },
     getList() {
-      workflowtype.requestGet().then(response => {
+      workflowtype.requestGet(this.listQuery).then(response => {
         this.list = response.results;
       });
     }

@@ -333,6 +333,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
+              this.getList();
             })
             .catch(() => {
               this.loading = false;

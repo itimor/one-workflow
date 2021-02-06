@@ -38,6 +38,12 @@
     >
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="code" prop="code"></el-table-column>
+      <el-table-column label="状态" prop="status" sortable="custom">
+        <template slot-scope="{ row }">
+          <el-tag v-if="row.status" type="success">启用</el-tag>
+          <el-tag v-else type="danger">禁用</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="顺序" prop="order_id"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
@@ -85,6 +91,9 @@
         </el-form-item>
         <el-form-item label="code" prop="code">
           <el-input v-model="temp.code" />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-switch v-model="temp.status" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="顺序" prop="order_id">
           <el-input v-model="temp.order_id" />
@@ -196,6 +205,7 @@ export default {
       this.temp = {
         name: "",
         code: "",
+        status: true,
         order_id: "",
         memo: ""
       };
@@ -253,6 +263,7 @@ export default {
                 type: "success",
                 duration: 2000
               });
+              this.getList();
             })
             .catch(() => {
               this.loading = false;

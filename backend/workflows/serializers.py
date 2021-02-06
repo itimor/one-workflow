@@ -38,7 +38,12 @@ class WorkflowSerializer(serializers.ModelSerializer):
 
 
 class WorkflowTypeSerializer(serializers.ModelSerializer):
-    workflow_set = WorkflowSerializer(many=True, read_only=True)
+    workflow_list = serializers.SerializerMethodField()
+    # workflow_set = WorkflowSerializer(many=True, read_only=True,)
+
+    def get_workflow_list(self, instance):
+        a = instance.workflow_set.get_queryset().filter(status=True)
+        return a.values()
 
     class Meta:
         model = WorkflowType
