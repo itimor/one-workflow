@@ -214,7 +214,9 @@
           >
             <el-card class="check_history">
               <div class="check_history_title">
-                节点：<a class="state">{{item.state.name}}</a>
+                时间：<a class="state">{{item.create_time}}</a>
+                |
+                节点：<a class="transition-status">{{item.state.name}}</a>
                 |
                 操作：<a
                   class="transition-name"
@@ -224,7 +226,7 @@
                 <el-form-item label="处理人">
                   <span>{{ item.participant }}</span>
                 </el-form-item>
-                <el-form-item label="审批意见">
+                <el-form-item label="处理意见">
                   <span>{{ item.suggestion }}</span>
                 </el-form-item>
               </el-form>

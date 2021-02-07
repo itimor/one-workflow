@@ -8,6 +8,7 @@
 
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
       <el-tab-pane label="工作流字段" name="customfield">
+        <span slot="label"><i class="el-icon-lollipop"></i> 工作流字段</span>
         <keep-alive>
           <tab-customfield
             @checkdata="getCustomfieldList"
@@ -18,6 +19,7 @@
       </el-tab-pane>
 
       <el-tab-pane label="工作流节点" name="state">
+        <span slot="label"><i class="el-icon-ice-cream-square"></i> 工作流节点</span>
         <keep-alive>
           <tab-state
             @checkdata="getStateList"
@@ -29,6 +31,7 @@
       </el-tab-pane>
 
       <el-tab-pane label="工作流步骤" name="transition">
+        <span slot="label"><i class="el-icon-ice-cream-round"></i> 工作流步骤</span>
         <keep-alive>
           <tab-transition
             @checkdata="getTransitionList"
