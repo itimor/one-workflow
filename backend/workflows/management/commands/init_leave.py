@@ -166,9 +166,9 @@ class Command(BaseCommand):
         Transition.objects.create(name=4, source_state=s5, dest_state=s2, attribute_type=5, workflow=deploy_wf)
 
         self.stdout.write(self.style.SUCCESS('############ 初始化角色权限 ###########'))
-        menus = [34, 35, 36, 37, 38, 51, 52, 53, 54, 55, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81,
-                 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96]
-        perms = [92, 96, 48, 44, 52, 73, 74, 75, 76, 85, 86, 87, 88, 81, 82, 83, 84, 77, 78, 79, 80, 28, 32, 64]
+        menus = [34, 35, 36, 37, 38, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76,
+                 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96]
+        perms = [92, 96, 48, 44, 52, 73, 74, 75, 76, 85, 86, 87, 88, 81, 82, 83, 84, 77, 78, 79, 80, 28, 32, 68, 64]
         menu_obj_list = Menu.objects.filter(id__in=menus)
         perm_obj_list = Permission.objects.filter(id__in=perms)
 
