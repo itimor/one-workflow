@@ -8,9 +8,9 @@ from itertools import chain
 # 获取管理员权限下所有菜单
 def get_menus_by_user(user):
     user_obj = User.objects.get(username=user)
-
     if user_obj.is_admin:
         menus = Menu.objects.all()
+        all_roles = Role.objects.all()
     else:
         user_roles = user_obj.roles.all()
         group_roles = user_obj.group.roles.all()
@@ -27,7 +27,8 @@ def get_menus_by_user(user):
                 continue
             user_menus = find_menu_daddy(item.parent_id, menuMap)
         menus = [user_menus[i] for i in sorted(user_menus.keys())]
-    return menus
+    roles = [i.code for i in all_roles]
+    return menus, roles
 
 
 def find_menu_daddy(menuid, menuMap):

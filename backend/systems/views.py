@@ -62,7 +62,7 @@ class AuthViewSet(ModelViewSet):
         user = request.user
         user_obj = User.objects.get(username=user)
 
-        data = get_menus_by_user(user)
+        data, roles = get_menus_by_user(user)
 
         if len(data) > 0:
             topmenuid = data[0].parent_id
@@ -76,7 +76,7 @@ class AuthViewSet(ModelViewSet):
             ip = request.META.get('REMOTE_ADDR', "")
 
         data = {'menus': menus, 'username': user_obj.username, 'avatar': user_obj.avatar, 'memo': user_obj.memo,
-                'ip': ip, 'user_id': user_obj.id}
+                'ip': ip, 'user_id': user_obj.id, 'roles': roles}
         return JsonResponse(OrderedDict([
             ('results', data)
         ], code=status.HTTP_200_OK))
@@ -94,7 +94,7 @@ class AuthViewSet(ModelViewSet):
 
             match_menu = Menu.objects.get(code=menucode)
 
-            data = get_menus_by_user(user)
+            data, roles = get_menus_by_user(user)
             for item in data:
                 if item.parent_id == match_menu.id:
                     buttons.append(item.operate)

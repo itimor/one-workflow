@@ -2,7 +2,7 @@
   <div id="app">
     <router-view />
     <el-backtop :visibility-height="100">
-      <el-tooltip placement="top" content="啊 啊 啊 啊 啊，，，">
+      <el-tooltip placement="top" content="ちょっと待って">
         <div class="shake shake-crazy">
           <svg-icon icon-class="rocket" style="width: 40px; height: 40px;" />
         </div>

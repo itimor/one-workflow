@@ -6,7 +6,7 @@
         placeholder="请输入内容"
         clearable
         prefix-icon="el-icon-search"
-        style="width: 200px;"
+        style="width: 200px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
@@ -17,22 +17,25 @@
           type="primary"
           icon="el-icon-search"
           @click="handleFilter"
-        >{{ "搜索" }}</el-button>
+          >{{ "搜索" }}</el-button
+        >
         <el-button
           v-if="permissionList.add"
           class="filter-item"
           type="success"
           icon="el-icon-edit"
           @click="handleCreate"
-        >{{ "添加" }}</el-button>
+          >{{ "添加" }}</el-button
+        >
         <el-button
           v-if="permissionList.del"
-          :disabled="multipleSelection.length<1"
+          :disabled="multipleSelection.length < 1"
           class="filter-item"
           type="danger"
           icon="el-icon-delete"
           @click="handleBatchDel"
-        >{{ "删除" }}</el-button>
+          >{{ "删除" }}</el-button
+        >
       </el-button-group>
     </div>
 
@@ -49,23 +52,49 @@
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="排序" prop="sequence"></el-table-column>
       <el-table-column label="备注" prop="memo"></el-table-column>
-      <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="320"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="{ row }">
           <el-button-group>
             <el-button
               v-if="permissionList.update"
-              size="small"
+              size="mini"
               type="primary"
-              @click="handleUpdate(row)"
-            >{{ "编辑" }}</el-button>
-            <el-popconfirm title="你确定要删除吗" @onConfirm="handleDelete(row)">
+              @click="handleUpdate('base', row)"
+              >{{ "编辑" }}</el-button
+            >
+            <el-popconfirm
+              title="你确定要删除吗"
+              @onConfirm="handleDelete(row)"
+            >
               <el-button
                 slot="reference"
                 v-if="permissionList.del"
-                size="small"
+                size="mini"
                 type="danger"
-              >{{ "删除" }}</el-button>
+                >{{ "删除" }}</el-button
+              >
             </el-popconfirm>
+          </el-button-group>
+          <el-button-group>
+            <el-button
+              v-if="permissionList.update"
+              size="mini"
+              type="success" plain
+              @click="handleUpdate('menu', row)"
+              >{{ "菜单" }}</el-button
+            >
+            <el-button
+              v-if="permissionList.update"
+              size="mini"
+              type="warning" plain
+              @click="handleUpdate('perm', row)"
+              >{{ "权限" }}</el-button
+            >
           </el-button-group>
         </template>
       </el-table-column>
@@ -81,72 +110,118 @@
     </div>
     <el-dialog
       :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
+      :visible.sync="BaseFormVisible"
       :close-on-click-modal="false"
-      :fullscreen="true"
     >
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px">
-        <el-row type="flex" class="row-bg" justify="space-between">
-          <el-col :span="4">
-            <el-form-item label="父级" prop="parent">
-              <SelectTree
-                v-model.number="temp.parent"
-                type="number"
-                :props="propsSelectTree"
-                :options="optionDataSelectTree2"
-                :value="valueIdSelectTree2"
-                :clearable="true"
-                :accordion="true"
-                @getValue="getSelectTreeValue($event, 2)"
-              />
-            </el-form-item>
-            <el-form-item label="名称" prop="name">
-              <el-input v-model="temp.name" />
-            </el-form-item>
-            <el-form-item label="代码" prop="code">
-              <el-input v-model="temp.code" />
-            </el-form-item>
-            <el-form-item label="排序值" prop="sequence">
-              <el-input v-model="temp.sequence" />
-            </el-form-item>
-            <el-form-item label="备注" prop="memo">
-              <el-input v-model="temp.memo" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="菜单" prop="menus">
-              <el-tree
-                ref="tree"
-                :check-strictly="false"
-                :data="treeData"
-                :props="treeProps"
-                show-checkbox
-                :default-expanded-keys="[1]"
-                :accordion="true"
-                node-key="id"
-                class="permission-tree"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="模块权限" prop="model_perms">
-              <el-transfer
-                v-model="temp.model_perms"
-                filterable
-                :titles="['未选择', '已选择']"
-                :data="allperm"
-                :props="permprops"
-              ></el-transfer>
-            </el-form-item>
-          </el-col>
-        </el-row>
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="80px"
+        style="width: 400px; margin-left: 50px"
+      >
+        <el-form-item label="父级" prop="parent">
+          <SelectTree
+            v-model.number="temp.parent"
+            type="number"
+            :props="propsSelectTree"
+            :options="optionDataSelectTree2"
+            :value="valueIdSelectTree2"
+            :clearable="true"
+            :accordion="true"
+            @getValue="getSelectTreeValue($event, 2)"
+          />
+        </el-form-item>
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="代码" prop="code">
+          <el-input v-model="temp.code" />
+        </el-form-item>
+        <el-form-item label="排序值" prop="sequence">
+          <el-input v-model="temp.sequence" />
+        </el-form-item>
+        <el-form-item label="备注" prop="memo">
+          <el-input v-model="temp.memo" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{ "取消" }}</el-button>
+        <el-button @click="BaseFormVisible = false">{{ "取消" }}</el-button>
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
-        >{{ "确定" }}</el-button>
+          >{{ "确定" }}</el-button
+        >
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="MenuFormVisible"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="80px"
+        style="width: 400px; margin-left: 50px"
+      >
+        <el-form-item label="菜单" prop="menus">
+          <el-tree
+            ref="tree"
+            :check-strictly="false"
+            :data="treeData"
+            :props="treeProps"
+            show-checkbox
+            :default-expanded-keys="[1]"
+            :accordion="true"
+            node-key="id"
+            class="permission-tree"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="MenuFormVisible = false">{{ "取消" }}</el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+          >{{ "确定" }}</el-button
+        >
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="PermFormVisible"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="80px"
+      >
+        <el-form-item label="模块权限" prop="model_perms">
+          <el-transfer
+            v-model="temp.model_perms"
+            filterable
+            :titles="['未选择', '已选择']"
+            :data="allperm"
+            :props="permprops"
+          ></el-transfer>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="PermFormVisible = false">{{ "取消" }}</el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+          >{{ "确定" }}</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -160,7 +235,7 @@ import {
   checkAuthAdd,
   checkAuthDel,
   checkAuthView,
-  checkAuthUpdate
+  checkAuthUpdate,
 } from "@/utils/permission";
 
 export default {
@@ -174,14 +249,14 @@ export default {
         value: "id",
         label: "name",
         children: "children",
-        placeholder: "父级"
+        placeholder: "父级",
       },
       operationList: [],
       permissionList: {
         add: false,
         del: false,
         view: false,
-        update: false
+        update: false,
       },
       list: [],
       total: 0,
@@ -191,44 +266,48 @@ export default {
         page: 1,
         limit: 20,
         search: undefined,
-        ordering: undefined
+        ordering: undefined,
       },
       temp: {},
-      dialogFormVisible: false,
+      BaseFormVisible: false,
+      MenuFormVisible: false,
+      PermFormVisible: false,
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "添加"
+        create: "添加",
       },
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
         code: [{ required: true, message: "请输入代码", trigger: "blur" }],
-        sequence: [{ required: true, message: "请输入排序", trigger: "blur" }]
+        sequence: [{ required: true, message: "请输入排序", trigger: "blur" }],
       },
       multipleSelection: [],
       treeProps: {
         children: "children",
-        label: "name"
+        label: "name",
       },
       treeData: [],
       allrole: [],
       allperm: [],
       permprops: {
         key: "id",
-        label: "name"
-      }
+        label: "name",
+      },
     };
   },
   computed: {
     optionDataSelectTree2() {
       const cloneData = this.allrole;
-      const ha = cloneData.filter(father => {
-        const branchArr = cloneData.filter(child => father.id === child.parent);
+      const ha = cloneData.filter((father) => {
+        const branchArr = cloneData.filter(
+          (child) => father.id === child.parent
+        );
         branchArr.length > 0 ? (father.children = branchArr) : "";
         return father.parent === this.allrole[0].parent;
       });
       return ha;
-    }
+    },
   },
   created() {
     this.getMenuButton();
@@ -247,7 +326,7 @@ export default {
     getMenuButton() {
       auth
         .requestMenuButton("role")
-        .then(response => {
+        .then((response) => {
           this.operationList = response.results;
         })
         .then(() => {
@@ -256,19 +335,19 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      role.requestGet(this.listQuery).then(response => {
+      role.requestGet(this.listQuery).then((response) => {
         this.list = response.results;
         this.total = response.count;
         this.listLoading = false;
       });
     },
     getAllRole() {
-      role.requestGet().then(response => {
+      role.requestGet().then((response) => {
         this.allrole = response.results;
       });
     },
     getAllPerm() {
-      perm.requestGet().then(response => {
+      perm.requestGet().then((response) => {
         this.allperm = response.results;
       });
     },
@@ -292,33 +371,33 @@ export default {
         sequence: "",
         menus: [],
         model_perms: [],
-        memo: ""
+        memo: "",
       };
     },
     handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.BaseFormVisible = true;
       this.loading = false;
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
     },
     createData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
           this.temp.menus = this.$refs.tree.getCheckedKeys();
           role
             .requestPost(this.temp)
-            .then(response => {
-              this.dialogFormVisible = false;
+            .then((response) => {
+              this.BaseFormVisible = false;
               this.$notify({
                 title: "成功",
                 message: "创建成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
               this.getList();
             })
@@ -328,10 +407,17 @@ export default {
         }
       });
     },
-    handleUpdate(row) {
+    handleUpdate(val, row) {
       this.temp = row;
       this.dialogStatus = "update";
-      this.dialogFormVisible = true;
+      if (val == "menu") {
+        this.MenuFormVisible = true;
+      } else if (val == "perm") {
+        this.PermFormVisible = true;
+      } else {
+        this.BaseFormVisible = true;
+      }
+
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
         this.valueIdSelectTree2 = this.temp.parent;
@@ -339,7 +425,7 @@ export default {
       });
     },
     updateData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
           this.temp.parent = this.valueIdSelectTree2;
@@ -347,12 +433,12 @@ export default {
           role
             .requestPut(this.temp.id, this.temp)
             .then(() => {
-              this.dialogFormVisible = false;
+              this.BaseFormVisible = this.MenuFormVisible = this.PermFormVisible = this.WfFormVisible = false;
               this.$notify({
                 title: "成功",
                 message: "更新成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
             })
             .catch(() => {
@@ -365,7 +451,7 @@ export default {
       role.requestDelete(row.id).then(() => {
         this.$message({
           message: "删除成功",
-          type: "success"
+          type: "success",
         });
         this.getList();
       });
@@ -385,11 +471,11 @@ export default {
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
-          const ids = this.multipleSelection.map(x => x.id);
-          role.requestBulkDelete(ids).then(response => {
+          const ids = this.multipleSelection.map((x) => x.id);
+          role.requestBulkDelete(ids).then((response) => {
             console.log(response.results);
             this.getList();
           });
@@ -397,24 +483,26 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
     getTreeData() {
-      menu.requestGet().then(response => {
+      menu.requestGet().then((response) => {
         this.treeData = this.optionDataSelectTree(response.results);
       });
     },
     optionDataSelectTree(data) {
       const cloneData = data;
-      return cloneData.filter(father => {
-        const branchArr = cloneData.filter(child => father.id === child.parent);
+      return cloneData.filter((father) => {
+        const branchArr = cloneData.filter(
+          (child) => father.id === child.parent
+        );
         branchArr.length > 0 ? (father.children = branchArr) : "";
         return father.parent === data[0].parent;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

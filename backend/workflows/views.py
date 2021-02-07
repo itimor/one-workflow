@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # author: itimor
 
+from itertools import chain
 from workflows.serializers import *
 from common.views import ModelViewSet, FKModelViewSet, JsonResponse, BulkModelMixin
 
@@ -22,6 +23,20 @@ class WorkflowViewSet(BulkModelMixin):
         if self.action in ['list', 'retrieve'] or self.resultData:
             return WorkflowReadSerializer
         return WorkflowSerializer
+
+    def get_queryset(self):
+        try:
+            user = User.objects.get(username=self.request.user)
+            if user.is_admin:
+                return Workflow.objects.all()
+            else:
+                user_roles = user.roles.all()
+                group_roles = user.group.roles.all()
+                all_roles = sorted(chain(user_roles, group_roles), key=lambda t: t.id, reverse=True)
+                return Workflow.objects.filter(roles__in=all_roles).distinct()
+        except Exception as e:
+            print(e)
+            return Workflow.objects.all()
 
 
 class StateViewSet(BulkModelMixin):

@@ -355,7 +355,7 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
         this.valueIdSelectTree2 = this.temp.group;
-        this.$refs.tree.setCheckedKeys(row.roles);
+        this.$refs.tree.setCheckedKeys(this.temp.roles);
       });
     },
     updateData() {

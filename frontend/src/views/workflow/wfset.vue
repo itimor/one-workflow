@@ -6,7 +6,7 @@
         placeholder="请输入内容"
         clearable
         prefix-icon="el-icon-search"
-        style="width: 200px;"
+        style="width: 200px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
@@ -17,14 +17,16 @@
           type="primary"
           icon="el-icon-search"
           @click="handleFilter"
-        >{{ "搜索" }}</el-button>
+          >{{ "搜索" }}</el-button
+        >
         <el-button
           v-if="permissionList.add"
           class="filter-item"
           type="success"
           icon="el-icon-edit"
           @click="handleCreate"
-        >{{ "添加" }}</el-button>
+          >{{ "添加" }}</el-button
+        >
       </el-button-group>
     </div>
 
@@ -39,23 +41,35 @@
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="类型" prop="type">
         <template slot-scope="{ row }">
-          <span>{{row.type.name}}</span>
+          <span>{{ row.type.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="工单流水号前缀" prop="ticket_sn_prefix"></el-table-column>
+      <el-table-column
+        label="工单流水号前缀"
+        prop="ticket_sn_prefix"
+      ></el-table-column>
       <el-table-column label="状态" prop="status" sortable="custom">
         <template slot-scope="{ row }">
           <el-tag v-if="row.status" type="success">启用</el-tag>
           <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="查看权限校验" prop="view_permission_check" sortable="custom">
+      <el-table-column
+        label="查看权限校验"
+        prop="view_permission_check"
+        sortable="custom"
+      >
         <template slot-scope="{ row }">
           <el-tag v-if="row.view_permission_check" type="success">启用</el-tag>
           <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="260"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="{ row }">
           <el-button-group>
             <el-button
@@ -63,15 +77,22 @@
               size="small"
               type="primary"
               @click="handleUpdate(row)"
-            >{{ "编辑" }}</el-button>
+              >{{ "编辑" }}</el-button
+            >
             <el-button
               v-if="permissionList.del"
               size="small"
               type="danger"
               @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
-            <router-link :to="'/wfconf/'+ row.id">
-              <el-button v-if="permissionList.update" size="small" type="warning">{{ "配置" }}</el-button>
+              >{{ "删除" }}</el-button
+            >
+            <router-link :to="'/wfconf/' + row.id">
+              <el-button
+                v-if="permissionList.update"
+                size="small"
+                type="warning"
+                >{{ "配置" }}</el-button
+              >
             </router-link>
           </el-button-group>
         </template>
@@ -97,7 +118,7 @@
         :model="temp"
         label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left:50px;"
+        style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" />
@@ -116,7 +137,24 @@
           </el-select>
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-switch v-model="temp.status" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            v-model="temp.status"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="角色" prop="roles">
+          <el-tree
+            ref="tree"
+            :check-strictly="false"
+            :data="treeData"
+            :props="treeProps"
+            show-checkbox
+            accordion
+            default-expand-all
+            node-key="id"
+            class="permission-tree"
+          />
         </el-form-item>
         <el-form-item label="查看权限校验" prop="view_permission_check">
           <el-switch
@@ -128,7 +166,7 @@
         <el-form-item label="限制表达式" prop="limit_expression">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="限制周期({'period':24} 24小时)"
             v-model="temp.limit_expression"
           />
@@ -136,7 +174,7 @@
         <el-form-item label="展现表单字段" prop="display_form_str">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="['name','sn']"
             v-model="temp.display_form_str"
           />
@@ -144,7 +182,7 @@
         <el-form-item label="标题模板" prop="title_template">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="你有一个待办工单:{name}"
             v-model="temp.title_template"
           />
@@ -158,20 +196,21 @@
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
-        >{{ "确定" }}</el-button>
+          >{{ "确定" }}</el-button
+        >
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { workflow, workflowtype, auth } from "@/api/all";
+import { workflow, workflowtype, role, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import {
   checkAuthAdd,
   checkAuthDel,
   checkAuthView,
-  checkAuthUpdate
+  checkAuthUpdate,
 } from "@/utils/permission";
 
 export default {
@@ -180,12 +219,19 @@ export default {
   components: { Pagination },
   data() {
     return {
+      valueIdSelectTree: 0,
+      propsSelectTree: {
+        value: "id",
+        label: "name",
+        children: "children",
+        placeholder: "父级",
+      },
       operationList: [],
       permissionList: {
         add: false,
         del: false,
         view: false,
-        update: false
+        update: false,
       },
       list: [],
       total: 0,
@@ -195,23 +241,28 @@ export default {
         page: 1,
         limit: 20,
         search: undefined,
-        ordering: undefined
+        ordering: undefined,
       },
       temp: {},
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "添加"
+        create: "添加",
       },
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
         type: [{ required: true, message: "请选择类型", trigger: "change" }],
         ticket_sn_prefix: [
-          { required: true, message: "请输入工单流水号前缀", trigger: "blur" }
-        ]
+          { required: true, message: "请输入工单流水号前缀", trigger: "blur" },
+        ],
       },
-      wftype_list: []
+      treeProps: {
+        children: "children",
+        label: "name",
+      },
+      treeData: [],
+      wftype_list: [],
     };
   },
   computed: {},
@@ -219,6 +270,7 @@ export default {
     this.getMenuButton();
     this.getList();
     this.getWftypeList();
+    this.getTreeData();
   },
   methods: {
     checkPermission() {
@@ -230,7 +282,7 @@ export default {
     getMenuButton() {
       auth
         .requestMenuButton("wfset")
-        .then(response => {
+        .then((response) => {
           this.operationList = response.results;
         })
         .then(() => {
@@ -239,14 +291,14 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      workflow.requestGet(this.listQuery).then(response => {
+      workflow.requestGet(this.listQuery).then((response) => {
         this.list = response.results;
         this.total = response.count;
         this.listLoading = false;
       });
     },
     getWftypeList() {
-      workflowtype.requestGet().then(response => {
+      workflowtype.requestGet().then((response) => {
         this.wftype_list = response.results;
       });
     },
@@ -269,12 +321,13 @@ export default {
         ticket_sn_prefix: "xxoo",
         type: "",
         status: true,
+        rolse: [],
         view_permission_check: true,
         limit_expression: "",
         display_form_str: "",
         title_template: "",
         content_template: "",
-        memo: ""
+        memo: "",
       };
     },
     handleCreate() {
@@ -287,18 +340,19 @@ export default {
       });
     },
     createData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
+          this.temp.roles = this.$refs.tree.getCheckedKeys(true);
           workflow
             .requestPost(this.temp)
-            .then(response => {
+            .then((response) => {
               this.dialogFormVisible = false;
               this.$notify({
                 title: "成功",
                 message: "创建成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
               this.getList();
             })
@@ -310,19 +364,23 @@ export default {
     },
     handleUpdate(row) {
       this.temp = row;
-      this.temp = Object.assign({},this.temp, {
-        type: this.temp.type.id
-      })
+      this.temp = Object.assign({}, this.temp, {
+        type: this.temp.type.id,
+        roles: row.roles.map(a => a.id),
+      });
+      console.log(this.temp)
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
+        this.$refs.tree.setCheckedKeys(this.temp.roles);
       });
     },
     updateData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
+          this.temp.roles = this.$refs.tree.getCheckedKeys(true);
           workflow
             .requestPut(this.temp.id, this.temp)
             .then(() => {
@@ -331,7 +389,7 @@ export default {
                 title: "成功",
                 message: "更新成功",
                 type: "success",
-                duration: 2000
+                duration: 2000,
               });
               this.getList();
             })
@@ -345,13 +403,13 @@ export default {
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           workflow.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
-              type: "success"
+              type: "success",
             });
             this.getList();
           });
@@ -359,10 +417,25 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
-    }
-  }
+    },
+    getTreeData() {
+      role.requestGet().then((response) => {
+        this.treeData = this.optionDataSelectTree(response.results);
+      });
+    },
+    optionDataSelectTree(data) {
+      const cloneData = data;
+      return cloneData.filter((father) => {
+        const branchArr = cloneData.filter(
+          (child) => father.id === child.parent
+        );
+        branchArr.length > 0 ? (father.children = branchArr) : "";
+        return father.parent === data[0].parent;
+      });
+    },
+  },
 };
 </script>

@@ -24,8 +24,9 @@ class TicketViewSet(BulkModelMixin):
             if user.is_admin:
                 return Ticket.objects.all()
             else:
-                return Ticket.objects.all().filter(relation__icontains=self.request.user).distinct()
-        except:
+                return Ticket.objects.filter(relation__icontains=self.request.user).distinct()
+        except Exception as e:
+            print(e)
             return Ticket.objects.all()
 
 
