@@ -368,7 +368,6 @@ export default {
         type: this.temp.type.id,
         roles: row.roles.map(a => a.id),
       });
-      console.log(this.temp)
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
