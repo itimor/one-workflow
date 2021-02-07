@@ -364,3 +364,16 @@ export function GenDatetime(date) {
   const ms = date.getMilliseconds().toString().length < 3 ? '0' + date.getMilliseconds() : date.getMilliseconds()
   return Y + '-' + M + '-' + D + '-' + h + '-' + m + '-' + s + '-' + ms
 }
+
+export function groupBy(list, key) {
+  const map = new Map();
+  list.forEach((item) => {
+    const collection = map.get(item[key]);
+    if (!collection) {
+      map.set(item[key], [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+  return map;
+}
