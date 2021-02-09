@@ -1,59 +1,61 @@
 <template>
-  <div class="app-container">
-    <h1>这是一个测试页面</h1>
-    <h3>下面是你对这个页面的相关操作权限，如果没有，则不会显示相应的按钮</h3>
-    <el-button v-if="permissionList.add" size="small" type="primary">
-      {{ "增加" }}
-    </el-button>
-    
-    <el-button v-if="permissionList.del" size="small" type="danger">
-      {{ "删除" }}
-    </el-button>
-    
-    <el-button v-if="permissionList.update" size="small" type="warning">
-      {{ "编辑" }}
-    </el-button>
-    
-    <el-button v-if="permissionList.view" size="small" type="success">
-      {{ "查看" }}
-    </el-button>
+  <div>
+    <bpmn-modeler
+      ref="refNode"
+      :xml="xml"
+      :users="users"
+      :groups="groups"
+      :categorys="categorys"
+      :is-view="false"
+      @save="save"
+    />
   </div>
 </template>
 
 <script>
-  import {auth} from '@/api/all'
-  import {checkAuthAdd, checkAuthDel, checkAuthView, checkAuthUpdate} from '@/utils/permission'
-  
-  export default {
-    name: 'test',
-    data() {
-      return {
-        operationList: [],
-        permissionList: {
-          add: false,
-          del: false,
-          view: false,
-          update: false
-        }
-      }
+import bpmnModeler from "workflow-bpmn-modeler";
+import { workflowbpmn } from "@/api/all";
+
+export default {
+  components: {
+    bpmnModeler,
+  },
+  data() {
+    return {
+      list: [],
+      total: 0,
+      xml: "", // 后端查询到的xml
+      users: [
+        { name: "张三", id: "zhangsan" },
+        { name: "李四", id: "lisi" },
+        { name: "王五", id: "wangwu" },
+      ],
+      groups: [
+        { name: "web组", id: "web" },
+        { name: "java组", id: "java" },
+        { name: "python组", id: "python" },
+      ],
+      categorys: [
+        { name: "OA", id: "oa" },
+        { name: "财务", id: "finance" },
+      ],
+    };
+  },
+  created() {
+    this.getModelDetail();
+  },
+  methods: {
+    getModelDetail() {
+      // 发送请求，获取xml
+      workflowbpmn.requestGet().then((response) => {
+        this.list = response.results;
+        this.xml = this.list[0].xml;
+        this.total = response.count;
+      });
     },
-    created() {
-      this.getMenuButton()
+    save(data) {
+      console.log(data); // { process: {...}, xml: '...', svg: '...' }
     },
-    methods: {
-      checkPermission() {
-      this.permissionList.add = checkAuthAdd(this.operationList);
-      this.permissionList.del = checkAuthDel(this.operationList);
-      this.permissionList.view = checkAuthView(this.operationList);
-      this.permissionList.update = checkAuthUpdate(this.operationList);
-      },
-      getMenuButton() {
-        auth.requestMenuButton('test').then(response => {
-          this.operationList = response.results
-        }).then(() => {
-          this.checkPermission()
-        })
-      },
-    }
-  }
+  },
+};
 </script>

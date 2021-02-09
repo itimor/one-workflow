@@ -21,6 +21,7 @@ export const workflow = new Request('/workflow/workflow/')
 export const state = new Request('/workflow/state/')
 export const transition = new Request('/workflow/transition/')
 export const customfield = new Request('/workflow/customfield/')
+export const workflowbpmn = new Request('/workflow/workflowbpmn/')
 
 // tickets
 export const ticket = new Request('/ticket/ticket/')

@@ -176,3 +176,24 @@ class Transition(BaseModel):
     class Meta:
         verbose_name = '工作流流转'
         verbose_name_plural = verbose_name
+
+
+"""
+https://github.com/GoldSubmarine/workflow-bpmn-modeler
+https://github.com/miyuesc/bpmn-process-designer
+https://juejin.cn/post/6844904069736169480
+"""
+
+
+class WorkflowBpmn(BaseModel):
+    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
+    xml = models.TextField('xml数据', blank=True)
+    svg = models.TextField('svg数据', blank=True)
+    json = models.TextField('json数据', blank=True)
+
+    def __str__(self):
+        return self.code
+
+    class Meta:
+        verbose_name = '工作流bpmn'
+        verbose_name_plural = verbose_name

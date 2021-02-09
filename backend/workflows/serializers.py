@@ -80,3 +80,9 @@ class CustomFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomField
         fields = '__all__'
+
+
+class WorkflowBpmnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkflowBpmn
+        fields = '__all__'

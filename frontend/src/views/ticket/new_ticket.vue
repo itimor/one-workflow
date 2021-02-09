@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { workflowtype, workflow, auth } from "@/api/all";
+import { workflow, auth } from "@/api/all";
 import { groupBy } from "@/utils";
 
 import {

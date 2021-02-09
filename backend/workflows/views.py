@@ -65,3 +65,8 @@ class CustomFieldViewSet(BulkModelMixin):
     search_fields = ['field_name']
     filter_fields = ['workflow', 'field_type', 'field_attribute']
     ordering_fields = ['field_type', 'order_id']
+
+
+class WorkflowBpmnViewSet(BulkModelMixin):
+    queryset = WorkflowBpmn.objects.all()
+    serializer_class = WorkflowBpmnSerializer
