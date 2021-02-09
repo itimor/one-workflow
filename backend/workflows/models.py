@@ -26,6 +26,7 @@ class Workflow(BaseModel):
     工作流
     """
     name = models.CharField('名称', max_length=50)
+    key = models.CharField('流程标识key', blank=True, max_length=168)
     ticket_sn_prefix = models.CharField('工单流水号前缀', default='xxoo', max_length=20)
     status = models.BooleanField(default=True)
     type = models.ForeignKey(WorkflowType, on_delete=models.CASCADE, verbose_name='工作流类型')
@@ -189,10 +190,6 @@ class WorkflowBpmn(BaseModel):
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, verbose_name='工作流')
     xml = models.TextField('xml数据', blank=True)
     svg = models.TextField('svg数据', blank=True)
-    json = models.TextField('json数据', blank=True)
-
-    def __str__(self):
-        return self.code
 
     class Meta:
         verbose_name = '工作流bpmn'

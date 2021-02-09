@@ -54,7 +54,7 @@ export default {
       });
     },
     save(data) {
-      console.log(data); // { process: {...}, xml: '...', svg: '...' }
+      console.log(data); 
     },
   },
 };
