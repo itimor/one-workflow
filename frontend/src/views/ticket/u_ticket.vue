@@ -521,8 +521,6 @@ export default {
           relation: this.ticket.participant,
         }
       );
-      this.$refs[dataForm].valconsolidate((valid) => {
-        if (valid) {
           ticket
             .requestPost(data)
             .then((res) => {
@@ -534,9 +532,9 @@ export default {
               });
               this.$router.push({ path: "/my_ticket" });
             })
-            .catch(() => {});
-        }
-      });
+            .catch(e => {
+              console.log(e)
+            });
     },
   },
 };
