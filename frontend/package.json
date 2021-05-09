@@ -44,11 +44,11 @@
     "fibers": "^5.0.0",
     "path-to-regexp": "^6.1.0",
     "vue": "^2.6.11",
+    "vue-bpmn-modeler": "^1.2.0",
     "vue-i18n": "^8.15.0",
     "vue-markdown": "^2.2.4",
     "vue-route": "^1.5.1",
-    "vuex": "^3.1.1",
-    "workflow-bpmn-modeler": "^0.2.7"
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
