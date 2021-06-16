@@ -19,6 +19,8 @@ ignore_path = [
     '/api/sys/auth/getuserinfo/',
     '/api/sys/auth/getmenubutons/',
     '/api/sys/user/',
+    '/api/workflow/customfield/',
+    '/api/workflow/state/',
 ]
 
 
