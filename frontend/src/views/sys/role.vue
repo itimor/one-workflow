@@ -187,7 +187,7 @@
         <el-button @click="MenuFormVisible = false">{{ "取消" }}</el-button>
         <el-button
           type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
+          @click="dialogStatus === 'create' ? createData() : updateData('memu')"
           >{{ "确定" }}</el-button
         >
       </div>
@@ -219,7 +219,7 @@
         <el-button @click="PermFormVisible = false">{{ "取消" }}</el-button>
         <el-button
           type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
+          @click="dialogStatus === 'create' ? createData() : updateData('perm')"
           >{{ "确定" }}</el-button
         >
       </div>
@@ -293,7 +293,7 @@ export default {
       permprops: {
         key: "id",
         label: "name",
-      },
+      }
     };
   },
   computed: {
@@ -412,24 +412,26 @@ export default {
       this.dialogStatus = "update";
       if (val == "menu") {
         this.MenuFormVisible = true;
+        this.$nextTick(() => {
+          this.$refs["dataForm"].clearValidate();
+          this.valueIdSelectTree2 = this.temp.parent;
+          this.$refs.tree.setCheckedKeys(this.temp.menus);
+        });
       } else if (val == "perm") {
         this.PermFormVisible = true;
       } else {
         this.BaseFormVisible = true;
       }
 
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-        this.valueIdSelectTree2 = this.temp.parent;
-        this.$refs.tree.setCheckedKeys(row.menus);
-      });
     },
-    updateData() {
+    updateData(val) {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
-          this.temp.parent = this.valueIdSelectTree2;
-          this.temp.menus = this.$refs.tree.getCheckedKeys();
+          if (val == "menu") {
+            this.temp.parent = this.valueIdSelectTree2;
+            this.temp.menus = this.$refs.tree.getCheckedKeys();
+          }
           role
             .requestPut(this.temp.id, this.temp)
             .then(() => {

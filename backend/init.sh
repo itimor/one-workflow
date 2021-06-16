@@ -3,8 +3,11 @@
 apps=(systems tools notices workflows tickets)
 rm -rf core.db
 for app in ${apps[@]};do
-  echo $app
   rm -rf $app/migrations
+done
+
+for app in ${apps[@]};do
+  echo $app
   python manage.py makemigrations $app
 done
 
