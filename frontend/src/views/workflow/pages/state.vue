@@ -87,11 +87,11 @@
               v-for="(label, value) in participant_types"
               :key="value"
               :label="label"
-              :value="parseInt(value)"
+              :value="label"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="temp.participant_type == 1" label="参与用户" prop="participant">
+        <el-form-item v-if="temp.participant_type == 'user'" label="参与用户" prop="participant">
           <el-select v-model="temp.user_participant" multiple filterable placeholder="请选择">
             <el-option
               v-for="item in choice_user_list"
@@ -101,7 +101,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="temp.participant_type == 2" label="参与部门" prop="participant">
+        <el-form-item v-if="temp.participant_type == 'group'" label="参与部门" prop="participant">
           <el-select v-model="temp.group_participant" multiple filterable placeholder="请选择">
             <el-option
               v-for="item in choice_group_list"
@@ -111,7 +111,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="temp.participant_type == 3" label="参与角色" prop="participant">
+        <el-form-item v-if="temp.participant_type == 'role'" label="参与角色" prop="participant">
           <el-select v-model="temp.role_participant" multiple filterable placeholder="请选择">
             <el-option
               v-for="item in choice_role_list"
@@ -197,10 +197,10 @@ export default {
         2: "结束状态"
       },
       participant_types: {
-        0: "无处理人",
-        1: "个人",
-        2: "部门",
-        3: "角色"
+        0: "none",
+        1: "user",
+        2: "group",
+        3: "role"
       },
       permprops: {
         key: "id",
