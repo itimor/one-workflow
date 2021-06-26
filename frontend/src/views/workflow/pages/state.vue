@@ -87,7 +87,7 @@
               v-for="(label, value) in participant_types"
               :key="value"
               :label="label"
-              :value="label"
+              :value="value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -197,10 +197,10 @@ export default {
         2: "结束状态"
       },
       participant_types: {
-        0: "none",
-        1: "user",
-        2: "group",
-        3: "role"
+        none: "none",
+        user: "用户",
+        group: "部门",
+        role: "角色"
       },
       permprops: {
         key: "id",
@@ -243,7 +243,7 @@ export default {
         order_id: undefined,
         state_type: 0,
         enable_retreat: false,
-        participant_type: 0,
+        participant_type: "none",
         user_participant: [],
         group_participant: [],
         role_participant: [],
