@@ -18,8 +18,12 @@ class WorkflowSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        roles = validated_data['roles']
+        del validated_data['roles']
         obj = Workflow.objects.create(**validated_data)
+        obj.roles.set(roles)
         obj.save()
+
         # 建立初始和结束状态
         State.objects.create(name="开始", order_id=1, state_type=1, is_hidden=True, participant_type=0, workflow=obj)
         State.objects.create(name="关闭", order_id=99, state_type=2, is_hidden=True, participant_type=0, workflow=obj)
