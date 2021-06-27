@@ -239,7 +239,7 @@
         <a style="color: red; font-size: 24px">{{
           participant_type[dialogChooiceType]
         }}</a>
-        <span v-if="dialogChooiceType='none'">请直接点确定</span>
+        <span v-if="dialogChooiceType==='none'">请直接点确定</span>
         <span v-else>请点击下方处理对象，选择转交用户</span>
       </div>
       <el-row :gutter="20">
