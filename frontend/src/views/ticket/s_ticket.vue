@@ -242,7 +242,8 @@
         <a style="color: red; font-size: 24px">{{
           participant_type[dialogChooiceType]
         }}</a>
-        请点击下方处理对象，选择转交用户
+        <span v-if="dialogChooiceType='none'">请直接点确定</span>
+        <span v-else>请点击下方处理对象，选择转交用户</span>
       </div>
       <el-row :gutter="20">
         <el-col :span="8">
@@ -457,9 +458,7 @@ export default {
       });
     },
     selectType(val) {
-      // this.wfdata.participant = "";
-      // this.choice_user_list = [];
-      if (val === 'none') {
+      if (val === 'user') {
         this.choice_user_list = this.choice_transition.dest_state.user_participant;
       } else if (val == 'group') {
         this.group_role_list = this.choice_transition.dest_state.group_participant;
