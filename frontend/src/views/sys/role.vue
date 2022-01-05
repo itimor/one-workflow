@@ -67,10 +67,7 @@
               @click="handleUpdate('base', row)"
               >{{ "编辑" }}</el-button
             >
-            <el-popconfirm
-              title="你确定要删除吗"
-              @onConfirm="handleDelete(row)"
-            >
+            <el-popconfirm title="你确定要删除吗" @confirm="handleDelete(row)">
               <el-button
                 slot="reference"
                 v-if="permissionList.del"
@@ -84,14 +81,16 @@
             <el-button
               v-if="permissionList.update"
               size="mini"
-              type="success" plain
+              type="success"
+              plain
               @click="handleUpdate('menu', row)"
               >{{ "菜单" }}</el-button
             >
             <el-button
               v-if="permissionList.update"
               size="mini"
-              type="warning" plain
+              type="warning"
+              plain
               @click="handleUpdate('perm', row)"
               >{{ "权限" }}</el-button
             >
@@ -101,13 +100,14 @@
     </el-table>
     <div class="table-pagination">
       <pagination
-        v-show="total > 0"
+        v-show="total > listQuery.limit"
         :total="total"
-        :page.sync="listQuery.offset"
+        :page.sync="listQuery.page"
         :limit.sync="listQuery.limit"
         @pagination="getList"
       />
     </div>
+
     <el-dialog
       :title="textMap[dialogStatus]"
       :visible.sync="BaseFormVisible"
@@ -119,107 +119,65 @@
         :model="temp"
         label-position="left"
         label-width="80px"
-        style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="父级" prop="parent">
-          <SelectTree
-            v-model.number="temp.parent"
-            type="number"
-            :props="propsSelectTree"
-            :options="optionDataSelectTree2"
-            :value="valueIdSelectTree2"
-            :clearable="true"
-            :accordion="true"
-            @getValue="getSelectTreeValue($event, 2)"
-          />
-        </el-form-item>
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item label="代码" prop="code">
-          <el-input v-model="temp.code" />
-        </el-form-item>
-        <el-form-item label="排序值" prop="sequence">
-          <el-input v-model="temp.sequence" />
-        </el-form-item>
-        <el-form-item label="备注" prop="memo">
-          <el-input v-model="temp.memo" />
-        </el-form-item>
+        <div v-show="form == 'base'">
+          <el-form-item label="父级" prop="parent">
+            <SelectTree
+              v-model.number="temp.parent"
+              type="number"
+              :props="propsSelectTree"
+              :options="optionDataSelectTree2"
+              :value="valueIdSelectTree2"
+              :clearable="true"
+              :accordion="true"
+              @getValue="getSelectTreeValue($event, 2)"
+            />
+          </el-form-item>
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="temp.name" />
+          </el-form-item>
+          <el-form-item label="代码" prop="code">
+            <el-input v-model="temp.code" />
+          </el-form-item>
+          <el-form-item label="排序值" prop="sequence">
+            <el-input v-model="temp.sequence" />
+          </el-form-item>
+          <el-form-item label="备注" prop="memo">
+            <el-input v-model="temp.memo" />
+          </el-form-item>
+        </div>
+        <div v-show="form == 'menu'">
+          <el-form-item label="菜单" prop="menus">
+            <el-tree
+              ref="tree"
+              :check-strictly="false"
+              :data="treeData"
+              :props="treeProps"
+              show-checkbox
+              :default-expanded-keys="[1]"
+              :accordion="true"
+              node-key="id"
+              class="permission-tree"
+            />
+          </el-form-item>
+        </div>
+        <div v-show="form == 'perm'">
+          <el-form-item label="模块权限" prop="model_perms">
+            <el-transfer
+              v-model="temp.model_perms"
+              filterable
+              :titles="['未选择', '已选择']"
+              :data="allperm"
+              :props="permprops"
+            ></el-transfer>
+          </el-form-item>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="BaseFormVisible = false">{{ "取消" }}</el-button>
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
-          >{{ "确定" }}</el-button
-        >
-      </div>
-    </el-dialog>
-
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="MenuFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="80px"
-        style="width: 400px; margin-left: 50px"
-      >
-        <el-form-item label="菜单" prop="menus">
-          <el-tree
-            ref="tree"
-            :check-strictly="false"
-            :data="treeData"
-            :props="treeProps"
-            show-checkbox
-            :default-expanded-keys="[1]"
-            :accordion="true"
-            node-key="id"
-            class="permission-tree"
-          />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="MenuFormVisible = false">{{ "取消" }}</el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData('memu')"
-          >{{ "确定" }}</el-button
-        >
-      </div>
-    </el-dialog>
-
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="PermFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="80px"
-      >
-        <el-form-item label="模块权限" prop="model_perms">
-          <el-transfer
-            v-model="temp.model_perms"
-            filterable
-            :titles="['未选择', '已选择']"
-            :data="allperm"
-            :props="permprops"
-          ></el-transfer>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="PermFormVisible = false">{{ "取消" }}</el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData('perm')"
           >{{ "确定" }}</el-button
         >
       </div>
@@ -268,10 +226,9 @@ export default {
         search: undefined,
         ordering: undefined,
       },
+      form: "base",
       temp: {},
       BaseFormVisible: false,
-      MenuFormVisible: false,
-      PermFormVisible: false,
       dialogStatus: "",
       textMap: {
         update: "编辑",
@@ -293,7 +250,7 @@ export default {
       permprops: {
         key: "id",
         label: "name",
-      }
+      },
     };
   },
   computed: {
@@ -410,32 +367,26 @@ export default {
     handleUpdate(val, row) {
       this.temp = row;
       this.dialogStatus = "update";
-      if (val == "menu") {
-        this.MenuFormVisible = true;
-        this.$nextTick(() => {
-          this.$refs["dataForm"].clearValidate();
-          this.valueIdSelectTree2 = this.temp.parent;
-          this.$refs.tree.setCheckedKeys(this.temp.menus);
-        });
-      } else if (val == "perm") {
-        this.PermFormVisible = true;
-      } else {
-        this.BaseFormVisible = true;
-      }
-
+      this.form = val;
+      this.BaseFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+        this.valueIdSelectTree2 = this.temp.parent;
+        this.$refs.tree.setCheckedKeys(this.temp.menus);
+      });
     },
-    updateData(val) {
+    updateData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
-          if (val == "menu") {
+          if (this.form == "menu") {
             this.temp.parent = this.valueIdSelectTree2;
             this.temp.menus = this.$refs.tree.getCheckedKeys();
           }
           role
             .requestPut(this.temp.id, this.temp)
             .then(() => {
-              this.BaseFormVisible = this.MenuFormVisible = this.PermFormVisible = this.WfFormVisible = false;
+              this.BaseFormVisible = false;
               this.$notify({
                 title: "成功",
                 message: "更新成功",
@@ -478,7 +429,6 @@ export default {
         .then(() => {
           const ids = this.multipleSelection.map((x) => x.id);
           role.requestBulkDelete(ids).then((response) => {
-            console.log(response.results);
             this.getList();
           });
         })
@@ -507,9 +457,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.el-transfer-panel {
-  width: 230px !important;
-}
-</style>

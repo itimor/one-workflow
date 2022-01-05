@@ -17,10 +17,6 @@ import i18n from './lang' // Internationalization
 import './icons' // icon
 import './permission' // permission control
 
-// bpmn
-import VueBpmnModeler from "vue-bpmn-modeler"
-Vue.use(VueBpmnModeler)
-
 import * as filters from './filters' // global filters
 
 Vue.use(Element, {
