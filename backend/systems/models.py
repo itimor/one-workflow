@@ -40,9 +40,9 @@ class Menu(BaseModel):
         return "{parent}{name}".format(name=self.name, parent="%s-->" % self.parent.name if self.parent else '')
 
     class Meta:
-        ordering = ['id', ]
-        verbose_name = '角色'
+        verbose_name = '菜单'
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
 
 class Role(BaseModel):
@@ -59,6 +59,7 @@ class Role(BaseModel):
     class Meta:
         verbose_name = '角色'
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
 
 class Group(BaseModel, Group):
@@ -73,6 +74,7 @@ class Group(BaseModel, Group):
     class Meta:
         verbose_name = '分组'
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
     objects = GroupManager()  # 创建用户
 
@@ -104,6 +106,7 @@ class PermissionsMixin(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['id']
 
 
 class UserManager(BaseUserManager):
@@ -135,7 +138,7 @@ class User(BaseModel, PermissionsMixin, AbstractBaseUser):
     username = models.CharField(max_length=32, unique=True, db_index=True)
     realname = models.CharField(max_length=32, default="图书馆管理员", blank=True, verbose_name='真实名字')
     email = models.EmailField(blank=True, default="itimor@126.com", verbose_name='邮箱')
-    avatar = models.CharField(max_length=255, default='http://m.imeitou.com/uploads/allimg/2017110610/b3c433vwhsk.jpg')
+    avatar = models.CharField(max_length=255, default='https://pica.zhimg.com/80/v2-e4e933375b971b0941907ff9d7985188_640w.jpg')
     status = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -156,6 +159,7 @@ class User(BaseModel, PermissionsMixin, AbstractBaseUser):
 
     class Meta:
         verbose_name = '用户'
-        verbose_name_plural = '用户'
+        verbose_name_plural = verbose_name
+        ordering = ['id']
 
     objects = UserManager()  # 创建用户
