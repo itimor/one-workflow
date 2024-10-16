@@ -15,7 +15,7 @@ itypes==1.1.0
 Jinja2==2.10.3
 MarkupSafe==1.1.1
 PyMySQL==0.9.3
-PyJWT==1.7.1
+PyJWT==2.4.0
 pytz==2019.3
 requests==2.22.0
 six==1.14.0
