@@ -12,7 +12,7 @@ djangorestframework-jwt==1.11.0
 idna==2.8
 IPy==1.0
 itypes==1.1.0
-Jinja2==2.10.3
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 python-telegram-bot==12.6.1
 mysqlclient==1.4.6
